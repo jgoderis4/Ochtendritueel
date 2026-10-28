@@ -1,26 +1,76 @@
 @import "tailwindcss";
 
+/*
+  Aura Ochtend Dashboard — design tokens
+  Bron: stitch_project_visualisatie_tool/aura_ochtend_dashboard/DESIGN.md (D-001)
+  10-foot TV-UI, leesbaar vanuit bed op 3–4 m. Donker, rustig, geen felle whites.
+*/
+
+@theme {
+  /* --- Kleur: ondergrond & oppervlakken --- */
+  --color-canvas: #0b0f17; /* schermachtergrond, absorbeert licht */
+  --color-surface: #111827; /* tegel-basis */
+  --color-surface-2: #161f30; /* geneste sub-elementen */
+  --color-border: #1e293b; /* subtiele contouren */
+
+  /* --- Kleur: accenten --- */
+  --color-amber: #f59e0b; /* primair accent / dawn / actieve staat */
+  --color-coastal: #38bdf8; /* weer / kust / Noordzee */
+  --color-emerald: #34d399; /* vlot verkeer / voltooid */
+  --color-coral: #fb7185; /* workout / routine-badges */
+  --color-purple: #a78bfa; /* workout / Sonos-stream */
+  --color-danger: #ffb4ab; /* fout / ontbrekende data */
+
+  /* --- Kleur: tekst-ramp --- */
+  --color-text-high: #f8fafc; /* grote cijfers, koppen, kritieke data */
+  --color-text-mid: #94a3b8; /* labels, subkoppen, eenheden */
+  --color-text-muted: #475569; /* timestamps, inactieve tabs */
+
+  /* --- Fonts (geladen via next/font in layout.tsx) --- */
+  --font-sans: var(--font-inter); /* body, labels, metrics */
+  --font-display: var(--font-jakarta); /* cijfers, klokken, koppen */
+
+  /* --- Typografie-schaal (px → rem t.o.v. 16px) --- */
+  --text-display-clock: 7rem; /* 112px */
+  --text-display-lg: 4rem; /* 64px */
+  --text-display-metric: 3rem; /* 48px */
+  --text-headline-xl: 2.25rem; /* 36px */
+  --text-headline-lg: 1.75rem; /* 28px */
+  --text-headline-md: 1.375rem; /* 22px */
+  --text-body-lg: 1.25rem; /* 20px */
+  --text-body-md: 1.0625rem; /* 17px */
+  --text-label-lg: 0.9375rem; /* 15px */
+  --text-label-md: 0.8125rem; /* 13px — leesbaarheidsvloer */
+
+  /* --- Radius --- */
+  --radius-sm: 0.25rem;
+  --radius: 0.5rem;
+  --radius-md: 0.75rem;
+  --radius-lg: 1rem; /* dashboard-modules */
+  --radius-xl: 1.5rem;
+
+  /* --- Spacing (TV-raster) --- */
+  --spacing-gutter: 1.75rem; /* 28px tussen modules */
+  --spacing-margin: 3.5rem; /* 56px overscan-marge */
+  --spacing-xs: 0.5rem;
+  --spacing-sm: 0.75rem;
+  --spacing-md: 1.25rem;
+  --spacing-lg: 2rem;
+  --spacing-xl: 3rem;
+}
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  color-scheme: dark;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--color-canvas);
+  color: var(--color-text-high);
+  font-family: var(--font-sans), Arial, Helvetica, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Tabular figures voor alle klokken/timers (geen layout-jitter) */
+.tabular {
+  font-variant-numeric: tabular-nums;
 }

@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="nl"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/><meta content="web_standard" name="shell-type"/><title>Ochtend TV Dashboard</title><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Plus+Jakarta+Sans:wght@500;600;700&amp;display=swap" rel="stylesheet"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config={darkMode:"class",theme:{extend:{colors:{"on-secondary-container":"#00374d","surface":"#051424","primary-fixed":"#ffddb8","on-error":"#690005","surface-container":"#122131","outline-variant":"#534434","inverse-surface":"#d4e4fa","tertiary-container":"#22c990","on-secondary-fixed-variant":"#004c69","on-tertiary-container":"#004e35","on-primary-fixed-variant":"#653e00","on-tertiary-fixed-variant":"#005137","background":"#051424","surface-container-highest":"#273647","inverse-primary":"#855300","surface-container-lowest":"#010f1f","secondary-fixed":"#c4e7ff","on-error-container":"#ffdad6","primary-container":"#f59e0b","on-primary-fixed":"#2a1700","on-primary":"#472a00","on-surface":"#d4e4fa","on-tertiary-fixed":"#002114","on-secondary":"#00354a","error":"#ffb4ab","secondary-fixed-dim":"#7bd0ff","secondary":"#7bd0ff","on-tertiary":"#003825","on-surface-variant":"#d8c3ad","inverse-on-surface":"#233143","tertiary-fixed-dim":"#45dfa4","surface-bright":"#2c3a4c","surface-tint":"#ffb95f","on-primary-container":"#613b00","primary":"#ffc174","tertiary-fixed":"#68fcbf","outline":"#a08e7a","on-secondary-fixed":"#001e2c","primary-fixed-dim":"#ffb95f","secondary-container":"#00a6e0","surface-container-high":"#1c2b3c","tertiary":"#4de6aa","surface-container-low":"#0d1c2d","on-background":"#d4e4fa","surface-variant":"#273647","surface-dim":"#051424","error-container":"#93000a"},borderRadius:{"DEFAULT":"0.25rem","lg":"0.5rem","xl":"0.75rem","full":"9999px"},spacing:{"space-xl":"3rem","space-sm":"0.75rem","space-md":"1.25rem","space-lg":"2rem","margin":"3.5rem","gutter":"1.75rem","space-xs":"0.5rem"},fontFamily:{"body-lg":["Inter"],"headline-md":["Plus Jakarta Sans"],"display-clock":["Plus Jakarta Sans"],"label-lg":["Inter"],"body-md":["Inter"],"display-metric":["Plus Jakarta Sans"],"display-lg":["Plus Jakarta Sans"],"headline-xl":["Plus Jakarta Sans"],"headline-lg":["Plus Jakarta Sans"],"label-md":["Inter"]},fontSize:{"body-lg":["20px",{lineHeight:"30px",fontWeight:"400"}],"headline-md":["22px",{lineHeight:"30px",fontWeight:"500"}],"display-clock":["112px",{lineHeight:"112px",letterSpacing:"-0.03em",fontWeight:"700"}],"label-lg":["15px",{lineHeight:"20px",letterSpacing:"0.06em",fontWeight:"600"}],"body-md":["17px",{lineHeight:"26px",fontWeight:"400"}],"display-metric":["48px",{lineHeight:"56px",letterSpacing:"-0.01em",fontWeight:"600"}],"display-lg":["64px",{lineHeight:"72px",letterSpacing:"-0.02em",fontWeight:"600"}],"headline-xl":["36px",{lineHeight:"44px",letterSpacing:"-0.01em",fontWeight:"600"}],"headline-lg":["28px",{lineHeight:"36px",fontWeight:"600"}],"label-md":["13px",{lineHeight:"18px",letterSpacing:"0.04em",fontWeight:"500"}]}}}};</script></head><body class="bg-background font-body-lg text-on-surface antialiased select-none"><header class="fixed top-0 inset-x-0 z-50 bg-surface/90 backdrop-blur-xl shadow-[0_1px_8px_rgba(0,0,0,0.25)]"><div class="h-28 w-full px-margin flex items-center justify-between"><div class="flex items-center gap-space-lg"><div class="flex items-baseline gap-space-sm"><span class="font-headline-xl text-headline-xl text-primary font-bold tracking-tight">07:02</span><span class="font-body-md text-body-md text-on-surface-variant uppercase tracking-wider">Vrijdag 24 mei</span></div><div class="h-8 w-px bg-surface-container-highest"></div><nav class="flex items-center gap-space-xs" data-active-classes="bg-primary-container text-on-primary-container font-semibold rounded-full"><a aria-current="page" class="px-space-md py-space-xs transition-colors bg-primary-container text-on-primary-container font-semibold rounded-full" data-path="ochtend-overzicht" href="#">Overzicht</a><a class="px-space-md py-space-xs rounded-full font-label-lg text-label-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" data-path="routine-schema" href="#">Routine</a><a class="px-space-md py-space-xs rounded-full font-label-lg text-label-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" data-path="weer-en-kust" href="#">Kust &amp; Weer</a><a class="px-space-md py-space-xs rounded-full font-label-lg text-label-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" data-path="audio-bediening" href="#">Audio</a></nav></div><div class="flex items-center gap-space-md"><div class="flex items-center gap-space-xs px-space-md py-1.5 rounded-full bg-surface-container-low text-on-surface"><span class="w-2 h-2 rounded-full bg-tertiary-container animate-pulse"></span><span class="font-label-md text-label-md text-on-surface-variant">Fase:</span><span class="font-label-md text-label-md text-on-surface font-semibold">Dashboard</span><div class="w-12 h-1.5 bg-surface-container-highest rounded-full overflow-hidden ml-1"><div class="w-2/3 h-full bg-primary rounded-full"></div></div></div><div class="flex items-center gap-space-xs px-space-md py-1.5 rounded-full bg-surface-container-low"><span class="w-2 h-2 rounded-full bg-secondary"></span><span class="font-label-md text-label-md text-secondary">Sonos Roam • Spotify</span></div><div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div></div></div></header><main class="w-full pt-28 px-margin pb-space-lg bg-background"><div class="flex flex-col w-full">
+<div class="relative w-full flex flex-col justify-between py-space-md select-none overflow-hidden">
+<div class="absolute -top-32 -left-20 w-[600px] h-[600px] bg-primary/10 rounded-full blur-[140px] pointer-events-none"></div>
+<div class="absolute top-1/2 right-[-100px] w-[500px] h-[500px] bg-secondary/5 rounded-full blur-[160px] pointer-events-none"></div>
+<div class="grid grid-cols-12 gap-gutter items-stretch">
+<div class="col-span-12 lg:col-span-7 flex flex-col justify-between space-y-space-lg">
+<div class="bg-surface-container/70 backdrop-blur-md rounded-xl p-space-lg shadow-xl relative overflow-hidden">
+<div class="flex items-center justify-between mb-space-md">
+<div class="inline-flex items-center gap-space-xs px-space-md py-1.5 rounded-full bg-surface-container-high/80">
+<span class="w-2.5 h-2.5 rounded-full bg-primary animate-pulse"></span>
+<span class="font-label-lg text-label-lg text-on-surface-variant uppercase tracking-wider">Ochtendritme 00:00 – 01:00</span>
+</div>
+<div class="flex items-center gap-space-xs text-on-surface-variant font-label-md text-label-md">
+<span class="material-symbols-outlined text-[20px] text-tertiary">hotel</span>
+<span>Slaapstand actief beëindigd</span>
+</div>
+</div>
+<div class="flex flex-col my-space-xs">
+<div class="flex items-baseline gap-space-md">
+<span class="font-display-clock text-display-clock text-on-surface font-bold tracking-tighter" id="live-clock">07:00</span>
+<span class="font-headline-lg text-headline-lg text-primary font-medium tracking-normal">CEST</span>
+</div>
+<div class="flex items-center gap-space-sm mt-space-xs">
+<span class="material-symbols-outlined text-primary text-[28px]">calendar_today</span>
+<h2 class="font-headline-xl text-headline-xl text-on-surface font-semibold tracking-wide">Vrijdag 24 mei</h2>
+</div>
+</div>
+<div class="mt-space-lg pt-space-md bg-surface-container-low/50 rounded-lg p-space-md">
+<p class="font-headline-lg text-headline-lg text-primary-fixed font-medium">
+              Goedemorgen, tijd voor een rustige start.
+            </p>
+<p class="font-body-lg text-body-lg text-on-surface-variant mt-1.5">
+              Een heldere en zonnige ochtend aan de kust. Perfect voor een productieve dag.
+            </p>
+</div>
+</div>
+<div class="bg-surface-container/60 backdrop-blur-md rounded-xl p-space-lg shadow-md flex items-center justify-between">
+<div class="flex items-start gap-space-md">
+<div class="w-12 h-12 rounded-full bg-surface-container-high flex items-center justify-center text-primary shrink-0 shadow-inner">
+<span class="material-symbols-outlined text-[26px]">format_quote</span>
+</div>
+<div class="flex flex-col">
+<span class="font-label-md text-label-md uppercase text-on-surface-variant tracking-widest">Gedachte van de dag</span>
+<blockquote class="font-headline-md text-headline-md text-on-surface mt-1 italic font-light leading-relaxed">
+                “Elke ochtend brengt nieuwe energie en een heldere blik.”
+              </blockquote>
+</div>
+</div>
+</div>
+</div>
+<div class="col-span-12 lg:col-span-5 flex flex-col justify-between space-y-space-lg">
+<div class="bg-surface-container/70 backdrop-blur-md rounded-xl p-space-lg shadow-xl relative">
+<div class="flex items-center justify-between mb-space-sm">
+<div class="flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-secondary text-[24px]">location_on</span>
+<span class="font-label-lg text-label-lg text-on-surface font-semibold uppercase tracking-wider">Kust • Oostduinkerke</span>
+</div>
+<span class="font-label-md text-label-md px-2.5 py-1 rounded-full bg-secondary/10 text-secondary font-medium">Noordzee Live</span>
+</div>
+<div class="flex items-center justify-between my-space-md">
+<div>
+<div class="flex items-baseline gap-space-xs">
+<span class="font-display-lg text-display-lg text-on-surface font-bold tracking-tight">14</span>
+<span class="font-display-metric text-display-metric text-primary font-light">°C</span>
+</div>
+<p class="font-body-lg text-body-lg text-on-surface font-medium mt-1">Heldere ochtendhemel</p>
+</div>
+<div class="relative w-28 h-28 flex items-center justify-center">
+<div class="absolute inset-0 bg-primary/20 rounded-full blur-xl"></div>
+<span class="material-symbols-outlined text-primary text-[80px] drop-shadow-lg" style="font-variation-settings: 'FILL' 1;">wb_sunny</span>
+</div>
+</div>
+<div class="grid grid-cols-2 gap-space-sm mt-space-sm">
+<div class="bg-surface-container-low/70 rounded-lg p-space-md flex flex-col">
+<div class="flex items-center gap-space-xs text-on-surface-variant">
+<span class="material-symbols-outlined text-[20px] text-secondary">air</span>
+<span class="font-label-md text-label-md">Wind</span>
+</div>
+<span class="font-headline-md text-headline-md text-on-surface mt-1 font-semibold">18 km/u</span>
+<span class="font-label-md text-label-md text-on-surface-variant">3 Bft • ZW Lichte bries</span>
+</div>
+<div class="bg-surface-container-low/70 rounded-lg p-space-md flex flex-col">
+<div class="flex items-center gap-space-xs text-on-surface-variant">
+<span class="material-symbols-outlined text-[20px] text-tertiary">water</span>
+<span class="font-label-md text-label-md">Getij</span>
+</div>
+<span class="font-headline-md text-headline-md text-on-surface mt-1 font-semibold">08:42</span>
+<span class="font-label-md text-label-md text-on-surface-variant">Laagwater (Eb)</span>
+</div>
+</div>
+<div class="mt-space-md pt-space-xs">
+<div class="flex items-center justify-between text-on-surface-variant font-label-md text-label-md mb-1">
+<span>Zonsopgang 05:48</span>
+<span>UV-Index: 1 (Laag)</span>
+<span>Zonsondergang 21:38</span>
+</div>
+<div class="w-full h-1.5 bg-surface-container-highest rounded-full overflow-hidden">
+<div class="w-[18%] h-full bg-gradient-to-r from-primary to-secondary rounded-full"></div>
+</div>
+</div>
+</div>
+<div class="bg-surface-container/60 backdrop-blur-md rounded-xl p-space-md shadow-md flex items-center justify-between">
+<div class="flex items-center gap-space-md">
+<div class="relative w-16 h-16 rounded-lg bg-surface-container-highest flex items-center justify-center overflow-hidden shrink-0 shadow-md">
+<div class="absolute inset-0 bg-secondary/15 flex items-center justify-center">
+<span class="material-symbols-outlined text-secondary text-[32px]" style="font-variation-settings: 'FILL' 1;">graphic_eq</span>
+</div>
+</div>
+<div class="flex flex-col">
+<div class="flex items-center gap-space-xs">
+<span class="w-2 h-2 rounded-full bg-tertiary animate-ping"></span>
+<span class="font-label-md text-label-md text-secondary font-semibold uppercase tracking-wider">Sonos Roam • Slaapkamer</span>
+</div>
+<span class="font-headline-md text-headline-md text-on-surface font-medium truncate max-w-xs mt-0.5">Morning Jazz &amp; Lounge</span>
+<span class="font-body-md text-body-md text-on-surface-variant">Spotify • Zachte fade-in op 22%</span>
+</div>
+</div>
+<div class="flex items-center gap-space-xs px-space-md py-2 rounded-full bg-surface-container-high/80 text-on-surface">
+<span class="material-symbols-outlined text-primary text-[20px]">volume_up</span>
+<span class="font-label-lg text-label-lg font-semibold">22%</span>
+</div>
+</div>
+</div>
+</div>
+<div class="mt-space-lg w-full bg-surface-container/90 backdrop-blur-lg rounded-xl p-space-md shadow-xl flex flex-col md:flex-row items-center justify-between gap-space-md">
+<div class="flex items-center gap-space-md">
+<div class="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center text-primary shrink-0">
+<span class="material-symbols-outlined text-[24px]">hourglass_top</span>
+</div>
+<div class="flex flex-col">
+<div class="flex items-center gap-space-xs">
+<span class="font-label-lg text-label-lg text-on-surface font-semibold">Routine gestart</span>
+<span class="text-on-surface-variant">•</span>
+<span class="font-label-lg text-label-lg text-primary">Volledig dashboard verschijnt over <span id="countdown-timer">45</span>s</span>
+</div>
+<span class="font-body-md text-body-md text-on-surface-variant">Of swipe via de Home app / druk op [OK] op de afstandsbediening</span>
+</div>
+</div>
+<div class="flex items-center gap-space-md w-full md:w-auto">
+<div class="w-full md:w-64 h-2.5 bg-surface-container-highest rounded-full overflow-hidden">
+<div class="h-full bg-gradient-to-r from-primary via-primary-container to-secondary rounded-full transition-all duration-1000 ease-linear" id="progress-bar" style="width: 25%;"></div>
+</div>
+<button class="px-space-md py-1.5 rounded-full bg-primary text-on-primary font-label-lg text-label-lg font-semibold hover:bg-primary-fixed transition-colors shrink-0 shadow-md" type="button">
+          Meteen openen
+        </button>
+</div>
+</div>
+</div>
+</div>
+<script>
+  (function () {
+    let timeLeft = 45;
+    const totalDuration = 60;
+    const countdownEl = document.getElementById('countdown-timer');
+    const progressBar = document.getElementById('progress-bar');
+
+    const updateTimer = () => {
+      if (timeLeft > 0) {
+        timeLeft -= 1;
+        if (countdownEl) countdownEl.textContent = timeLeft;
+        if (progressBar) {
+          const percentage = ((totalDuration - timeLeft) / totalDuration) * 100;
+          progressBar.style.width = percentage + '%';
+        }
+      }
+    };
+    setInterval(updateTimer, 1000);
+
+    const clockEl = document.getElementById('live-clock');
+    const updateClock = () => {
+      const now = new Date();
+      const hours = String(now.getHours()).padStart(2, '0');
+      const minutes = String(now.getMinutes()).padStart(2, '0');
+      if (clockEl) {
+        clockEl.textContent = `${hours}:${minutes}`;
+      }
+    };
+    updateClock();
+    setInterval(updateClock, 10000);
+  })();
+</script></main><footer class="w-full bg-surface-container-lowest py-space-md"><div class="w-full px-margin flex items-center justify-between text-on-surface-variant"><div class="flex items-center gap-space-sm font-label-md text-label-md"><span class="material-symbols-outlined text-[18px] text-tertiary">tune</span><span>TV Afstandsbediening D-Pad navigatie actief</span></div><div class="flex items-center gap-space-lg font-label-md text-label-md"><span class="flex items-center gap-space-xs"><kbd class="px-2 py-0.5 rounded bg-surface-container-high font-mono text-on-surface">OK</kbd> Selecteer</span><span class="flex items-center gap-space-xs"><kbd class="px-2 py-0.5 rounded bg-surface-container-high font-mono text-on-surface">← →</kbd> Wissel weergave</span><span class="flex items-center gap-space-xs"><kbd class="px-2 py-0.5 rounded bg-surface-container-high font-mono text-on-surface">Terug</kbd> Slaapstand</span></div></div></footer></body></html>

@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="nl"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/><meta content="web_standard" name="shell-type"/><title>Ochtend TV Dashboard</title><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Plus+Jakarta+Sans:wght@500;600;700&amp;display=swap" rel="stylesheet"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config={darkMode:"class",theme:{extend:{colors:{"on-secondary-container":"#00374d","surface":"#051424","primary-fixed":"#ffddb8","on-error":"#690005","surface-container":"#122131","outline-variant":"#534434","inverse-surface":"#d4e4fa","tertiary-container":"#22c990","on-secondary-fixed-variant":"#004c69","on-tertiary-container":"#004e35","on-primary-fixed-variant":"#653e00","on-tertiary-fixed-variant":"#005137","background":"#051424","surface-container-highest":"#273647","inverse-primary":"#855300","surface-container-lowest":"#010f1f","secondary-fixed":"#c4e7ff","on-error-container":"#ffdad6","primary-container":"#f59e0b","on-primary-fixed":"#2a1700","on-primary":"#472a00","on-surface":"#d4e4fa","on-tertiary-fixed":"#002114","on-secondary":"#00354a","error":"#ffb4ab","secondary-fixed-dim":"#7bd0ff","secondary":"#7bd0ff","on-tertiary":"#003825","on-surface-variant":"#d8c3ad","inverse-on-surface":"#233143","tertiary-fixed-dim":"#45dfa4","surface-bright":"#2c3a4c","surface-tint":"#ffb95f","on-primary-container":"#613b00","primary":"#ffc174","tertiary-fixed":"#68fcbf","outline":"#a08e7a","on-secondary-fixed":"#001e2c","primary-fixed-dim":"#ffb95f","secondary-container":"#00a6e0","surface-container-high":"#1c2b3c","tertiary":"#4de6aa","surface-container-low":"#0d1c2d","on-background":"#d4e4fa","surface-variant":"#273647","surface-dim":"#051424","error-container":"#93000a"},borderRadius:{"DEFAULT":"0.25rem","lg":"0.5rem","xl":"0.75rem","full":"9999px"},spacing:{"space-xl":"3rem","space-sm":"0.75rem","space-md":"1.25rem","space-lg":"2rem","margin":"3.5rem","gutter":"1.75rem","space-xs":"0.5rem"},fontFamily:{"body-lg":["Inter"],"headline-md":["Plus Jakarta Sans"],"display-clock":["Plus Jakarta Sans"],"label-lg":["Inter"],"body-md":["Inter"],"display-metric":["Plus Jakarta Sans"],"display-lg":["Plus Jakarta Sans"],"headline-xl":["Plus Jakarta Sans"],"headline-lg":["Plus Jakarta Sans"],"label-md":["Inter"]},fontSize:{"body-lg":["20px",{lineHeight:"30px",fontWeight:"400"}],"headline-md":["22px",{lineHeight:"30px",fontWeight:"500"}],"display-clock":["112px",{lineHeight:"112px",letterSpacing:"-0.03em",fontWeight:"700"}],"label-lg":["15px",{lineHeight:"20px",letterSpacing:"0.06em",fontWeight:"600"}],"body-md":["17px",{lineHeight:"26px",fontWeight:"400"}],"display-metric":["48px",{lineHeight:"56px",letterSpacing:"-0.01em",fontWeight:"600"}],"display-lg":["64px",{lineHeight:"72px",letterSpacing:"-0.02em",fontWeight:"600"}],"headline-xl":["36px",{lineHeight:"44px",letterSpacing:"-0.01em",fontWeight:"600"}],"headline-lg":["28px",{lineHeight:"36px",fontWeight:"600"}],"label-md":["13px",{lineHeight:"18px",letterSpacing:"0.04em",fontWeight:"500"}]}}}};</script></head><body class="bg-background font-body-lg text-on-surface antialiased select-none"><header class="fixed top-0 inset-x-0 z-50 bg-surface/90 backdrop-blur-xl shadow-[0_1px_8px_rgba(0,0,0,0.25)]"><div class="h-28 w-full px-margin flex items-center justify-between"><div class="flex items-center gap-space-lg"><div class="flex items-baseline gap-space-sm"><span class="font-headline-xl text-headline-xl text-primary font-bold tracking-tight">07:02</span><span class="font-body-md text-body-md text-on-surface-variant uppercase tracking-wider">Vrijdag 24 mei</span></div><div class="h-8 w-px bg-surface-container-highest"></div><nav class="flex items-center gap-space-xs" data-active-classes="bg-primary-container text-on-primary-container font-semibold rounded-full"><a aria-current="page" class="px-space-md py-space-xs transition-colors bg-primary-container text-on-primary-container font-semibold rounded-full" data-path="ochtend-overzicht" href="#">Overzicht</a><a class="px-space-md py-space-xs rounded-full font-label-lg text-label-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" data-path="routine-schema" href="#">Routine</a><a class="px-space-md py-space-xs rounded-full font-label-lg text-label-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" data-path="weer-en-kust" href="#">Kust &amp; Weer</a><a class="px-space-md py-space-xs rounded-full font-label-lg text-label-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" data-path="audio-bediening" href="#">Audio</a></nav></div><div class="flex items-center gap-space-md"><div class="flex items-center gap-space-xs px-space-md py-1.5 rounded-full bg-surface-container-low text-on-surface"><span class="w-2 h-2 rounded-full bg-tertiary-container animate-pulse"></span><span class="font-label-md text-label-md text-on-surface-variant">Fase:</span><span class="font-label-md text-label-md text-on-surface font-semibold">Dashboard</span><div class="w-12 h-1.5 bg-surface-container-highest rounded-full overflow-hidden ml-1"><div class="w-2/3 h-full bg-primary rounded-full"></div></div></div><div class="flex items-center gap-space-xs px-space-md py-1.5 rounded-full bg-surface-container-low"><span class="w-2 h-2 rounded-full bg-secondary"></span><span class="font-label-md text-label-md text-secondary">Sonos Roam • Spotify</span></div><div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div></div></div></header><main class="w-full pt-28 px-margin pb-space-lg bg-background"><div class="flex flex-col w-full">
+<!-- Subtle ambient glow for warm bedroom morning atmosphere (contained within relative wrapper) -->
+<div class="relative w-full overflow-hidden">
+<div class="absolute -top-32 -left-20 w-96 h-96 bg-primary/10 rounded-full blur-3xl pointer-events-none"></div>
+<div class="absolute top-1/2 -right-32 w-80 h-80 bg-secondary/5 rounded-full blur-3xl pointer-events-none"></div>
+<!-- SUB-BANNER / REALTIME HUD METRICS -->
+<section class="w-full mb-space-lg">
+<div class="bg-surface-container-low rounded-xl px-space-lg py-space-md shadow-md flex flex-wrap items-center justify-between gap-space-md">
+<!-- Routine Progression Pill -->
+<div class="flex items-center gap-space-md">
+<div class="w-10 h-10 rounded-full bg-primary-container/20 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-[24px]">timer</span>
+</div>
+<div>
+<div class="flex items-center gap-space-xs">
+<span class="w-2.5 h-2.5 rounded-full bg-tertiary"></span>
+<span class="font-headline-md text-headline-md text-on-surface font-semibold tracking-tight">Ochtendroutine actief</span>
+<span class="font-label-lg text-label-lg text-primary font-mono ml-space-xs">(04:12 / 30:00)</span>
+</div>
+<p class="font-label-md text-label-md text-on-surface-variant flex items-center gap-1 mt-0.5">
+<span>Workout start automatisch om</span>
+<span class="text-on-surface font-semibold">10:00</span>
+<span class="text-on-surface-variant font-normal">• Slaapkamer Display</span>
+</p>
+</div>
+</div>
+<!-- Sonos Now Playing Integration HUD -->
+<div class="flex items-center gap-space-md bg-surface-container px-space-md py-space-xs rounded-lg">
+<div class="w-8 h-8 rounded-full bg-secondary/20 flex items-center justify-center text-secondary">
+<span class="material-symbols-outlined text-[20px]">music_note</span>
+</div>
+<div class="flex flex-col">
+<div class="flex items-center gap-space-xs">
+<span class="font-label-lg text-label-lg text-on-surface font-medium">Sonos Roam • Spotify</span>
+<span class="px-2 py-0.5 rounded-full bg-surface-container-high text-secondary font-label-md text-label-md font-semibold">Acoustic Morning</span>
+</div>
+<div class="flex items-center gap-space-md text-on-surface-variant font-label-md text-label-md">
+<div class="flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px] text-secondary">volume_up</span>
+<span class="font-mono text-on-surface">30%</span>
+</div>
+<div class="w-24 h-1.5 bg-surface-container-highest rounded-full overflow-hidden">
+<div class="w-[30%] h-full bg-secondary rounded-full"></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- FIXED 4-GRID MODULE DASHBOARD -->
+<!-- 2x2 Symmetrical Grid engineered for 10-foot legibility from bed -->
+<main class="grid grid-cols-1 lg:grid-cols-2 gap-gutter w-full">
+<!-- ============================================== -->
+<!-- TEGEL 1: WEER (Oostduinkerke & Gistel) -->
+<!-- ============================================== -->
+<section class="bg-surface-container rounded-xl p-space-lg shadow-md flex flex-col justify-between">
+<!-- Card Header -->
+<div>
+<div class="flex items-center justify-between pb-space-md mb-space-md">
+<div class="flex items-center gap-space-sm">
+<div class="w-8 h-8 rounded bg-surface-container-high flex items-center justify-center text-secondary">
+<span class="material-symbols-outlined text-[22px]">cloud_queue</span>
+</div>
+<h2 class="font-label-lg text-label-lg text-on-surface-variant uppercase tracking-wider font-semibold">
+                Weer • Kust &amp; Bestemming
+              </h2>
+</div>
+<span class="px-3 py-1 rounded-full bg-surface-container-high text-secondary font-label-md text-label-md font-semibold flex items-center gap-1.5">
+<span class="w-2 h-2 rounded-full bg-secondary"></span>
+              Live Kuststation
+            </span>
+</div>
+<!-- PRIMARY LOCATION: Oostduinkerke (Kust) -->
+<div class="bg-surface-container-low rounded-lg p-space-md mb-space-md">
+<div class="flex items-baseline justify-between mb-space-xs">
+<div class="flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-secondary text-[22px]">waves</span>
+<span class="font-headline-lg text-headline-lg text-on-surface font-semibold">Oostduinkerke</span>
+<span class="font-label-md text-label-md text-on-surface-variant ml-1">(Kust)</span>
+</div>
+<div class="flex items-baseline gap-1">
+<span class="font-display-metric text-display-metric text-on-surface font-bold">15°</span>
+<span class="font-headline-md text-headline-md text-on-surface-variant">C</span>
+</div>
+</div>
+<p class="font-body-md text-body-md text-secondary mb-space-sm font-medium flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[18px]">partly_cloudy_day</span>
+              Licht bewolkt • Droog ochtendbriesje
+            </p>
+<!-- Metrics bar for Oostduinkerke -->
+<div class="grid grid-cols-3 gap-space-sm pt-space-xs">
+<div class="bg-surface-container px-space-sm py-2 rounded">
+<span class="font-label-md text-label-md text-on-surface-variant block">Regenkans</span>
+<span class="font-headline-md text-headline-md text-on-surface font-semibold">10%</span>
+</div>
+<div class="bg-surface-container px-space-sm py-2 rounded">
+<span class="font-label-md text-label-md text-on-surface-variant block">Wind</span>
+<span class="font-headline-md text-headline-md text-on-surface font-semibold">ZW 3 Bft</span>
+<span class="font-label-md text-label-md text-on-surface-variant block">18 km/u</span>
+</div>
+<div class="bg-surface-container px-space-sm py-2 rounded">
+<span class="font-label-md text-label-md text-on-surface-variant block">Rest vd dag</span>
+<span class="font-headline-md text-headline-md text-primary font-semibold">Max 19°C</span>
+<span class="font-label-md text-label-md text-tertiary block">Droog</span>
+</div>
+</div>
+<!-- Sun cycle footer -->
+<div class="flex items-center justify-between mt-space-sm pt-space-xs text-on-surface-variant font-label-md text-label-md">
+<span class="flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px] text-primary">wb_sunny</span>
+                Zonsopgang: <strong class="text-on-surface font-mono font-medium">05:48</strong>
+</span>
+<span class="flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px] text-outline">nights_stay</span>
+                Zonsondergang: <strong class="text-on-surface font-mono font-medium">21:38</strong>
+</span>
+</div>
+</div>
+<!-- SECONDARY LOCATION: Gistel (Bestemming) -->
+<div class="bg-surface-container-low rounded-lg p-space-md">
+<div class="flex items-baseline justify-between">
+<div class="flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-tertiary text-[20px]">location_on</span>
+<span class="font-headline-md text-headline-md text-on-surface font-medium">Gistel</span>
+<span class="font-label-md text-label-md text-on-surface-variant">(Bestemming)</span>
+</div>
+<div class="flex items-baseline gap-1">
+<span class="font-headline-xl text-headline-xl text-on-surface font-bold">16°</span>
+<span class="font-body-md text-body-md text-on-surface-variant">C</span>
+</div>
+</div>
+<div class="flex flex-wrap items-center justify-between gap-space-xs mt-space-xs font-body-md text-body-md text-on-surface-variant">
+<span>Wisselend bewolkt</span>
+<div class="flex items-center gap-space-md font-label-md text-label-md">
+<span>Regen: <strong class="text-on-surface">15%</strong></span>
+<span>Wind: <strong class="text-on-surface">ZW 15 km/u</strong></span>
+<span>Verwachting: <strong class="text-primary font-semibold">Max 20°C</strong></span>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- ============================================== -->
+<!-- TEGEL 2: VERKEER (Oostduinkerke → Gistel) -->
+<!-- ============================================== -->
+<section class="bg-surface-container rounded-xl p-space-lg shadow-md flex flex-col justify-between">
+<div>
+<!-- Card Header -->
+<div class="flex items-center justify-between pb-space-md mb-space-md">
+<div class="flex items-center gap-space-sm">
+<div class="w-8 h-8 rounded bg-surface-container-high flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-[22px]">directions_car</span>
+</div>
+<h2 class="font-label-lg text-label-lg text-on-surface-variant uppercase tracking-wider font-semibold">
+                Verkeer • Traject &amp; Vertrek
+              </h2>
+</div>
+<div class="flex items-center gap-1.5 px-3 py-1 rounded-full bg-surface-container-high text-tertiary font-label-md text-label-md font-medium">
+<span class="w-2 h-2 rounded-full bg-tertiary"></span>
+              Vlot verkeer
+            </div>
+</div>
+<!-- Route Hero Stats -->
+<div class="bg-surface-container-low rounded-lg p-space-md mb-space-md">
+<div class="flex items-start justify-between">
+<div>
+<span class="font-label-md text-label-md text-on-surface-variant block uppercase tracking-wider">Snelste Traject</span>
+<h3 class="font-headline-lg text-headline-lg text-on-surface font-semibold mt-0.5">
+                  Oostduinkerke → Gistel
+                </h3>
+<span class="font-body-md text-body-md text-secondary font-medium">Via E40 / N34</span>
+</div>
+<div class="text-right">
+<div class="flex items-baseline justify-end gap-1">
+<span class="font-display-metric text-display-metric text-tertiary font-bold tracking-tight">24</span>
+<span class="font-headline-md text-headline-md text-on-surface-variant">min</span>
+</div>
+<span class="font-label-md text-label-md text-on-surface-variant">26,4 km</span>
+</div>
+</div>
+<!-- Route Visualization Progress Line -->
+<div class="my-space-md">
+<div class="flex items-center justify-between text-on-surface-variant font-label-md text-label-md mb-1.5">
+<span class="flex items-center gap-1 text-on-surface">
+<span class="w-2 h-2 rounded-full bg-primary"></span>
+                  Start Oostduinkerke
+                </span>
+<span class="text-tertiary font-medium">Doorstroming: Groen</span>
+<span class="flex items-center gap-1 text-on-surface">
+                  Aankomst Gistel
+                  <span class="w-2 h-2 rounded-full bg-secondary"></span>
+</span>
+</div>
+<div class="w-full h-2.5 bg-surface-container-highest rounded-full overflow-hidden flex">
+<div class="w-1/3 h-full bg-tertiary"></div>
+<div class="w-1/2 h-full bg-tertiary/90"></div>
+<div class="w-1/6 h-full bg-tertiary"></div>
+</div>
+<p class="font-label-md text-label-md text-on-surface-variant mt-2 flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px] text-tertiary">check_circle</span>
+                Geen ongevallen of hinder gemeld op de E40 richting Brugge.
+              </p>
+</div>
+</div>
+<!-- Highlight Recommendation Block -->
+<div class="bg-primary-container/15 rounded-lg p-space-md mb-space-md">
+<div class="flex items-center gap-space-sm">
+<div class="w-10 h-10 rounded-full bg-primary-container text-on-primary-container flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-[24px]">schedule</span>
+</div>
+<div>
+<span class="font-label-md text-label-md text-primary font-bold uppercase tracking-wider">Aanbevolen vertrektijd</span>
+<p class="font-headline-md text-headline-md text-on-surface font-bold tracking-tight">
+                  Uiterlijk 07:35 uur
+                </p>
+</div>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant mt-2 pl-12">
+              Berekend met ochtendspitsbuffer rond Middelkerke &amp; afrit Gistel.
+            </p>
+</div>
+</div>
+<!-- Sync badge with Outlook Calendar -->
+<div class="bg-surface-container-low px-space-md py-2.5 rounded-lg flex items-center justify-between text-on-surface-variant font-label-md text-label-md">
+<div class="flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-[18px] text-secondary">sync</span>
+<span>Outlook-locatie synchronisatie</span>
+</div>
+<span class="text-tertiary font-medium">Route &amp; agenda afgestemd</span>
+</div>
+</section>
+<!-- ============================================== -->
+<!-- TEGEL 3: NIEUWS (Nederlandstalige Headlines) -->
+<!-- ============================================== -->
+<section class="bg-surface-container rounded-xl p-space-lg shadow-md flex flex-col justify-between">
+<div>
+<!-- Card Header -->
+<div class="flex items-center justify-between pb-space-md mb-space-md">
+<div class="flex items-center gap-space-sm">
+<div class="w-8 h-8 rounded bg-surface-container-high flex items-center justify-center text-tertiary">
+<span class="material-symbols-outlined text-[22px]">feed</span>
+</div>
+<h2 class="font-label-lg text-label-lg text-on-surface-variant uppercase tracking-wider font-semibold">
+                Nieuwsoverzicht • België &amp; Regio
+              </h2>
+</div>
+<span class="font-label-md text-label-md text-on-surface-variant">Laatste update: 07:00</span>
+</div>
+<!-- News Feed Items (4 source-labeled items) -->
+<div class="space-y-space-sm">
+<!-- Item 1: HLN -->
+<article class="bg-surface-container-low rounded-lg p-space-md transition-colors">
+<div class="flex items-center gap-space-xs mb-1">
+<span class="px-2 py-0.5 rounded bg-surface-container-highest font-mono text-label-md text-primary font-bold">HLN</span>
+<span class="font-label-md text-label-md text-on-surface-variant">Belgisch nieuws</span>
+</div>
+<h3 class="font-headline-md text-headline-md text-on-surface font-semibold leading-snug">
+                Nieuwe infrastructuurwerken aan de kust vlotten volgens schema.
+              </h3>
+<p class="font-body-md text-body-md text-on-surface-variant mt-1 line-clamp-1">
+                Aanpassingen aan de zeewering en tramsporen tussen Nieuwpoort en Oostduinkerke liggen perfect op schema voor de drukke vakantieperiode.
+              </p>
+</article>
+<!-- Item 2: De Tijd -->
+<article class="bg-surface-container-low rounded-lg p-space-md transition-colors">
+<div class="flex items-center gap-space-xs mb-1">
+<span class="px-2 py-0.5 rounded bg-surface-container-highest font-mono text-label-md text-secondary font-bold">De Tijd</span>
+<span class="font-label-md text-label-md text-on-surface-variant">Economie</span>
+</div>
+<h3 class="font-headline-md text-headline-md text-on-surface font-semibold leading-snug">
+                Belgische inflatie stabiliseert rond 2,3% in mei.
+              </h3>
+<p class="font-body-md text-body-md text-on-surface-variant mt-1 line-clamp-1">
+                Dankzij gematigde energieprijzen blijft de druk op huishoudens binnen de perken volgens het Federaal Planbureau.
+              </p>
+</article>
+<!-- Item 3: Regionaal Koksijde/Oostduinkerke -->
+<article class="bg-surface-container-low rounded-lg p-space-md transition-colors">
+<div class="flex items-center gap-space-xs mb-1">
+<span class="px-2 py-0.5 rounded bg-surface-container-highest font-mono text-label-md text-tertiary font-bold">Regionaal</span>
+<span class="font-label-md text-label-md text-on-surface-variant">Koksijde / Oostduinkerke</span>
+</div>
+<h3 class="font-headline-md text-headline-md text-on-surface font-semibold leading-snug">
+                Gemeente vernieuwt strandtoegangen en fietspaden tegen zomerseizoen.
+              </h3>
+<p class="font-body-md text-body-md text-on-surface-variant mt-1 line-clamp-1">
+                Comfortabele houten wandelvlonders en vernieuwde fietsverbindingen maken de duinovergangen optimaal toegankelijk.
+              </p>
+</article>
+<!-- Item 4: Sporza -->
+<article class="bg-surface-container-low rounded-lg p-space-md transition-colors">
+<div class="flex items-center gap-space-xs mb-1">
+<span class="px-2 py-0.5 rounded bg-surface-container-highest font-mono text-label-md text-primary font-bold">Sporza</span>
+<span class="font-label-md text-label-md text-on-surface-variant">Sport</span>
+</div>
+<h3 class="font-headline-md text-headline-md text-on-surface font-semibold leading-snug">
+                Club Brugge rondt voorbereiding af voor Europese kwalificatiewedstrijd.
+              </h3>
+<p class="font-body-md text-body-md text-on-surface-variant mt-1 line-clamp-1">
+                De kern vertoont een fitte indruk na de intensieve trainingssessies in aanloop naar het doorslaggevende duel.
+              </p>
+</article>
+</div>
+</div>
+</section>
+<!-- ============================================== -->
+<!-- TEGEL 4: AFVALOPHALING VANDAAG -->
+<!-- ============================================== -->
+<section class="bg-surface-container rounded-xl p-space-lg shadow-md flex flex-col justify-between">
+<div>
+<!-- Card Header -->
+<div class="flex items-center justify-between pb-space-md mb-space-md">
+<div class="flex items-center gap-space-sm">
+<div class="w-8 h-8 rounded bg-surface-container-high flex items-center justify-center text-outline">
+<span class="material-symbols-outlined text-[22px]">delete_outline</span>
+</div>
+<h2 class="font-label-lg text-label-lg text-on-surface-variant uppercase tracking-wider font-semibold">
+                Afvalophaling • Kalender
+              </h2>
+</div>
+<span class="px-3 py-1 rounded-full bg-surface-container-high text-on-surface font-label-md text-label-md flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[14px] text-tertiary">home_pin</span>
+              Zone Oost
+            </span>
+</div>
+<!-- Street Identification -->
+<div class="bg-surface-container-low rounded-lg p-space-md mb-space-md flex items-center gap-space-md">
+<div class="w-12 h-12 rounded-lg bg-surface-container-high flex items-center justify-center text-secondary">
+<span class="material-symbols-outlined text-[28px]">signpost</span>
+</div>
+<div>
+<span class="font-label-md text-label-md text-on-surface-variant uppercase tracking-wider">Aangewezen Adres</span>
+<p class="font-headline-lg text-headline-lg text-on-surface font-semibold">
+                Guldenzandstraat, Oostduinkerke
+              </p>
+</div>
+</div>
+<!-- Status Today (Clear Rest State) -->
+<div class="bg-surface-container-low rounded-lg p-space-md mb-space-md">
+<div class="flex items-center justify-between">
+<div>
+<span class="font-label-md text-label-md text-on-surface-variant uppercase tracking-wider">Status Vandaag</span>
+<p class="font-headline-xl text-headline-xl text-on-surface font-bold mt-1">
+                  Vandaag: Geen ophaling
+                </p>
+<p class="font-body-md text-body-md text-tertiary mt-1 flex items-center gap-1">
+<span class="material-symbols-outlined text-[18px]">verified</span>
+                  Geen containers of zakken op straat vereist vanochtend.
+                </p>
+</div>
+<div class="w-14 h-14 rounded-full bg-surface-container-high flex items-center justify-center text-outline-variant">
+<span class="material-symbols-outlined text-[32px] text-tertiary">check</span>
+</div>
+</div>
+</div>
+<!-- Next Collection: Tomorrow Highlight Card -->
+<div class="bg-surface-container-high/60 rounded-lg p-space-md mb-space-md">
+<div class="flex items-center justify-between mb-space-xs">
+<span class="px-2.5 py-0.5 rounded-full bg-primary-container text-on-primary-container font-label-md text-label-md font-bold uppercase tracking-wider">
+                Eerstvolgende Ophaling
+              </span>
+<span class="font-label-md text-label-md text-secondary font-mono">Zet klaar vanavond</span>
+</div>
+<h3 class="font-headline-lg text-headline-lg text-on-surface font-bold mt-2">
+              Morgen (Zaterdag 25 mei)
+            </h3>
+<div class="flex flex-wrap items-center gap-space-sm mt-space-sm">
+<div class="flex items-center gap-space-xs px-space-md py-2 rounded bg-surface-container text-on-surface">
+<span class="w-3.5 h-3.5 rounded bg-secondary"></span>
+<span class="font-headline-md text-headline-md font-semibold">PMD</span>
+<span class="font-label-md text-label-md text-on-surface-variant">(Blauwe zak)</span>
+</div>
+<div class="flex items-center gap-space-xs px-space-md py-2 rounded bg-surface-container text-on-surface">
+<span class="w-3.5 h-3.5 rounded bg-outline"></span>
+<span class="font-headline-md text-headline-md font-semibold">Restafval</span>
+<span class="font-label-md text-label-md text-on-surface-variant">(Grijze zak)</span>
+</div>
+</div>
+<div class="flex items-center gap-1.5 text-on-surface-variant font-label-md text-label-md mt-space-md">
+<span class="material-symbols-outlined text-[16px] text-primary">alarm</span>
+              Ophaling start vanaf <strong class="text-on-surface">06:00 uur</strong> • Buitenzetten mag vanaf 20:00 vanavond
+            </div>
+</div>
+</div>
+<!-- Footer / Source Disclaimer -->
+<div class="pt-space-xs text-center lg:text-left">
+<p class="font-label-md text-label-md text-outline">
+            Bron: Officiële afvalkalender Koksijde (voorbeelddata)
+          </p>
+</div>
+</section>
+</main>
+<!-- TV Remote Interaction Quick-Bar Indicator for 10-Foot Navigation -->
+<div class="mt-space-lg bg-surface-container-low rounded-lg px-space-lg py-2.5 flex items-center justify-between">
+<div class="flex items-center gap-space-md text-on-surface-variant font-label-md text-label-md">
+<span class="text-on-surface font-semibold flex items-center gap-1">
+<span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
+          Scherm 2 van 4: Dashboard
+        </span>
+<span>•</span>
+<span>Automatische update elke 60s</span>
+<span>•</span>
+<span>Helderheid gedimd (Slaapkamer modus)</span>
+</div>
+<div class="flex items-center gap-space-sm font-label-md text-label-md text-on-surface-variant">
+<span>Vaste rasterweergave</span>
+<span class="material-symbols-outlined text-[16px] text-secondary">grid_view</span>
+</div>
+</div>
+</div>
+</div></main><footer class="w-full bg-surface-container-lowest py-space-md"><div class="w-full px-margin flex items-center justify-between text-on-surface-variant"><div class="flex items-center gap-space-sm font-label-md text-label-md"><span class="material-symbols-outlined text-[18px] text-tertiary">tune</span><span>TV Afstandsbediening D-Pad navigatie actief</span></div><div class="flex items-center gap-space-lg font-label-md text-label-md"><span class="flex items-center gap-space-xs"><kbd class="px-2 py-0.5 rounded bg-surface-container-high font-mono text-on-surface">OK</kbd> Selecteer</span><span class="flex items-center gap-space-xs"><kbd class="px-2 py-0.5 rounded bg-surface-container-high font-mono text-on-surface">← →</kbd> Wissel weergave</span><span class="flex items-center gap-space-xs"><kbd class="px-2 py-0.5 rounded bg-surface-container-high font-mono text-on-surface">Terug</kbd> Slaapstand</span></div></div></footer></body></html>

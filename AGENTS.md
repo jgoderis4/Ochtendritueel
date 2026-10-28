@@ -1,9 +1,27 @@
-<!-- BEGIN:nextjs-agent-rules -->
+# AGENTS.md — ochtendroutine-dashboard
 
-## This is NOT the Next.js you know
+Projectspecifieke instructies. De algemene regels staan in de centrale
+workspace-`AGENTS.md` (`~/Documents/workspace/AGENTS.md`) en gelden ook hier.
 
-This version has breaking changes — APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in `node_modules/next/dist/docs/` (resolved from this file's directory; in monorepos the `next` package may not be visible from the repo root) before writing any code. Heed deprecation notices.
+## Project
 
-This block is written and re-added by `next dev` — verify at `node_modules/next/dist/server/lib/generate-agent-files.js`. Removing it from a diff only re-creates the uncommitted change; committing it with your work keeps the tree clean.
+Een persoonlijke, grotendeels geautomatiseerde **ochtendroutine voor de slaapkamer**:
+automatisch opstarten, een tv-dashboard tonen, muziek via Sonos/Spotify en een
+korte workout begeleiden. Bediening via een smartphone-app.
 
-<!-- END:nextjs-agent-rules -->
+De volledige requirements-baseline staat in **[BRIEFING.md](./BRIEFING.md)** —
+lees dit bestand eerst.
+
+## Belangrijkste uitgangspunten (zie BRIEFING.md voor details)
+
+- Begin met een **UI-prototype** (Fase 1); wacht niet op tv-details.
+- Vaste dashboardindeling, elke dag gelijk — geen automatische herschikking.
+- Scheid **placeholder-/voorbeelddata** duidelijk van live data.
+- Claim geen werkende externe koppeling (Sonos, Spotify, Outlook, tv) voordat
+  die geconfigureerd en getest is.
+- Privacy: toon **nooit** Outlook-afspraakdetails op het tv-dashboard.
+- Interface moet goed leesbaar zijn vanuit bed (donker, grote tegels/tekst).
+
+## Status
+
+Requirements verzameld; klaar voor technische uitwerking en eerste prototype.
