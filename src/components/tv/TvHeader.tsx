@@ -1,28 +1,37 @@
 import Link from "next/link";
 import { MockBadge } from "@/components/MockBadge";
+import { formatClock, formatDate } from "@/lib/routine/clock";
 
 /**
  * Vaste TV-kopbalk: grote klok + datum blijven tijdens het hele dashboard
  * zichtbaar (briefing §4), met een subtiele navigatie en routinestatus.
- * Klok/datum zijn in Fase 1 statische voorbeeldwaarden.
+ *
+ * Live: geef `now` (epoch ms) door — klok/datum worden dan live afgeleid.
+ * Vóór client-mount is `now` null → neutrale placeholder (geen hydration-ruis).
+ * Zonder `now` gelden de (statische) defaults, handig voor de preview-hub.
  */
 export function TvHeader({
-  clock = "07:02",
-  date = "Vrijdag 24 mei",
+  clock,
+  date,
+  now,
   phaseLabel,
 }: {
   clock?: string;
   date?: string;
+  now?: number | null;
   phaseLabel?: string;
 }) {
+  const showClock = now !== undefined ? formatClock(now) : clock ?? "07:02";
+  const showDate = now !== undefined ? formatDate(now) : date ?? "Vrijdag 24 mei";
+
   return (
     <header className="flex items-center justify-between gap-8">
       <div className="flex items-baseline gap-5">
         <span className="tabular font-display text-6xl font-bold leading-none text-amber">
-          {clock}
+          {showClock}
         </span>
         <span className="text-label-lg uppercase tracking-[0.06em] text-text-mid">
-          {date}
+          {showDate}
         </span>
       </div>
 
@@ -30,7 +39,7 @@ export function TvHeader({
         <span className="rounded-full bg-amber px-4 py-1.5 text-canvas">
           Overzicht
         </span>
-        <Link href="/tv/workout" className="hover:text-text-high">
+        <Link href="/tv" className="hover:text-text-high">
           Routine
         </Link>
         <span className="hover:text-text-high">Kust &amp; Weer</span>

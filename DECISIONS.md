@@ -54,6 +54,23 @@ verkeerstegel. Afspraaktitel, deelnemers of andere details komen **nooit** op he
 standaard werkdag 07:00, weekend + Belgische feestdag 08:00, allemaal instelbaar.
 **Reden:** kerngedrag uit de briefing (§2) en PRD §4.
 
+## D-007 · TV live gekoppeld aan gedeelde routine-store
+**Datum:** 2026-10-28 · **Status:** beslist
+
+De TV-schermen (`/tv`) leiden hun beeld live af van een **gedeelde routine-store**
+(`src/lib/routine/store.ts`): `localStorage` + `BroadcastChannel` + `storage`-event.
+`/tv` is een auto-runtime die op de huidige fase automatisch het juiste scherm toont
+(standby → welkom → dashboard → workout → afgerond); de klokken/countdowns lopen live via
+`useRoutine()` met een mount-gate tegen hydration-mismatch. De app (`/app`) gebruikt
+dezelfde store, dus start/pauze/stop/overslaan zijn meteen op de TV zichtbaar.
+
+**Sync-reikwijdte v1:** binnen **dezelfde browser/hetzelfde toestel** (meerdere
+tabs/vensters). Echte **cross-device** sync (telefoon ↔ aparte tv-kast) vraagt een
+server/websocket en komt later; enkel `store.ts` hoeft dan vervangen te worden — de UI
+leidt af via `useRoutine()` en verandert niet.
+**Reden:** PRD §7 ("v1 mag lokaal/in-memory", koppellaag bewust abstract) + §11 Stap 4
+(TV en telefoon synchroon); geen schijn van cross-device sync wekken (D-004-geest).
+
 ---
 
 ## Open punten (beslissing later)

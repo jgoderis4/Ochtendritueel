@@ -23,6 +23,8 @@ export default function WeekPage() {
   useEffect(() => {
     try {
       const raw = localStorage.getItem(PLAN_KEY);
+      // Eenmalig de per-dag overrides uit opslag laden bij mount (bewust patroon).
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       if (raw) setOverrides(JSON.parse(raw));
     } catch {
       /* negeer */
