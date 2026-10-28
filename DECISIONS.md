@@ -71,6 +71,21 @@ leidt af via `useRoutine()` en verandert niet.
 **Reden:** PRD §7 ("v1 mag lokaal/in-memory", koppellaag bewust abstract) + §11 Stap 4
 (TV en telefoon synchroon); geen schijn van cross-device sync wekken (D-004-geest).
 
+## D-008 · Afvalkalender is de eerste echte bron (Recycle!/Fost Plus)
+**Datum:** 2026-10-28 · **Status:** beslist
+
+De afval-adapter is live via de officiële, auth-vrije Fost Plus-API
+(`https://api.fostplus.be/recyclecms/public/v1`, header `x-consumer: recycleapp.be`).
+Geverifieerd voor Oostduinkerke (postcode 8670, zipcodeId `8670-38014`) +
+Guldenzandstraat (streetId `.../straatnaam-60585`). De call draait server-side (geen
+CORS); client-componenten gaan via de eigen route `/api/waste`. Resultaat 1 uur gecachet.
+Bij falen een discrete "niet beschikbaar"-status, nooit verzonnen data (§9).
+`getAdapters()` is nu "mixed": alleen afval live, de rest blijft mock (D-003/D-004).
+**Openstaand:** `houseNumber` staat op 1 tot het echte huisnummer bevestigd is
+(bepaalt mee de ophaalronde) — zie `src/lib/waste/config.ts`.
+**Reden:** PRD §11 Stap 5 (databronnen verifiëren, beginnen met de afvalkalender) +
+§8 ("officiële bron Koksijde … nooit verzinnen").
+
 ---
 
 ## Open punten (beslissing later)
@@ -80,6 +95,7 @@ leidt af via `useRoutine()` en verandert niet.
   Gebruiker heeft nu geen server/Pi/NAS.
 - **O-3 · TV-runtime** — draait de webapp rechtstreeks op de tv of is een extern kastje nodig?
 - **O-4 · Smartphone-app-design** — nog te ontwerpen; stijl afgeleid van Aura (voorkeur) of apart.
-- **O-5 · Afvalkalender** — officiële bron + juiste kalender voor Guldenzandstraat verifiëren.
+- **O-5 · Afvalkalender** — ✅ opgelost (D-008): live via Fost Plus, geverifieerd voor
+  Guldenzandstraat 8670. Resteert: juiste huisnummer bevestigen.
 - **O-6 · Outlook-toegang** — beleid/rechten werkaccount nog te controleren.
 - **O-7 · Budget** — pas bespreken nadat opties/haalbaarheid in kaart zijn (PRD §10).

@@ -119,7 +119,19 @@ export function DashboardScreen({ data, routine }: ScreenProps) {
         </Tile>
 
         {/* --- Afval --- */}
-        <Tile label="Afvalophaling · Kalender" chip={<Chip tone="coastal">Zone Oost</Chip>}>
+        <Tile
+          label="Afvalophaling · Kalender"
+          chip={
+            waste.source === "live"
+              ? <Chip tone="emerald">Live · Recycle!</Chip>
+              : <Chip tone="coastal">Voorbeelddata</Chip>
+          }
+        >
+          {!waste.data && (
+            <p className="text-body-md text-text-mid">
+              Afvalkalender tijdelijk niet beschikbaar. Laatst bekende gegevens worden getoond zodra de bron terug is.
+            </p>
+          )}
           {waste.data && (
             <div className="flex flex-col gap-5">
               <div>
@@ -151,7 +163,11 @@ export function DashboardScreen({ data, routine }: ScreenProps) {
                   )}
                 </div>
               )}
-              <p className="text-label-md text-text-muted">Bron: officiële afvalkalender (voorbeelddata)</p>
+              <p className="text-label-md text-text-muted">
+                {waste.source === "live"
+                  ? "Bron: Recycle! (Fost Plus) · Koksijde · live"
+                  : "Bron: officiële afvalkalender (voorbeelddata)"}
+              </p>
             </div>
           )}
         </Tile>
