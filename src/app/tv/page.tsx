@@ -1,44 +1,51 @@
 import Link from "next/link";
-import { MockBadge } from "@/components/MockBadge";
+import { TvHeader } from "@/components/tv/TvHeader";
 
 /**
- * TV-oppervlak (10-foot UI). In Stap 1 een basisframe dat de Aura-tokens en
- * fonts bevestigt. De drie schermen (welkom/dashboard/workout) volgen in Stap 2.
+ * TV-hub (Fase 1): preview van de drie schermen in de routinevolgorde.
+ * Dient tegelijk als "testscherm" om elk scherm los te bekijken (briefing §7.5).
+ * In een latere stap rendert /tv automatisch het scherm van de huidige routinefase.
  */
-export default function TvPage() {
-  return (
-    <div className="flex min-h-screen flex-col px-14 py-8">
-      {/* Kopbalk: klok + datum blijven altijd zichtbaar */}
-      <header className="flex items-baseline justify-between">
-        <div className="flex items-baseline gap-5">
-          <span className="tabular font-display text-display-clock font-bold leading-none text-amber">
-            07:02
-          </span>
-          <span className="text-headline-md uppercase tracking-[0.04em] text-text-mid">
-            Vrijdag 24 mei
-          </span>
-        </div>
-        <MockBadge />
-      </header>
+const SCREENS = [
+  { href: "/tv/welcome", phase: "00:00 – 01:00", title: "Welkomstscherm", desc: "Klok, datum, begroeting, weerbewuste boodschap, quote en muziekstart.", accent: "text-text-high" },
+  { href: "/tv/dashboard", phase: "01:00 – 10:00", title: "Vast dashboard", desc: "Weer, verkeer, nieuws en afval in een vaste tegelindeling.", accent: "text-coastal" },
+  { href: "/tv/workout", phase: "vanaf 10:00", title: "Workout", desc: "Oefenbeeld, instructie, per-oefening countdown en 30-min countdown.", accent: "text-emerald" },
+];
 
-      <div className="flex flex-1 flex-col items-center justify-center gap-5 text-center">
-        <p className="text-label-lg font-semibold uppercase tracking-[0.06em] text-text-mid">
-          TV-dashboard · Fase 1
-        </p>
-        <h1 className="font-display text-display-lg font-semibold text-text-high">
-          Basisframe actief
-        </h1>
-        <p className="max-w-2xl text-body-lg text-text-mid">
-          Welkomstscherm, vast dashboard en workoutscherm worden in Stap 2
-          gebouwd op dit frame, volgens het Aura-design.
-        </p>
-        <Link
-          href="/"
-          className="mt-5 text-label-lg font-semibold uppercase tracking-[0.06em] text-amber"
-        >
-          ← Terug
-        </Link>
-      </div>
+export default function TvHub() {
+  return (
+    <div className="flex min-h-screen flex-col gap-12 px-14 py-8">
+      <TvHeader phaseLabel="Preview" />
+
+      <main className="flex flex-1 flex-col justify-center gap-8">
+        <div>
+          <p className="text-label-lg font-semibold uppercase tracking-[0.06em] text-amber">TV-schermen</p>
+          <h1 className="font-display text-display-lg font-semibold text-text-high">Routinevolgorde</h1>
+        </div>
+
+        <div className="grid gap-7 lg:grid-cols-3">
+          {SCREENS.map((s, i) => (
+            <Link
+              key={s.href}
+              href={s.href}
+              className="group flex flex-col gap-3 rounded-lg border border-border bg-surface/90 p-8 transition-colors hover:border-amber"
+            >
+              <span className="tabular text-label-md uppercase tracking-[0.04em] text-text-muted">
+                {String(i + 1).padStart(2, "0")} · {s.phase}
+              </span>
+              <h2 className={`font-display text-headline-lg font-semibold ${s.accent}`}>{s.title}</h2>
+              <p className="text-body-md text-text-mid">{s.desc}</p>
+              <span className="mt-auto pt-3 text-label-lg font-semibold uppercase tracking-[0.06em] text-text-mid group-hover:text-amber">
+                Bekijk →
+              </span>
+            </Link>
+          ))}
+        </div>
+      </main>
+
+      <footer className="text-label-md text-text-muted">
+        <Link href="/" className="font-semibold uppercase tracking-[0.06em] text-amber">← Terug naar start</Link>
+      </footer>
     </div>
   );
 }
