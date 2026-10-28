@@ -7,10 +7,10 @@ import { MockBadge } from "@/components/MockBadge";
  */
 export default function TvPage() {
   return (
-    <div className="flex min-h-screen flex-col px-[var(--spacing-margin)] py-[var(--spacing-lg)]">
+    <div className="flex min-h-screen flex-col px-14 py-8">
       {/* Kopbalk: klok + datum blijven altijd zichtbaar */}
       <header className="flex items-baseline justify-between">
-        <div className="flex items-baseline gap-[var(--spacing-md)]">
+        <div className="flex items-baseline gap-5">
           <span className="tabular font-display text-display-clock font-bold leading-none text-amber">
             07:02
           </span>
@@ -21,7 +21,7 @@ export default function TvPage() {
         <MockBadge />
       </header>
 
-      <div className="flex flex-1 flex-col items-center justify-center gap-[var(--spacing-md)] text-center">
+      <div className="flex flex-1 flex-col items-center justify-center gap-5 text-center">
         <p className="text-label-lg font-semibold uppercase tracking-[0.06em] text-text-mid">
           TV-dashboard · Fase 1
         </p>
@@ -34,7 +34,7 @@ export default function TvPage() {
         </p>
         <Link
           href="/"
-          className="mt-[var(--spacing-md)] text-label-lg font-semibold uppercase tracking-[0.06em] text-amber"
+          className="mt-5 text-label-lg font-semibold uppercase tracking-[0.06em] text-amber"
         >
           ← Terug
         </Link>

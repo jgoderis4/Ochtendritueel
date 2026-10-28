@@ -3,8 +3,8 @@ import { MockBadge } from "@/components/MockBadge";
 
 export default function Home() {
   return (
-    <main className="mx-auto flex min-h-screen max-w-3xl flex-col justify-center gap-[var(--spacing-xl)] px-[var(--spacing-lg)] py-[var(--spacing-xl)]">
-      <header className="flex flex-col gap-[var(--spacing-sm)]">
+    <main className="mx-auto flex min-h-screen max-w-3xl flex-col justify-center gap-12 px-8 py-12">
+      <header className="flex flex-col gap-3">
         <p className="text-label-lg font-semibold uppercase tracking-[0.06em] text-amber">
           Aura
         </p>
@@ -15,12 +15,12 @@ export default function Home() {
           Rustig wakker worden met een vast TV-dashboard, muziek en een korte
           workout. Kies een oppervlak om te openen.
         </p>
-        <div className="mt-[var(--spacing-sm)]">
+        <div className="mt-3">
           <MockBadge label="Fase 1 · voorbeelddata" />
         </div>
       </header>
 
-      <nav className="grid gap-[var(--spacing-gutter)] sm:grid-cols-2">
+      <nav className="grid gap-7 sm:grid-cols-2">
         <SurfaceCard
           href="/tv"
           title="TV-dashboard"
@@ -57,13 +57,13 @@ function SurfaceCard({
   return (
     <Link
       href={href}
-      className="group rounded-lg border border-border bg-surface p-[var(--spacing-lg)] transition-colors hover:border-amber"
+      className="group rounded-lg border border-border bg-surface p-8 transition-colors hover:border-amber"
     >
       <h2 className={`font-display text-headline-lg font-semibold ${accent}`}>
         {title}
       </h2>
-      <p className="mt-[var(--spacing-sm)] text-body-md text-text-mid">{desc}</p>
-      <span className="mt-[var(--spacing-md)] inline-block text-label-lg font-semibold uppercase tracking-[0.06em] text-text-mid group-hover:text-amber">
+      <p className="mt-3 text-body-md text-text-mid">{desc}</p>
+      <span className="mt-5 inline-block text-label-lg font-semibold uppercase tracking-[0.06em] text-text-mid group-hover:text-amber">
         Openen →
       </span>
     </Link>

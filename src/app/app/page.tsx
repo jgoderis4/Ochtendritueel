@@ -15,7 +15,7 @@ const CONTROLS = [
 
 export default function AppPage() {
   return (
-    <main className="mx-auto flex min-h-screen max-w-md flex-col gap-[var(--spacing-lg)] px-[var(--spacing-lg)] py-[var(--spacing-xl)]">
+    <main className="mx-auto flex min-h-screen max-w-md flex-col gap-8 px-8 py-12">
       <header className="flex items-center justify-between">
         <div>
           <p className="text-label-lg font-semibold uppercase tracking-[0.06em] text-emerald">
@@ -28,13 +28,13 @@ export default function AppPage() {
         <MockBadge />
       </header>
 
-      <section className="flex flex-col gap-[var(--spacing-sm)]">
+      <section className="flex flex-col gap-3">
         {CONTROLS.map((c) => (
           <button
             key={c.label}
             type="button"
             disabled
-            className={`rounded-md ${c.tone} px-[var(--spacing-md)] py-4 text-left text-body-lg font-semibold opacity-80`}
+            className={`rounded-md ${c.tone} px-5 py-4 text-left text-body-lg font-semibold opacity-80`}
           >
             {c.label}
           </button>

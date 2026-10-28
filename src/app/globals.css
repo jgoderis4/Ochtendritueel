@@ -42,21 +42,13 @@
   --text-label-lg: 0.9375rem; /* 15px */
   --text-label-md: 0.8125rem; /* 13px — leesbaarheidsvloer */
 
-  /* --- Radius --- */
-  --radius-sm: 0.25rem;
-  --radius: 0.5rem;
-  --radius-md: 0.75rem;
-  --radius-lg: 1rem; /* dashboard-modules */
-  --radius-xl: 1.5rem;
-
-  /* --- Spacing (TV-raster) --- */
-  --spacing-gutter: 1.75rem; /* 28px tussen modules */
-  --spacing-margin: 3.5rem; /* 56px overscan-marge */
-  --spacing-xs: 0.5rem;
-  --spacing-sm: 0.75rem;
-  --spacing-md: 1.25rem;
-  --spacing-lg: 2rem;
-  --spacing-xl: 3rem;
+  /*
+    Radius en spacing komen uit Tailwind's defaults (die exact overeenkomen met
+    het Aura-raster): radius lg = 1rem (modules). Spacing-mapping (px → util):
+      8=2 · 12=3 · 20=5 · 28=7 (gutter) · 32=8 · 48=12 · 56=14 (overscan).
+    We definiëren hier GEEN eigen --spacing-*/--radius-* t-shirtmaten: die botsen
+    in Tailwind v4 met sizing-utilities zoals max-w-xl.
+  */
 }
 
 :root {
