@@ -81,8 +81,11 @@ Guldenzandstraat (streetId `.../straatnaam-60585`). De call draait server-side (
 CORS); client-componenten gaan via de eigen route `/api/waste`. Resultaat 1 uur gecachet.
 Bij falen een discrete "niet beschikbaar"-status, nooit verzonnen data (§9).
 `getAdapters()` is nu "mixed": alleen afval live, de rest blijft mock (D-003/D-004).
-**Openstaand:** `houseNumber` staat op 1 tot het echte huisnummer bevestigd is
-(bepaalt mee de ophaalronde) — zie `src/lib/waste/config.ts`.
+**Geverifieerd tegen IVVO:** Guldenzandstraat = Oostduinkerke **zone 3** (IVVO zone-Excel
+Koksijde 2026); de hele straat is één zone → huisnummer niet zone-bepalend (1 volstaat).
+De API-data matcht de IVVO zone-3 PDF, inclusief feestdag-vervangronde (PMD 11/11 → za
+14/11), die de adapter correct afhandelt via `exception.replacedBy`. IVVO zelf biedt enkel
+PDF's per zone (geen API), dus de gestructureerde, live Fost Plus-API blijft de bron.
 **Reden:** PRD §11 Stap 5 (databronnen verifiëren, beginnen met de afvalkalender) +
 §8 ("officiële bron Koksijde … nooit verzinnen").
 
@@ -95,7 +98,7 @@ Bij falen een discrete "niet beschikbaar"-status, nooit verzonnen data (§9).
   Gebruiker heeft nu geen server/Pi/NAS.
 - **O-3 · TV-runtime** — draait de webapp rechtstreeks op de tv of is een extern kastje nodig?
 - **O-4 · Smartphone-app-design** — nog te ontwerpen; stijl afgeleid van Aura (voorkeur) of apart.
-- **O-5 · Afvalkalender** — ✅ opgelost (D-008): live via Fost Plus, geverifieerd voor
-  Guldenzandstraat 8670. Resteert: juiste huisnummer bevestigen.
+- **O-5 · Afvalkalender** — ✅ opgelost (D-008): live via Fost Plus, geverifieerd als
+  IVVO zone 3 voor Guldenzandstraat 8670 (hele straat = één zone, huisnummer irrelevant).
 - **O-6 · Outlook-toegang** — beleid/rechten werkaccount nog te controleren.
 - **O-7 · Budget** — pas bespreken nadat opties/haalbaarheid in kaart zijn (PRD §10).
