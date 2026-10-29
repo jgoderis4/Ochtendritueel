@@ -93,7 +93,13 @@ PDF's per zone (geen API), dus de gestructureerde, live Fost Plus-API blijft de 
 
 ## Open punten (beslissing later)
 
-- **O-1 · TV-merk/model** — volgt van gebruiker; bepaalt of automatisch tv aan/uit kan (HDMI-CEC?).
+- **O-1 · TV-merk/model** — Thomson smart-tv (merk bevestigd; exact model/OS nog te
+  bevestigen). Thomson draait doorgaans **Google TV (Android)**. Gevolg: een gewone app
+  (ook onze webapp) mag géén HDMI-CEC sturen (systeem-afgeschermd), dus automatisch tv
+  aan/uit lukt niet vanuit de app. Betrouwbaar alternatief: een klein always-on kastje
+  (bv. Raspberry Pi) via HDMI dat de webapp in kiosk toont én de tv via HDMI-CEC aan/uit
+  zet — lost samen O-2 (triggering) en O-3 (runtime) op. Dashboard tonen op de tv zelf kan
+  via een sideloaded kiosk-browser (bv. TV Bro / Fully Kiosk), maar is meer gefriemel.
 - **O-2 · Hosting/triggering** — hoe wordt de routine op tijd gestart zonder always-on apparaat?
   Gebruiker heeft nu geen server/Pi/NAS.
 - **O-3 · TV-runtime** — draait de webapp rechtstreeks op de tv of is een extern kastje nodig?
