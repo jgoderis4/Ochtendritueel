@@ -77,11 +77,22 @@ export function DashboardScreen({ data, routine }: ScreenProps) {
 
         {/* --- Verkeer --- */}
         <Tile
-          label="Verkeer · Traject & Vertrek"
-          chip={<Chip tone={traffic.data?.flow === "vlot" ? "emerald" : "amber"}>
-            {traffic.data?.flow === "vlot" ? "Vlot verkeer" : "Vertraging"}
-          </Chip>}
+          label="Verkeer · Traject"
+          chip={
+            !traffic.data ? (
+              <Chip tone="muted">Niet beschikbaar</Chip>
+            ) : !traffic.data.trafficAware ? (
+              <Chip tone="coastal">Zonder live verkeer</Chip>
+            ) : traffic.data.flow === "vlot" ? (
+              <Chip tone="emerald">Vlot verkeer</Chip>
+            ) : (
+              <Chip tone="amber">Vertraging</Chip>
+            )
+          }
         >
+          {!traffic.data && (
+            <p className="text-body-md text-text-mid">Reisinfo tijdelijk niet beschikbaar.</p>
+          )}
           {traffic.data && (
             <div className="flex flex-col gap-5">
               <div className="flex items-end justify-between">
@@ -95,19 +106,26 @@ export function DashboardScreen({ data, routine }: ScreenProps) {
                   <p className="tabular text-label-md text-text-mid">{traffic.data.distanceKm} km</p>
                 </div>
               </div>
-              <div className="h-2 w-full overflow-hidden rounded-full bg-border">
-                <div className="h-full w-full bg-emerald" />
-              </div>
-              <p className="text-body-md text-emerald">
-                {traffic.data.incidents.length === 0
-                  ? "✓ Geen ongevallen of hinder gemeld op de route."
-                  : traffic.data.incidents.join(" · ")}
-              </p>
-              <div className="rounded-md border border-amber/40 bg-amber/10 p-5">
-                <p className="text-label-md uppercase tracking-[0.04em] text-amber">Aanbevolen vertrektijd</p>
-                <p className="text-headline-md font-semibold text-text-high">Uiterlijk {traffic.data.leaveBy} uur</p>
-                <p className="text-label-md text-text-mid">Berekend met ochtendspitsbuffer.</p>
-              </div>
+              {traffic.data.trafficAware ? (
+                <>
+                  <p className="text-body-md text-text-mid">
+                    {traffic.data.delayMin && traffic.data.delayMin > 0
+                      ? `≈ ${traffic.data.delayMin} min vertraging door verkeer`
+                      : "✓ Geen noemenswaardige vertraging op de route."}
+                  </p>
+                  {traffic.data.incidents.length > 0 && (
+                    <p className="text-body-md text-amber">{traffic.data.incidents.join(" · ")}</p>
+                  )}
+                </>
+              ) : (
+                <div className="rounded-md border border-border bg-surface-2/60 p-5">
+                  <p className="text-label-md uppercase tracking-[0.04em] text-text-mid">Reistijd zonder live verkeer</p>
+                  <p className="text-body-md text-text-high">
+                    Basisreistijd volgens de snelste route. Voeg later een TomTom-sleutel toe
+                    voor live files en vertraging.
+                  </p>
+                </div>
+              )}
             </div>
           )}
         </Tile>

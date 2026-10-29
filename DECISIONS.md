@@ -140,6 +140,21 @@ betaalmuur-artikels, die we niet tonen). Server-side (geen CORS); client via `/a
 `getAdapters()` levert nu afval + weer + nieuws live.
 **Reden:** PRD §8 (RSS HLN/De Tijd/regionaal/Sporza, NL-koppen + korte samenvatting).
 
+## D-012 · Verkeer live via OSRM (sleutelvrij), TomTom optioneel
+**Datum:** 2026-10-29 · **Status:** beslist
+
+De verkeer-adapter geeft de echte reistijd + afstand Oostduinkerke → Gistel. Standaard via
+**OSRM** (`router.project-osrm.org`, sleutelvrij): basisreistijd **zonder** live verkeer,
+eerlijk zo gelabeld (`trafficAware: false`, flow "onbekend"). Zet je `TOMTOM_API_KEY`, dan
+gebruikt de adapter **TomTom** mét live verkeer (vertraging → flow vlot/druk/stilstaand,
+`trafficAware: true`), met automatische terugval op OSRM. Server-side (geen CORS); client via
+`/api/traffic`; 5 min gecachet. Bij falen discrete status, nooit verzonnen data (§9).
+De UI toont bij `trafficAware: false` "Reistijd zonder live verkeer" i.p.v. een nep
+vertrektijd/flow. `getAdapters()` levert nu afval + weer + nieuws + verkeer live; nog mock:
+muziek (Sonos/Spotify), agenda (Outlook), tv.
+**Reden:** PRD §8 (routing-API, vertrektijd-advies) zonder nu een account te vereisen; live
+verkeer blijft mogelijk via een gratis TomTom-sleutel.
+
 ---
 
 ## Open punten (beslissing later)

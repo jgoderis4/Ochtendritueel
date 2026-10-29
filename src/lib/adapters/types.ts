@@ -36,13 +36,20 @@ export interface WeatherAdapter {
 /* --- Verkeer --- */
 export interface TrafficInfo {
   fromTo: string; // "Oostduinkerke → Gistel"
-  via: string; // "E40 / N34"
+  via: string; // "E40 / N34" of "Snelste route"
   durationMin: number;
   distanceKm: number;
-  flow: "vlot" | "druk" | "stilstaand";
+  flow: "vlot" | "druk" | "stilstaand" | "onbekend";
   incidents: string[]; // files/ongevallen/werken
-  /** Afgeleide uiterste vertrektijd, bv. "07:35". */
-  leaveBy: string;
+  /**
+   * Houdt deze reistijd rekening met live verkeer? false = basisreistijd zonder
+   * actuele files (sleutelvrije routering); true = met live verkeer (bv. TomTom).
+   */
+  trafficAware: boolean;
+  /** Vertraging door verkeer in minuten (alleen bij trafficAware). */
+  delayMin?: number;
+  /** Afgeleide uiterste vertrektijd, bv. "07:35" (optioneel). */
+  leaveBy?: string;
 }
 
 export interface TrafficAdapter {

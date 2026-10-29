@@ -54,6 +54,7 @@ const traffic: TrafficAdapter = {
       distanceKm: 26.4,
       flow: "vlot",
       incidents: [],
+      trafficAware: false,
       leaveBy: "07:35",
     });
   },
