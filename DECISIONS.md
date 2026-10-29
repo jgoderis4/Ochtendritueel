@@ -103,6 +103,19 @@ codewijziging. Uitwerking (image, autostart, CEC-scripts, scheduler) is een late
 **Reden:** betrouwbaar automatisch wekken + tonen zonder afhankelijk te zijn van de
 beperkingen van Google TV; gebruiker akkoord met een Pi.
 
+**Gekozen model:** Raspberry Pi **Zero 2 W** (goedkoopste optie die én kiosk én HDMI-CEC
+kan; ~€23 board). Aansluiting op de Thomson:
+- **mini-HDMI → HDMI** kabel/adapter naar een HDMI-ingang van de tv (beeld + CEC);
+- **micro-USB "PWR IN"** → 5V USB-voeding (de buitenste van de twee micro-USB-poorten);
+- **microSD** (16 GB+) met Raspberry Pi OS + autostart Chromium-kiosk op de Aura-URL;
+- WiFi ingebouwd (internet voor de live bronnen).
+
+Boodschappenlijst naast het board (~€15): microSD 16 GB (~€6), 5V micro-USB-voeding
+(~€8), mini-HDMI→HDMI kabel/adapter (~€5), optioneel behuizing (~€5). Setup kan
+"headless" via WiFi/SSH (geen muis/toetsenbord nodig). Uitwerking (image flashen,
+autostart-kioskscript, `cec-utils`-scripts voor aan/uit, cron voor de routine) volgt
+wanneer de Pi er is.
+
 ---
 
 ## Open punten (beslissing later)
