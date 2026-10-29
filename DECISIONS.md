@@ -89,6 +89,20 @@ PDF's per zone (geen API), dus de gestructureerde, live Fost Plus-API blijft de 
 **Reden:** PRD §11 Stap 5 (databronnen verifiëren, beginnen met de afvalkalender) +
 §8 ("officiële bron Koksijde … nooit verzinnen").
 
+## D-009 · Raspberry Pi als always-on runtime voor de tv
+**Datum:** 2026-10-29 · **Status:** beslist (richting; uitwerking volgt)
+
+Een kleine always-on Raspberry Pi achter de Thomson-tv wordt het kastje dat:
+1. de Aura-webapp in **kioskmodus** toont (volledig scherm, Chromium);
+2. de tv via **HDMI-CEC** (libcec) op tijd **aan/uit** zet (kan niet vanuit de webapp zelf
+   op Google TV — zie O-1);
+3. de **routine op tijd start** (scheduler/cron op de Pi).
+Hiermee zijn O-1 (auto aan/uit), O-2 (triggering) en O-3 (runtime) in één opzet opgelost.
+De webapp blijft onveranderd werken; dit is een deployment-/opstellingskeuze, geen
+codewijziging. Uitwerking (image, autostart, CEC-scripts, scheduler) is een latere stap.
+**Reden:** betrouwbaar automatisch wekken + tonen zonder afhankelijk te zijn van de
+beperkingen van Google TV; gebruiker akkoord met een Pi.
+
 ---
 
 ## Open punten (beslissing later)
@@ -100,9 +114,10 @@ PDF's per zone (geen API), dus de gestructureerde, live Fost Plus-API blijft de 
   (bv. Raspberry Pi) via HDMI dat de webapp in kiosk toont én de tv via HDMI-CEC aan/uit
   zet — lost samen O-2 (triggering) en O-3 (runtime) op. Dashboard tonen op de tv zelf kan
   via een sideloaded kiosk-browser (bv. TV Bro / Fully Kiosk), maar is meer gefriemel.
-- **O-2 · Hosting/triggering** — hoe wordt de routine op tijd gestart zonder always-on apparaat?
-  Gebruiker heeft nu geen server/Pi/NAS.
-- **O-3 · TV-runtime** — draait de webapp rechtstreeks op de tv of is een extern kastje nodig?
+- **O-2 · Hosting/triggering** — ✅ richting bepaald (D-009): Raspberry Pi start de routine
+  op tijd (scheduler/cron). Uitwerking volgt.
+- **O-3 · TV-runtime** — ✅ richting bepaald (D-009): extern kastje = Raspberry Pi in kiosk
+  via HDMI; niet rechtstreeks op de Google TV. Uitwerking volgt.
 - **O-4 · Smartphone-app-design** — nog te ontwerpen; stijl afgeleid van Aura (voorkeur) of apart.
 - **O-5 · Afvalkalender** — ✅ opgelost (D-008): live via Fost Plus, geverifieerd als
   IVVO zone 3 voor Guldenzandstraat 8670 (hele straat = één zone, huisnummer irrelevant).
