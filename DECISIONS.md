@@ -116,6 +116,17 @@ Boodschappenlijst naast het board (~€15): microSD 16 GB (~€6), 5V micro-USB-
 autostart-kioskscript, `cec-utils`-scripts voor aan/uit, cron voor de routine) volgt
 wanneer de Pi er is.
 
+## D-010 · Weer live via Open-Meteo (tweede echte bron)
+**Datum:** 2026-10-29 · **Status:** beslist
+
+De weer-adapter is live via Open-Meteo (`api.open-meteo.com/v1/forecast`, **geen API-sleutel**,
+gratis). Twee locaties: Oostduinkerke (kust, incl. zonsop/-ondergang) en Gistel (bestemming).
+WMO-weercode → NL-omschrijving, windrichting → NL-kompas, snelheid → Beaufort; regenkans en
+dagmaximum uit de daily-forecast. Server-side (geen CORS); client via `/api/weather`. 15 min
+gecachet. Bij falen een discrete status, nooit verzonnen data (§9). `getAdapters()` levert nu
+afval + weer live, de rest mock (D-003/D-004). UI toont per tegel eerlijk "Live"/"Voorbeelddata".
+**Reden:** PRD §11 Stap 5 + §8 (open weer-API, 2 locaties, zon ODK).
+
 ---
 
 ## Open punten (beslissing later)

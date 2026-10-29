@@ -18,7 +18,17 @@ export function DashboardScreen({ data, routine }: ScreenProps) {
 
       <main className="grid flex-1 grid-cols-1 gap-7 lg:grid-cols-2">
         {/* --- Weer --- */}
-        <Tile label="Weer · Kust & Bestemming" chip={<Chip tone="coastal">Kuststation</Chip>}>
+        <Tile
+          label="Weer · Kust & Bestemming"
+          chip={
+            kust.source === "live"
+              ? <Chip tone="emerald">Live · Open-Meteo</Chip>
+              : <Chip tone="coastal">Voorbeelddata</Chip>
+          }
+        >
+          {!kust.data && (
+            <p className="text-body-md text-text-mid">Weergegevens tijdelijk niet beschikbaar.</p>
+          )}
           {kust.data && (
             <div className="flex flex-col gap-5">
               <div className="flex items-start justify-between">

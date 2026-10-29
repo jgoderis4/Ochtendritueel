@@ -40,6 +40,9 @@ export function WelcomeScreen({ data, routine }: ScreenProps) {
 
         {/* Weer kust */}
         <Tile label={`Kust · ${kust.data?.location ?? ""}`} chip={<Chip tone="coastal">Noordzee</Chip>}>
+          {!kust.data && (
+            <p className="text-body-md text-text-mid">Weergegevens tijdelijk niet beschikbaar.</p>
+          )}
           {kust.data && (
             <div className="flex flex-col gap-5">
               <div className="flex items-start justify-between">
