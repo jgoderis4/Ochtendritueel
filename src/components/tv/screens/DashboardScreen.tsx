@@ -113,7 +113,17 @@ export function DashboardScreen({ data, routine }: ScreenProps) {
         </Tile>
 
         {/* --- Nieuws --- */}
-        <Tile label="Nieuwsoverzicht · België & Regio" chip={<Chip tone="muted">Voorbeelddata</Chip>}>
+        <Tile
+          label="Nieuwsoverzicht · België & Regio"
+          chip={
+            news.source === "live"
+              ? <Chip tone="emerald">Live · RSS</Chip>
+              : <Chip tone="muted">Voorbeelddata</Chip>
+          }
+        >
+          {!news.data?.length && (
+            <p className="text-body-md text-text-mid">Nieuws tijdelijk niet beschikbaar.</p>
+          )}
           <ul className="flex flex-col gap-4">
             {news.data?.map((n, i) => (
               <li key={i} className="border-b border-border pb-4 last:border-0 last:pb-0">

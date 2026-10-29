@@ -127,6 +127,19 @@ gecachet. Bij falen een discrete status, nooit verzonnen data (§9). `getAdapter
 afval + weer live, de rest mock (D-003/D-004). UI toont per tegel eerlijk "Live"/"Voorbeelddata".
 **Reden:** PRD §11 Stap 5 + §8 (open weer-API, 2 locaties, zon ODK).
 
+## D-011 · Nieuws live via openbare RSS/Atom (derde echte bron)
+**Datum:** 2026-10-29 · **Status:** beslist
+
+De nieuws-adapter is live via openbare feeds (geen login): **VRT NWS**
+(`vrt.be/vrtnws/nl.rss.articles.xml`, Atom), **De Tijd** (`tijd.be/rss/nieuws.xml`, RSS)
+en **Sporza** (`sporza.be/nl.rss.xml`, Atom). Lichte eigen parser (geen extra dependency)
+voor beide formaten; kop + 1–2-zin samenvatting + onderwerp, getoond zonder volledige
+artikels. De Tijd-abonnement is **niet** nodig (RSS is publiek; account enkel voor volledige
+betaalmuur-artikels, die we niet tonen). Server-side (geen CORS); client via `/api/news`;
+15 min gecachet. Falen alle feeds → discrete status, nooit verzonnen nieuws (§9).
+`getAdapters()` levert nu afval + weer + nieuws live.
+**Reden:** PRD §8 (RSS HLN/De Tijd/regionaal/Sporza, NL-koppen + korte samenvatting).
+
 ---
 
 ## Open punten (beslissing later)

@@ -50,7 +50,8 @@ export interface TrafficAdapter {
 }
 
 /* --- Nieuws --- */
-export type NewsSource = "HLN" | "De Tijd" | "Regionaal" | "Sporza";
+/** Bron-label van een nieuwsitem, bv. "De Tijd", "VRT NWS", "Sporza". */
+export type NewsSource = string;
 
 export interface NewsItem {
   source: NewsSource;
