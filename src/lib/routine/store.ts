@@ -1,28 +1,22 @@
 /**
- * Routine-store (client) — nu met gedeelde status OVER TOESTELLEN HEEN (D-007).
+ * Routine-store (client) — gedeelde status OVER TOESTELLEN HEEN (D-007).
  *
  * Bron van waarheid = de server (/api/routine). Alle toestellen (gsm, laptop, tv)
- * lezen dezelfde status: de client pollt elke ~1,5s en stuurt acties als POST.
+ * lezen dezelfde status: de client pollt periodiek en stuurt acties als POST.
  * Zo volgt je laptop live wat je op je gsm start. De server stuurt de muziek aan.
  *
- * Voor een directe eerste render bewaren we de laatst bekende status in
- * localStorage (cache). Framework-agnostisch en SSR-veilig (browser-API's achter
- * typeof-guards). De UI leidt af via useRoutine() en verandert niet.
+ * BELANGRIJK: getState() is PUUR (geen side-effects) — React roept het vaak aan.
+ * Alle setup (eerste fetch + polling) gebeurt in subscribe(). De laatst bekende
+ * status wordt in localStorage gecachet voor een directe eerste render.
  */
 
 import { INITIAL_STATE, type RoutineState } from "./timeline";
 import type { RoutineAction } from "./transitions";
 
 const CACHE_KEY = "aura.routine.v1";
-const POLL_MS = 1500;
+const POLL_MS = 2000;
 
 type Listener = () => void;
-
-let state: RoutineState = INITIAL_STATE;
-let rev = -1;
-const listeners = new Set<Listener>();
-let initialized = false;
-let pollTimer: ReturnType<typeof setInterval> | null = null;
 
 function readCache(): RoutineState {
   if (typeof window === "undefined") return INITIAL_STATE;
@@ -35,6 +29,16 @@ function readCache(): RoutineState {
   }
 }
 
+// Begincache meteen bij module-load op de client → getState kan puur blijven.
+let state: RoutineState = typeof window !== "undefined" ? readCache() : INITIAL_STATE;
+let rev = -1;
+const listeners = new Set<Listener>();
+let pollTimer: ReturnType<typeof setInterval> | null = null;
+
+function emit() {
+  for (const fn of listeners) fn();
+}
+
 function writeCache(s: RoutineState) {
   if (typeof window === "undefined") return;
   try {
@@ -42,10 +46,6 @@ function writeCache(s: RoutineState) {
   } catch {
     /* opslag niet beschikbaar */
   }
-}
-
-function emit() {
-  for (const fn of listeners) fn();
 }
 
 /** Neem een server-antwoord over als het nieuwer is. */
@@ -81,17 +81,16 @@ async function dispatch(action: RoutineAction) {
   }
 }
 
-function ensureInit() {
-  if (initialized || typeof window === "undefined") return;
-  initialized = true;
-  state = readCache();
+/** Start de polling één keer (idempotent). */
+function startPolling() {
+  if (pollTimer !== null || typeof window === "undefined") return;
   void fetchServer();
   pollTimer = setInterval(() => void fetchServer(), POLL_MS);
 }
 
 export const routineStore = {
+  /** PUUR: geen side-effects (React roept dit vaak aan). */
   getState(): RoutineState {
-    ensureInit();
     return state;
   },
 
@@ -100,15 +99,10 @@ export const routineStore = {
   },
 
   subscribe(fn: Listener): () => void {
-    ensureInit();
     listeners.add(fn);
+    startPolling();
     return () => {
       listeners.delete(fn);
-      if (listeners.size === 0 && pollTimer) {
-        clearInterval(pollTimer);
-        pollTimer = null;
-        initialized = false;
-      }
     };
   },
 
