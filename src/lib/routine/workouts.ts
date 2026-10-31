@@ -1,7 +1,8 @@
 /**
  * Workout-inhoud (briefing §6). Twee types die doorlopend afwisselen (A/B),
- * ook over weekgrenzen heen. Geen apparatuur, weinig ruimte, gemiddeld niveau.
- * Geen workoutgeschiedenis/log. Stilstaand beeld (placeholder in Fase 1).
+ * ook over weekgrenzen heen. Zachte oefeningen die je liggend/zittend IN BED
+ * kunt doen — geen apparatuur, bedoeld om rustig wakker te worden. Geen
+ * workoutgeschiedenis/log. Stilstaand beeld (placeholder in Fase 1).
  */
 
 export type WorkoutType = "A" | "B";
@@ -24,73 +25,72 @@ export interface Workout {
 
 export const WORKOUT_A: Workout = {
   type: "A",
-  title: "Workout A · Kracht",
-  focus: "Bovenlichaam & buikspieren",
+  title: "Workout A · Wakker worden",
+  focus: "Zachte mobiliteit — liggend in bed",
   exercises: [
     {
-      name: "Wall Push-ups",
-      muscleGroup: "Borst & schouders",
-      instructions: "Handen op schouderbreedte tegen de muur, lichaam recht, rustig buigen en strekken.",
-      seconds: 45,
-      cues: ["Rug recht", "Ellebogen 45°"],
-    },
-    {
-      name: "Aangepaste Push-ups",
-      nameEn: "Modified Push-ups",
-      muscleGroup: "Borst & core",
-      instructions: "Handen op schouderbreedte, knieën op de mat. Houd de buikspieren aangespannen en laat de borst rustig zakken.",
-      seconds: 45,
-      cues: ["Rug recht", "Ellebogen 45°"],
-    },
-    {
-      name: "Plank",
-      muscleGroup: "Core",
-      instructions: "Onderarmen en tenen op de mat, lichaam in één rechte lijn, buik aangespannen.",
+      name: "Enkel- en teenpompen",
+      muscleGroup: "Bloedsomloop",
+      instructions: "Lig op je rug met gestrekte benen. Pomp je voeten rustig op en neer en krul daarna je tenen in en uit.",
       seconds: 40,
-      cues: ["Heupen laag", "Niet doorzakken"],
+      cues: ["Rustig tempo", "Voel je kuiten"],
     },
     {
-      name: "Dead Bug",
-      muscleGroup: "Buikspieren",
-      instructions: "Op de rug, armen omhoog, tegengestelde arm en been langzaam strekken en terug.",
+      name: "Knie-naar-borst",
+      muscleGroup: "Onderrug & heupen",
+      instructions: "Trek om beurten één knie zacht richting je borst, houd even vast en wissel van been.",
       seconds: 45,
-      cues: ["Onderrug tegen mat", "Rustig tempo"],
+      cues: ["Onderrug ontspannen", "Adem mee"],
+    },
+    {
+      name: "Liggende wervelrotatie",
+      muscleGroup: "Rug & romp",
+      instructions: "Knieën gebogen, voeten op het matras. Laat je knieën samen traag naar links en rechts zakken; schouders blijven liggen.",
+      seconds: 45,
+      cues: ["Schouders op bed", "Klein beginnen"],
+    },
+    {
+      name: "Bruggetje",
+      muscleGroup: "Billen & benen",
+      instructions: "Voeten plat op het matras, hef je heupen rustig op tot een lichte brug en laat weer zakken.",
+      seconds: 40,
+      cues: ["Billen aanspannen", "Niet overstrekken"],
     },
   ],
 };
 
 export const WORKOUT_B: Workout = {
   type: "B",
-  title: "Workout B · Mobiliteit",
-  focus: "Schouders, bovenrug, romp & lichte stabiliteit",
+  title: "Workout B · Zachte activatie",
+  focus: "Stretch & ademhaling — in bed",
   exercises: [
     {
-      name: "Schoudercirkels",
-      muscleGroup: "Schouders",
-      instructions: "Sta rechtop, maak grote, rustige cirkels met beide armen, voor- en achterwaarts.",
+      name: "Nek- en schouderrollen",
+      muscleGroup: "Nek & schouders",
+      instructions: "Zit of lig comfortabel. Rol je schouders traag achterwaarts en draai je nek zacht van links naar rechts.",
       seconds: 40,
-      cues: ["Ontspannen nek", "Grote beweging"],
+      cues: ["Geen pijn", "Heel traag"],
     },
     {
-      name: "Cat-Cow",
-      muscleGroup: "Bovenrug & romp",
-      instructions: "Op handen en knieën, wissel rustig tussen holle en bolle rug op je ademhaling.",
+      name: "Bekkenkanteling",
+      muscleGroup: "Onderrug & buik",
+      instructions: "Lig op je rug, knieën gebogen. Kantel je bekken zodat je onderrug het matras raakt, en los weer.",
       seconds: 45,
-      cues: ["Volg je adem", "Hele wervelkolom"],
+      cues: ["Buik licht aanspannen", "Kleine beweging"],
     },
     {
-      name: "Thoracale rotatie",
-      muscleGroup: "Bovenrug",
-      instructions: "Op handen en knieën, één hand achter het hoofd, elleboog open- en toedraaien.",
-      seconds: 40,
-      cues: ["Heupen stil", "Borst openen"],
-    },
-    {
-      name: "Bird Dog",
-      muscleGroup: "Stabiliteit",
-      instructions: "Op handen en knieën, tegengestelde arm en been strekken, even vasthouden, wisselen.",
+      name: "Hamstringstretch",
+      muscleGroup: "Achterkant been",
+      instructions: "Trek om beurten één been omhoog, handen achter de dij, en houd de stretch zacht vast.",
       seconds: 45,
-      cues: ["Rug neutraal", "Niet kantelen"],
+      cues: ["Knie mag licht gebogen", "Niet forceren"],
+    },
+    {
+      name: "Zijligging beenheffen",
+      muscleGroup: "Heup & bil",
+      instructions: "Lig op je zij. Til je bovenste been rustig op en neer; wissel halverwege van kant.",
+      seconds: 45,
+      cues: ["Rustig", "Romp stabiel"],
     },
   ],
 };
