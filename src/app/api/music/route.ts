@@ -3,7 +3,7 @@
  * de speler (play/stop/setVolume) op het Spotify Connect-toestel (de Sonos).
  * Server-side zodat de client geen Spotify-secret of CORS nodig heeft.
  */
-import { getState, pause, play, setVolume } from "@/lib/music/spotify";
+import { getState, pause, play, setVolume } from "@/lib/music/sonos";
 
 export async function GET() {
   const result = await getState();

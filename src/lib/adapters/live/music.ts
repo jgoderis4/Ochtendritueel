@@ -1,10 +1,12 @@
 /**
- * Live muziek-adapter (Spotify → Sonos via Spotify Connect). Server-side roept hij
- * de Spotify-client rechtstreeks aan; client-side via onze eigen /api/music-route
- * (geen CORS). Bij falen: discrete "niet beschikbaar"-status (data: null).
+ * Live muziek-adapter — stuurt de Sonos RECHTSTREEKS aan (lokaal UPnP, D-014),
+ * omdat de Spotify Web API Sonos-toestellen niet mag besturen (restricted → 403).
+ * De Sonos speelt onze Spotify-content af; wij regelen play/pauze/volume lokaal.
+ * Server-side roept hij de Sonos-client aan; client-side via onze eigen
+ * /api/music-route (geen CORS). Bij falen: discrete niet-beschikbaar-status.
  */
 import type { MusicAdapter, MusicState, Sourced } from "../types";
-import { getState, pause, play, setVolume } from "@/lib/music/spotify";
+import { getState, pause, play, setVolume } from "@/lib/music/sonos";
 
 export const liveMusicAdapter: MusicAdapter = {
   async getState(): Promise<Sourced<MusicState>> {
