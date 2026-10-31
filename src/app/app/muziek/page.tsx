@@ -14,6 +14,7 @@ const a = getAdapters();
 
 export default function MusicPage() {
   const [state, setState] = useState<Sourced<MusicState> | null>(null);
+  const [favorites, setFavorites] = useState<string[]>([]);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -27,11 +28,33 @@ export default function MusicPage() {
     }
   }, []);
 
+  const loadFavorites = useCallback(async () => {
+    try {
+      const res = await fetch("/api/music?favorites=1");
+      const json = (await res.json()) as { favorites?: string[] };
+      setFavorites(json.favorites ?? []);
+    } catch {
+      /* lijst niet beschikbaar; stil negeren */
+    }
+  }, []);
+
   useEffect(() => {
-    // Eenmalig de live status laden bij mount (bewust patroon, geen cascading render).
+    // Eenmalig de live status + favorietenlijst laden bij mount (bewust patroon).
     // eslint-disable-next-line react-hooks/set-state-in-effect
     void refresh();
-  }, [refresh]);
+    void loadFavorites();
+  }, [refresh, loadFavorites]);
+
+  async function playFavorite(name: string) {
+    await run(async () => {
+      const res = await fetch("/api/music", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action: "playFavorite", name }),
+      });
+      if (!res.ok) throw new Error("kon favoriet niet starten");
+    });
+  }
 
   async function run(action: () => Promise<void>) {
     setBusy(true);
@@ -147,6 +170,32 @@ export default function MusicPage() {
         >
           ↻ Status vernieuwen
         </button>
+      </section>
+
+      {/* Muziekkeuze: Sonos-favorieten */}
+      <section className="flex flex-col gap-3">
+        <h2 className="text-label-lg font-semibold uppercase tracking-[0.04em] text-text-mid">
+          Kies muziek
+        </h2>
+        {favorites.length === 0 ? (
+          <p className="text-body-md text-text-mid">
+            Geen favorieten gevonden. Voeg playlists of radio toe als favoriet in de
+            Sonos-app; ze verschijnen hier automatisch.
+          </p>
+        ) : (
+          favorites.map((name) => (
+            <button
+              key={name}
+              type="button"
+              disabled={busy}
+              onClick={() => void playFavorite(name)}
+              className="flex items-center justify-between gap-3 rounded-md border border-border bg-surface/90 px-5 py-4 text-left transition-opacity active:opacity-70 disabled:opacity-50"
+            >
+              <span className="text-body-lg font-medium text-text-high">{name}</span>
+              <span className="text-label-md text-emerald">▶ Speel af</span>
+            </button>
+          ))
+        )}
       </section>
 
       {error && <p className="text-label-md text-danger">{error}</p>}

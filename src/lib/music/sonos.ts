@@ -109,18 +109,34 @@ export async function getState(): Promise<Sourced<MusicState>> {
   }
 }
 
-/* --- Besturing --- */
+/* --- Favorieten (de kiesbare muzieklijsten) --- */
 
-/** Zoekt een Sonos-favoriet op naam en start die (SetAVTransportURI + Play). */
-async function playFavorite(name: string): Promise<boolean> {
+/** Haalt de ruwe <item>-blokken van de Sonos-favorieten (FV:2) op. */
+async function browseFavoriteItems(): Promise<string[]> {
   const browse =
     "<ObjectID>FV:2</ObjectID><BrowseFlag>BrowseDirectChildren</BrowseFlag>" +
     "<Filter>*</Filter><StartingIndex>0</StartingIndex>" +
     "<RequestedCount>100</RequestedCount><SortCriteria></SortCriteria>";
   const res = await soap("ContentDirectory", "Browse", browse);
   const didl = xmlUnescape(pick(res, "Result") ?? "");
-  const items = didl.match(/<item[\s\S]*?<\/item>/g) ?? [];
+  return didl.match(/<item[\s\S]*?<\/item>/g) ?? [];
+}
 
+/** Namen van alle Sonos-favorieten (de lijstjes die je kunt kiezen). */
+export async function listFavorites(): Promise<string[]> {
+  try {
+    const items = await browseFavoriteItems();
+    return items.map((it) => (pick(it, "dc:title") ?? "").trim()).filter(Boolean);
+  } catch {
+    return [];
+  }
+}
+
+/* --- Besturing --- */
+
+/** Zoekt een Sonos-favoriet op naam en start die (SetAVTransportURI + Play). */
+export async function playFavorite(name: string): Promise<boolean> {
+  const items = await browseFavoriteItems();
   const wanted = name.trim().toLowerCase();
   const item = items.find((it) => (pick(it, "dc:title") ?? "").trim().toLowerCase() === wanted);
   if (!item) return false;

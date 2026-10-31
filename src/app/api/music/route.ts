@@ -1,19 +1,26 @@
 /**
- * Route handler voor muziek. GET levert de huidige playback-state; POST bestuurt
- * de speler (play/stop/setVolume) op het Spotify Connect-toestel (de Sonos).
- * Server-side zodat de client geen Spotify-secret of CORS nodig heeft.
+ * Route handler voor muziek. Stuurt de Sonos rechtstreeks aan (lokaal UPnP, D-014).
+ *  - GET                 → huidige playback-state
+ *  - GET ?favorites=1    → lijst van kiesbare Sonos-favorieten
+ *  - POST {action}       → play / stop / setVolume / playFavorite
+ * Server-side zodat de client geen CORS of netwerktoegang tot de speaker nodig heeft.
  */
-import { getState, pause, play, setVolume } from "@/lib/music/sonos";
+import { getState, listFavorites, pause, play, playFavorite, setVolume } from "@/lib/music/sonos";
 
-export async function GET() {
+export async function GET(request: Request) {
+  const url = new URL(request.url);
+  if (url.searchParams.get("favorites")) {
+    const favorites = await listFavorites();
+    return Response.json({ favorites });
+  }
   const result = await getState();
   return Response.json(result);
 }
 
 export async function POST(request: Request) {
-  let body: { action?: string; pct?: number };
+  let body: { action?: string; pct?: number; name?: string };
   try {
-    body = (await request.json()) as { action?: string; pct?: number };
+    body = (await request.json()) as { action?: string; pct?: number; name?: string };
   } catch {
     return Response.json({ error: "Ongeldige body" }, { status: 400 });
   }
@@ -32,6 +39,16 @@ export async function POST(request: Request) {
         }
         await setVolume(body.pct);
         break;
+      case "playFavorite": {
+        if (!body.name) {
+          return Response.json({ error: "naam ontbreekt" }, { status: 400 });
+        }
+        const ok = await playFavorite(body.name);
+        if (!ok) {
+          return Response.json({ ok: false, error: "Favoriet niet gevonden" }, { status: 404 });
+        }
+        break;
+      }
       default:
         return Response.json({ error: "Onbekende actie" }, { status: 400 });
     }
