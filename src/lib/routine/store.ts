@@ -1,66 +1,46 @@
 /**
- * Gedeelde routine-store — de "koppellaag" (D-007).
+ * Routine-store (client) — nu met gedeelde status OVER TOESTELLEN HEEN (D-007).
  *
- * Eén bron van waarheid voor de routine-staat, gedeeld tussen álle open
- * tabs/vensters van /app en /tv in **dezelfde browser/hetzelfde toestel**:
- *   - persistent in localStorage  (sleutel AURA_ROUTINE_KEY)
- *   - live doorgegeven via BroadcastChannel  (direct, zelfde browser)
- *   - fallback via het storage-event  (andere tabs, zonder BroadcastChannel)
+ * Bron van waarheid = de server (/api/routine). Alle toestellen (gsm, laptop, tv)
+ * lezen dezelfde status: de client pollt elke ~1,5s en stuurt acties als POST.
+ * Zo volgt je laptop live wat je op je gsm start. De server stuurt de muziek aan.
  *
- * Framework-agnostisch en SSR-veilig (alle browser-API's achter typeof-guards).
- * Echte cross-device sync (telefoon ↔ aparte tv-kast) vraagt een server/websocket
- * en komt later; alleen deze module hoeft dan vervangen te worden — de UI leidt
- * af via useRoutine() en verandert niet.
+ * Voor een directe eerste render bewaren we de laatst bekende status in
+ * localStorage (cache). Framework-agnostisch en SSR-veilig (browser-API's achter
+ * typeof-guards). De UI leidt af via useRoutine() en verandert niet.
  */
 
 import { INITIAL_STATE, type RoutineState } from "./timeline";
+import type { RoutineAction } from "./transitions";
 
-const STORAGE_KEY = "aura.routine.v1";
-const CHANNEL_NAME = "aura.routine";
+const CACHE_KEY = "aura.routine.v1";
+const POLL_MS = 1500;
 
 type Listener = () => void;
 
 let state: RoutineState = INITIAL_STATE;
-let channel: BroadcastChannel | null = null;
+let rev = -1;
 const listeners = new Set<Listener>();
 let initialized = false;
+let pollTimer: ReturnType<typeof setInterval> | null = null;
 
-/** Lees de staat uit localStorage (defensief: corrupte opslag → INITIAL_STATE). */
-function readPersisted(): RoutineState {
+function readCache(): RoutineState {
   if (typeof window === "undefined") return INITIAL_STATE;
   try {
-    const raw = window.localStorage.getItem(STORAGE_KEY);
+    const raw = window.localStorage.getItem(CACHE_KEY);
     if (!raw) return INITIAL_STATE;
-    const parsed = JSON.parse(raw) as Partial<RoutineState>;
-    return { ...INITIAL_STATE, ...parsed };
+    return { ...INITIAL_STATE, ...(JSON.parse(raw) as Partial<RoutineState>) };
   } catch {
     return INITIAL_STATE;
   }
 }
 
-/** Zorg eenmalig voor de verbinding met opslag + broadcast. */
-function ensureInit() {
-  if (initialized || typeof window === "undefined") return;
-  initialized = true;
-
-  state = readPersisted();
-
-  // Andere tabs zonder BroadcastChannel: luister op storage-events.
-  window.addEventListener("storage", (e) => {
-    if (e.key !== STORAGE_KEY) return;
-    state = readPersisted();
-    emit();
-  });
-
-  if (typeof BroadcastChannel !== "undefined") {
-    channel = new BroadcastChannel(CHANNEL_NAME);
-    channel.onmessage = (e: MessageEvent) => {
-      // De verzender stuurt de volledige nieuwe staat mee.
-      if (e.data && typeof e.data === "object") {
-        state = { ...INITIAL_STATE, ...(e.data as Partial<RoutineState>) };
-        emit();
-      }
-    };
+function writeCache(s: RoutineState) {
+  if (typeof window === "undefined") return;
+  try {
+    window.localStorage.setItem(CACHE_KEY, JSON.stringify(s));
+  } catch {
+    /* opslag niet beschikbaar */
   }
 }
 
@@ -68,78 +48,84 @@ function emit() {
   for (const fn of listeners) fn();
 }
 
-/** Schrijf + broadcast een nieuwe staat naar alle luisteraars/tabs. */
-function commit(next: RoutineState) {
-  state = next;
-  if (typeof window !== "undefined") {
-    try {
-      window.localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
-    } catch {
-      /* opslag niet beschikbaar — in-memory werkt alsnog in deze tab */
-    }
-    channel?.postMessage(next);
-  }
+/** Neem een server-antwoord over als het nieuwer is. */
+function adopt(next: { state: RoutineState; rev: number }) {
+  if (next.rev === rev) return;
+  rev = next.rev;
+  state = { ...INITIAL_STATE, ...next.state };
+  writeCache(state);
   emit();
 }
 
+async function fetchServer() {
+  try {
+    const res = await fetch("/api/routine", { cache: "no-store" });
+    if (!res.ok) return;
+    adopt((await res.json()) as { state: RoutineState; rev: number });
+  } catch {
+    /* server even niet bereikbaar — behoud huidige status */
+  }
+}
+
+async function dispatch(action: RoutineAction) {
+  try {
+    const res = await fetch("/api/routine", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ action: action.type, now: Date.now() }),
+    });
+    if (!res.ok) return;
+    adopt((await res.json()) as { state: RoutineState; rev: number });
+  } catch {
+    /* actie kon niet verzonden worden */
+  }
+}
+
+function ensureInit() {
+  if (initialized || typeof window === "undefined") return;
+  initialized = true;
+  state = readCache();
+  void fetchServer();
+  pollTimer = setInterval(() => void fetchServer(), POLL_MS);
+}
+
 export const routineStore = {
-  /** Huidige staat (client). */
   getState(): RoutineState {
     ensureInit();
     return state;
   },
 
-  /** Stabiele serverwaarde voor useSyncExternalStore (geen browser-API). */
   getServerSnapshot(): RoutineState {
     return INITIAL_STATE;
   },
 
-  /** Abonneer op wijzigingen; geeft een opzeg-functie terug. */
   subscribe(fn: Listener): () => void {
     ensureInit();
     listeners.add(fn);
     return () => {
       listeners.delete(fn);
+      if (listeners.size === 0 && pollTimer) {
+        clearInterval(pollTimer);
+        pollTimer = null;
+        initialized = false;
+      }
     };
   },
 
-  // --- Acties (pauze- en offset-logica, los van React) ---
-
+  // --- Acties: naar de server, antwoord wordt lokaal overgenomen ---
   start() {
-    commit({ ...INITIAL_STATE, startedAt: Date.now() });
+    void dispatch({ type: "start" });
   },
-
   stop() {
-    commit(INITIAL_STATE);
+    void dispatch({ type: "stop" });
   },
-
   togglePause() {
-    const s = routineStore.getState();
-    if (s.startedAt === null) return;
-    if (s.paused) {
-      const extra = s.pausedAt ? Math.max(0, Date.now() - s.pausedAt) : 0;
-      commit({ ...s, paused: false, pausedAt: null, pausedMs: s.pausedMs + extra });
-    } else {
-      commit({ ...s, paused: true, pausedAt: Date.now() });
-    }
+    void dispatch({ type: "togglePause" });
   },
-
   skipWorkout() {
-    const s = routineStore.getState();
-    commit({ ...s, workoutSkipped: true, workoutStartOffsetMs: null });
+    void dispatch({ type: "skipWorkout" });
   },
-
   startWorkoutEarly() {
-    const s = routineStore.getState();
-    if (s.startedAt === null) return;
-    // Leg de workoutstart vast op de verstreken routinetijd van nu.
-    const now = Date.now();
-    let elapsed = now - s.startedAt - s.pausedMs;
-    if (s.paused && s.pausedAt != null) elapsed -= Math.max(0, now - s.pausedAt);
-    commit({
-      ...s,
-      workoutSkipped: false,
-      workoutStartOffsetMs: Math.max(0, elapsed),
-    });
+    void dispatch({ type: "startWorkoutEarly" });
   },
 };

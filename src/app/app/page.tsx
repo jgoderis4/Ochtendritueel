@@ -1,7 +1,5 @@
 "use client";
 
-import { useEffect, useMemo, useRef } from "react";
-import { getAdapters } from "@/lib/adapters";
 import { formatCountdown, TIMELINE } from "@/lib/routine/timeline";
 import { useApp } from "./AppProvider";
 
@@ -15,35 +13,8 @@ const PHASE_LABEL: Record<string, string> = {
 export default function ControlPage() {
   const { phase, state, elapsed, remaining, actions, settings } = useApp();
   const running = state.startedAt !== null && phase !== "ended";
-
-  // --- Muziek volgt de routine: start → aan, stop/einde → uit ---
-  const music = useMemo(() => getAdapters().music, []);
-  const prevRunning = useRef(false);
-  useEffect(() => {
-    if (!prevRunning.current && running) {
-      void music.play().catch(() => {});
-    } else if (prevRunning.current && !running) {
-      void music.stop().catch(() => {});
-    }
-    prevRunning.current = running;
-  }, [running, music]);
-
-  // Start/stop + pauze die ook de muziek meeneemt.
-  function handleStart() {
-    actions.start();
-  }
-  function handleStop() {
-    actions.stop();
-  }
-  function handleTogglePause() {
-    const wasPaused = state.paused;
-    actions.togglePause();
-    if (wasPaused) {
-      void music.play().catch(() => {});
-    } else {
-      void music.stop().catch(() => {});
-    }
-  }
+  // Muziek wordt server-side aangestuurd bij elke actie (zie /api/routine),
+  // zodat ze precies één keer speelt — ongeacht hoeveel toestellen meekijken.
 
   return (
     <main className="flex flex-col gap-6">
@@ -101,15 +72,15 @@ export default function ControlPage() {
       {/* Knoppen */}
       <section className="flex flex-col gap-3">
         {!running ? (
-          <Button tone="primary" onClick={handleStart}>
+          <Button tone="primary" onClick={actions.start}>
             Start mijn ochtendroutine nu
           </Button>
         ) : (
           <>
-            <Button tone="default" onClick={handleTogglePause}>
+            <Button tone="default" onClick={actions.togglePause}>
               {state.paused ? "Hervatten" : "Pauzeer alles"}
             </Button>
-            <Button tone="default" onClick={handleStop}>
+            <Button tone="default" onClick={actions.stop}>
               Stop alles
             </Button>
             {phase !== "workout" && !state.workoutSkipped && (
