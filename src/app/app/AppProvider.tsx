@@ -37,6 +37,16 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     }
   }, []);
 
+  // Muziekstijl + volume naar de server sturen zodat de routine-start de juiste
+  // Spotify-muziek op de Sonos zoekt/afspeelt (server stuurt de muziek aan).
+  useEffect(() => {
+    void fetch("/api/music", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ action: "setPrefs", style: settings.musicStyle, volume: settings.volume }),
+    }).catch(() => {});
+  }, [settings.musicStyle, settings.volume]);
+
   const setSettings = useCallback((patch: Partial<Settings>) => {
     setSettingsState((prev) => {
       const next = { ...prev, ...patch };

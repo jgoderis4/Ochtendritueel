@@ -5,7 +5,15 @@
  *  - POST {action}       → play / stop / setVolume / playFavorite
  * Server-side zodat de client geen CORS of netwerktoegang tot de speaker nodig heeft.
  */
-import { getState, listFavorites, pause, play, playFavorite, setVolume } from "@/lib/music/sonos";
+import {
+  getState,
+  listFavorites,
+  pause,
+  play,
+  playFavorite,
+  setMusicPrefs,
+  setVolume,
+} from "@/lib/music/sonos";
 
 export async function GET(request: Request) {
   const url = new URL(request.url);
@@ -18,9 +26,9 @@ export async function GET(request: Request) {
 }
 
 export async function POST(request: Request) {
-  let body: { action?: string; pct?: number; name?: string };
+  let body: { action?: string; pct?: number; name?: string; style?: string; volume?: number };
   try {
-    body = (await request.json()) as { action?: string; pct?: number; name?: string };
+    body = (await request.json()) as typeof body;
   } catch {
     return Response.json({ error: "Ongeldige body" }, { status: 400 });
   }
@@ -49,6 +57,10 @@ export async function POST(request: Request) {
         }
         break;
       }
+      case "setPrefs":
+        // Muziekstijl (genre) + achtergrondvolume uit de instellingen synchroniseren.
+        setMusicPrefs({ style: body.style, volume: body.volume });
+        break;
       default:
         return Response.json({ error: "Onbekende actie" }, { status: 400 });
     }

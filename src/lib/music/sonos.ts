@@ -10,6 +10,7 @@
  */
 
 import type { MusicState, Sourced } from "@/lib/adapters/types";
+import { searchPlaylist } from "./spotify";
 
 export const sonosConfig = {
   /** IP van de doel-speaker. DHCP kan dit wijzigen → overschrijfbaar via env. */
@@ -18,6 +19,9 @@ export const sonosConfig = {
   room: process.env.SONOS_ROOM ?? "Sonos Roam",
   /** Naam van de Sonos-favoriet die play() start (bv. de ochtend-playlist). */
   morningFavorite: process.env.SONOS_MORNING_FAVORITE ?? "",
+  /** Spotify-account op de Sonos (uit live metadata afgeleid: sid=9, sn=2). */
+  spotifySn: process.env.SONOS_SPOTIFY_SN ?? "2",
+  spotifyServiceType: process.env.SONOS_SPOTIFY_SERVICE_TYPE ?? "2311",
 } as const;
 
 function xmlEscape(s: string): string {
@@ -157,42 +161,108 @@ export async function playFavorite(name: string): Promise<boolean> {
   return true;
 }
 
-/** Woorden die op een rustige/ochtend-playlist wijzen (NL + EN). */
-const CALM_KEYWORDS = [
-  "rustig", "kalm", "ochtend", "morning", "calm", "chill", "chillout",
-  "acoustic", "akoestisch", "piano", "klassiek", "classical", "ambient",
-  "relax", "zen", "soft", "easy", "koffie", "coffee",
-];
+/* --- Spotify-genre rechtstreeks afspelen (Optie B) --- */
 
-/**
- * Kiest automatisch de ochtendlijst: eerst de expliciet ingestelde favoriet,
- * anders de eerste favoriet met een "rustige" naam. null = geen geschikte keuze.
- */
-export async function pickMorningFavorite(): Promise<string | null> {
-  const names = await listFavorites();
-  if (names.length === 0) return null;
+/** Muziekvoorkeuren (gedeeld server-side): genre-stijl + achtergrondvolume. */
+export const musicPrefs: { style: string; volume: number | null } = {
+  style: "mix",
+  volume: null,
+};
+export function setMusicPrefs(partial: { style?: string; volume?: number }) {
+  if (partial.style) musicPrefs.style = partial.style;
+  if (typeof partial.volume === "number") musicPrefs.volume = partial.volume;
+}
 
-  const configured = sonosConfig.morningFavorite.trim().toLowerCase();
-  if (configured) {
-    const match = names.find((n) => n.toLowerCase() === configured);
-    if (match) return match;
-  }
-  const calm = names.find((n) => CALM_KEYWORDS.some((k) => n.toLowerCase().includes(k)));
-  return calm ?? null;
+/** Zoekterm per muziekstijl (instellingen) → waarmee we Spotify doorzoeken. */
+const STYLE_QUERY: Record<string, string> = {
+  mix: "ochtend chill",
+  jazz: "jazz chill",
+  lounge: "lounge chill",
+  "rustige-pop": "rustige pop",
+  instrumentaal: "instrumental rustig",
+};
+
+/** UUID van de speaker (voor de wachtrij-URI), eenmalig opgehaald en gecachet. */
+let cachedUuid: string | null = null;
+async function getDeviceUuid(): Promise<string> {
+  if (cachedUuid) return cachedUuid;
+  const res = await fetch(`http://${sonosConfig.speakerIp}:1400/xml/device_description.xml`, {
+    signal: AbortSignal.timeout(5000),
+  });
+  const xml = await res.text();
+  const udn = pick(xml, "UDN") ?? "";
+  cachedUuid = udn.replace(/^uuid:/, "");
+  if (!cachedUuid) throw new Error("Sonos UUID niet gevonden");
+  return cachedUuid;
 }
 
 /**
- * Start muziek: automatisch de rustige ochtendlijst (ingesteld of op naam
- * herkend), anders gewoon hervatten wat er klaarstaat.
+ * Speelt een Spotify-playlist RECHTSTREEKS op de Sonos (zonder favoriet) via de
+ * wachtrij: leegmaken → playlist toevoegen (SMAPI-container) → wachtrij afspelen.
+ * Formaat afgeleid uit live Sonos-metadata: sid=9, sn=2, servicetype 2311.
+ */
+export async function playSpotifyPlaylist(playlistId: string): Promise<void> {
+  const enc = `spotify%3aplaylist%3a${playlistId}`;
+  const container = `x-rincon-cpcontainer:1006206c${enc}?sid=9&flags=8300&sn=${sonosConfig.spotifySn}`;
+  const st = sonosConfig.spotifyServiceType;
+  const meta =
+    `<DIDL-Lite xmlns:dc="http://purl.org/dc/elements/1.1/" ` +
+    `xmlns:upnp="urn:schemas-upnp-org:metadata-1-0/upnp/" ` +
+    `xmlns:r="urn:schemas-rinconnetworks-com:metadata-1-0/" ` +
+    `xmlns="urn:schemas-upnp-org:metadata-1-0/DIDL-Lite/">` +
+    `<item id="1006206c${enc}" parentID="10fe2664" restricted="true">` +
+    `<dc:title>Playlist</dc:title><upnp:class>object.container.playlistContainer</upnp:class>` +
+    `<desc id="cdudn" nameSpace="urn:schemas-rinconnetworks-com:metadata-1-0/">` +
+    `SA_RINCON${st}_X_#Svc${st}-0-Token</desc></item></DIDL-Lite>`;
+
+  const uuid = await getDeviceUuid();
+  await soap("AVTransport", "RemoveAllTracksFromQueue", "<InstanceID>0</InstanceID>");
+  await soap(
+    "AVTransport",
+    "AddURIToQueue",
+    `<InstanceID>0</InstanceID><EnqueuedURI>${xmlEscape(container)}</EnqueuedURI>` +
+      `<EnqueuedURIMetaData>${xmlEscape(meta)}</EnqueuedURIMetaData>` +
+      `<DesiredFirstTrackNumberEnqueued>0</DesiredFirstTrackNumberEnqueued><EnqueueAsNext>1</EnqueueAsNext>`,
+  );
+  await soap(
+    "AVTransport",
+    "SetAVTransportURI",
+    `<InstanceID>0</InstanceID><CurrentURI>x-rincon-queue:${uuid}#0</CurrentURI><CurrentURIMetaData></CurrentURIMetaData>`,
+  );
+  await soap("AVTransport", "Play", "<InstanceID>0</InstanceID><Speed>1</Speed>");
+}
+
+/** Zoekt op Spotify een playlist voor de gekozen stijl en speelt die af. */
+export async function playGenre(style: string): Promise<boolean> {
+  const query = STYLE_QUERY[style] ?? STYLE_QUERY.mix;
+  const found = await searchPlaylist(query);
+  if (!found) return false;
+  await playSpotifyPlaylist(found.id);
+  return true;
+}
+
+/**
+ * Start muziek: zoekt op Spotify een playlist bij de gekozen stijl (instellingen)
+ * en speelt die rechtstreeks op de Sonos. Lukt dat niet, dan hervatten we gewoon.
+ * Daarna wordt het ingestelde achtergrondvolume toegepast (indien bekend).
  */
 export async function play(): Promise<void> {
-  const morning = await pickMorningFavorite();
-  if (morning) {
-    const ok = await playFavorite(morning);
-    if (ok) return;
-    // Favoriet niet gevonden → val terug op hervatten.
+  let started = false;
+  try {
+    started = await playGenre(musicPrefs.style);
+  } catch {
+    started = false;
   }
-  await soap("AVTransport", "Play", "<InstanceID>0</InstanceID><Speed>1</Speed>");
+  if (!started) {
+    await soap("AVTransport", "Play", "<InstanceID>0</InstanceID><Speed>1</Speed>");
+  }
+  if (musicPrefs.volume != null) {
+    try {
+      await setVolume(musicPrefs.volume);
+    } catch {
+      /* volume instellen niet kritisch */
+    }
+  }
 }
 
 export async function pause(): Promise<void> {

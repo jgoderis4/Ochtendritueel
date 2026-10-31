@@ -66,6 +66,27 @@ async function api(
   });
 }
 
+/* --- Zoeken --- */
+/**
+ * Zoekt op Spotify een playlist die bij `query` past en geeft id + naam terug.
+ * Gebruikt voor de genre-keuze: "laat de Sonos dit soort muziek zoeken".
+ */
+export async function searchPlaylist(
+  query: string,
+  market = "BE",
+): Promise<{ id: string; name: string } | null> {
+  const res = await api(
+    `/search?type=playlist&limit=5&market=${market}&q=${encodeURIComponent(query)}`,
+  );
+  if (!res.ok) throw new Error(`Spotify search HTTP ${res.status}`);
+  const json = (await res.json()) as {
+    playlists?: { items?: ({ id: string; name: string } | null)[] };
+  };
+  const items = (json.playlists?.items ?? []).filter(Boolean) as { id: string; name: string }[];
+  const first = items[0];
+  return first ? { id: first.id, name: first.name } : null;
+}
+
 /* --- Toestellen --- */
 export interface SpotifyDevice {
   id: string | null;
