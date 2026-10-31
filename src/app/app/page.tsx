@@ -1,6 +1,5 @@
 "use client";
 
-import { MockBadge } from "@/components/MockBadge";
 import { formatCountdown, TIMELINE } from "@/lib/routine/timeline";
 import { useApp } from "./AppProvider";
 
@@ -17,16 +16,13 @@ export default function ControlPage() {
 
   return (
     <main className="flex flex-col gap-6">
-      <header className="flex items-center justify-between">
-        <div>
-          <p className="text-label-lg font-semibold uppercase tracking-[0.06em] text-emerald">
-            Aura · bediening
-          </p>
-          <h1 className="font-display text-headline-xl font-semibold text-text-high">
-            Ochtendroutine
-          </h1>
-        </div>
-        <MockBadge />
+      <header>
+        <p className="text-label-lg font-semibold uppercase tracking-[0.06em] text-emerald">
+          Aura · bediening
+        </p>
+        <h1 className="font-display text-headline-xl font-semibold text-text-high">
+          Ochtendroutine
+        </h1>
       </header>
 
       {/* Live statuskaart */}
@@ -100,9 +96,8 @@ export default function ControlPage() {
       </section>
 
       <p className="text-label-md text-text-muted">
-        Tv uitschakelen bij “Stop alles” hangt af van het tv-model (nog onbekend). De
-        knoppen sturen in Fase 1 de lokale routine-simulatie aan; echte Sonos/Spotify-
-        en tv-bediening volgt later.
+        Starten/stoppen stuurt automatisch de muziek op de Sonos aan. Tv aan/uit bij
+        start/stop volgt met de Pi-opstelling (afhankelijk van het tv-model).
       </p>
     </main>
   );

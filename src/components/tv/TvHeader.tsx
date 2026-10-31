@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { MockBadge } from "@/components/MockBadge";
 import { formatClock, formatDate } from "@/lib/routine/clock";
 
 /**
@@ -46,14 +45,13 @@ export function TvHeader({
         <span className="hover:text-text-high">Audio</span>
       </nav>
 
-      <div className="flex items-center gap-5">
-        {phaseLabel && (
+      {phaseLabel && (
+        <div className="flex items-center gap-5">
           <span className="hidden text-label-md uppercase tracking-[0.04em] text-text-mid md:inline">
             Fase: <span className="text-text-high">{phaseLabel}</span>
           </span>
-        )}
-        <MockBadge />
-      </div>
+        </div>
+      )}
     </header>
   );
 }

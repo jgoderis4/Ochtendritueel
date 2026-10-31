@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { MockBadge } from "@/components/MockBadge";
 
 export default function Home() {
   return (
@@ -16,7 +15,10 @@ export default function Home() {
           workout. Kies een oppervlak om te openen.
         </p>
         <div className="mt-3">
-          <MockBadge label="Fase 1 · voorbeelddata" />
+          <span className="inline-flex items-center gap-2 rounded-full border border-border bg-surface-2 px-3 py-1 text-label-md font-medium uppercase tracking-[0.04em] text-emerald">
+            <span className="size-2 rounded-full bg-emerald" aria-hidden />
+            Live data
+          </span>
         </div>
       </header>
 
@@ -36,8 +38,8 @@ export default function Home() {
       </nav>
 
       <footer className="text-label-md text-text-muted">
-        Externe koppelingen (weer, verkeer, nieuws, afval, Sonos/Spotify, Outlook,
-        tv) zijn in deze fase gemockt.
+        Live gekoppeld: weer, verkeer, nieuws, afval en muziek (Sonos). Agenda
+        (Outlook) en tv-aansturing volgen nog.
       </footer>
     </main>
   );
