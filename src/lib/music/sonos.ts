@@ -157,10 +157,38 @@ export async function playFavorite(name: string): Promise<boolean> {
   return true;
 }
 
-/** Start muziek: de ochtend-favoriet indien ingesteld, anders gewoon hervatten. */
+/** Woorden die op een rustige/ochtend-playlist wijzen (NL + EN). */
+const CALM_KEYWORDS = [
+  "rustig", "kalm", "ochtend", "morning", "calm", "chill", "chillout",
+  "acoustic", "akoestisch", "piano", "klassiek", "classical", "ambient",
+  "relax", "zen", "soft", "easy", "koffie", "coffee",
+];
+
+/**
+ * Kiest automatisch de ochtendlijst: eerst de expliciet ingestelde favoriet,
+ * anders de eerste favoriet met een "rustige" naam. null = geen geschikte keuze.
+ */
+export async function pickMorningFavorite(): Promise<string | null> {
+  const names = await listFavorites();
+  if (names.length === 0) return null;
+
+  const configured = sonosConfig.morningFavorite.trim().toLowerCase();
+  if (configured) {
+    const match = names.find((n) => n.toLowerCase() === configured);
+    if (match) return match;
+  }
+  const calm = names.find((n) => CALM_KEYWORDS.some((k) => n.toLowerCase().includes(k)));
+  return calm ?? null;
+}
+
+/**
+ * Start muziek: automatisch de rustige ochtendlijst (ingesteld of op naam
+ * herkend), anders gewoon hervatten wat er klaarstaat.
+ */
 export async function play(): Promise<void> {
-  if (sonosConfig.morningFavorite) {
-    const ok = await playFavorite(sonosConfig.morningFavorite);
+  const morning = await pickMorningFavorite();
+  if (morning) {
+    const ok = await playFavorite(morning);
     if (ok) return;
     // Favoriet niet gevonden → val terug op hervatten.
   }
