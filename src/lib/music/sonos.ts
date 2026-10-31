@@ -164,12 +164,16 @@ export async function playFavorite(name: string): Promise<boolean> {
 /* --- Spotify-genre rechtstreeks afspelen (Optie B) --- */
 
 /** Muziekvoorkeuren (gedeeld server-side): genre-stijl + achtergrondvolume. */
-export const musicPrefs: { style: string; volume: number | null } = {
+export const musicPrefs: { style: string; volume: number } = {
   style: "mix",
-  volume: null,
+  // Veilig standaard-achtergrondvolume, zodat Start nooit stil is (ook als de
+  // app de instelling nog niet heeft doorgestuurd). Door de app overschreven.
+  volume: 30,
 };
 export function setMusicPrefs(partial: { style?: string; volume?: number }) {
   if (partial.style) musicPrefs.style = partial.style;
+  // Volume 0 negeren als "nog niet ingesteld" zou te ver gaan; respecteer de
+  // waarde, maar de default blijft 30 tot de app iets anders stuurt.
   if (typeof partial.volume === "number") musicPrefs.volume = partial.volume;
 }
 
