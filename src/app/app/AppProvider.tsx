@@ -4,6 +4,7 @@ import { createContext, useCallback, useContext, useEffect, useState } from "rea
 import { TIMELINE, type RoutinePhase, type RoutineState } from "@/lib/routine/timeline";
 import { useRoutine, type RoutineActions } from "@/lib/routine/useRoutine";
 import { DEFAULT_SETTINGS, type Settings } from "@/lib/settings/types";
+import { WEEKPLAN_EVENT, effectiveStyleForToday } from "@/lib/settings/weekplan";
 
 interface AppContextValue {
   now: number;
@@ -39,13 +40,33 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
 
   // Muziekstijl + volume naar de server sturen zodat de routine-start de juiste
   // Spotify-muziek op de Sonos zoekt/afspeelt (server stuurt de muziek aan).
-  useEffect(() => {
+  // We sturen de EFFECTIEVE stijl van vandaag: de per-dag-override uit de
+  // weekplanning indien aanwezig, anders de algemene standaard uit instellingen.
+  const pushPrefs = useCallback(() => {
     void fetch("/api/music", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ action: "setPrefs", style: settings.musicStyle, volume: settings.volume }),
+      body: JSON.stringify({
+        action: "setPrefs",
+        style: effectiveStyleForToday(settings.musicStyle),
+        volume: settings.volume,
+      }),
     }).catch(() => {});
   }, [settings.musicStyle, settings.volume]);
+
+  // Sync bij start, bij wijziging van stijl/volume in instellingen,
+  // en wanneer de weekplanning wijzigt (zelfde tab via custom event,
+  // andere tab/toestel via storage-event).
+  useEffect(() => {
+    pushPrefs();
+    const onChange = () => pushPrefs();
+    window.addEventListener(WEEKPLAN_EVENT, onChange);
+    window.addEventListener("storage", onChange);
+    return () => {
+      window.removeEventListener(WEEKPLAN_EVENT, onChange);
+      window.removeEventListener("storage", onChange);
+    };
+  }, [pushPrefs]);
 
   const setSettings = useCallback((patch: Partial<Settings>) => {
     setSettingsState((prev) => {

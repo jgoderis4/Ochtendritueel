@@ -122,4 +122,7 @@ export const routineStore = {
   startWorkoutEarly() {
     void dispatch({ type: "startWorkoutEarly" });
   },
+  skipExercise() {
+    void dispatch({ type: "skipExercise" });
+  },
 };

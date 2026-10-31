@@ -41,6 +41,9 @@ export interface RoutineState {
   /** Verstreken routinetijd (ms) waarop de workout handmatig vroeger is
    *  gestart, of null wanneer de automatische start (@10 min) geldt. */
   workoutStartOffsetMs: number | null;
+  /** Opgetelde "oefening overslaan"-tijd (ms): schuift de workout-voortgang
+   *  vooruit zonder het einde van de workout te verzetten. */
+  workoutSkipMs: number;
 }
 
 export const INITIAL_STATE: RoutineState = {
@@ -50,6 +53,7 @@ export const INITIAL_STATE: RoutineState = {
   pausedAt: null,
   workoutSkipped: false,
   workoutStartOffsetMs: null,
+  workoutSkipMs: 0,
 };
 
 /** Verstreken routinetijd in ms (pauze niet meegerekend, ook de lopende pauze). */
@@ -80,7 +84,8 @@ export function workoutStartOffset(state: RoutineState): number | null {
 export function workoutElapsedMs(state: RoutineState, now: number): number {
   const offset = workoutStartOffset(state);
   if (offset === null) return 0;
-  const since = elapsedMs(state, now) - offset;
+  // Overgeslagen oefeningen schuiven de voortgang vooruit (skip-tijd meetellen).
+  const since = elapsedMs(state, now) - offset + (state.workoutSkipMs ?? 0);
   return Math.min(WORKOUT_DURATION, Math.max(0, since));
 }
 

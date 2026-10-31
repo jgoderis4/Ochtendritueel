@@ -10,7 +10,14 @@ export async function GET() {
   return Response.json(serverRoutine.get());
 }
 
-const VALID = new Set(["start", "stop", "togglePause", "skipWorkout", "startWorkoutEarly"]);
+const VALID = new Set([
+  "start",
+  "stop",
+  "togglePause",
+  "skipWorkout",
+  "startWorkoutEarly",
+  "skipExercise",
+]);
 
 export async function POST(request: Request) {
   let body: { action?: string; now?: number };

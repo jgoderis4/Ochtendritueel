@@ -38,7 +38,7 @@ export const DEFAULT_SETTINGS: Settings = {
   startWeekday: "07:00",
   startWeekend: "08:00",
   startHoliday: "08:00",
-  volume: 30,
+  volume: 50,
   musicStyle: "mix",
   newsSources: { HLN: true, DeTijd: true, Regionaal: true, Sporza: true },
   maxDurationMin: 30,

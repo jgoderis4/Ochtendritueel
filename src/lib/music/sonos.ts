@@ -168,7 +168,7 @@ export const musicPrefs: { style: string; volume: number } = {
   style: "mix",
   // Veilig standaard-achtergrondvolume, zodat Start nooit stil is (ook als de
   // app de instelling nog niet heeft doorgestuurd). Door de app overschreven.
-  volume: 30,
+  volume: 50,
 };
 export function setMusicPrefs(partial: { style?: string; volume?: number }) {
   if (partial.style) musicPrefs.style = partial.style;

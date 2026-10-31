@@ -83,6 +83,11 @@ export default function ControlPage() {
             <Button tone="default" onClick={actions.stop}>
               Stop alles
             </Button>
+            {phase === "workout" && (
+              <Button tone="default" onClick={actions.skipExercise}>
+                Volgende oefening ⏭
+              </Button>
+            )}
             {phase !== "workout" && !state.workoutSkipped && (
               <Button tone="default" onClick={actions.startWorkoutEarly}>
                 Workout nu starten

@@ -2,18 +2,14 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { MUSIC_STYLES, type MusicStyle } from "@/lib/settings/types";
+import { WEEKPLAN_EVENT, WEEKPLAN_KEY as PLAN_KEY, ymd } from "@/lib/settings/weekplan";
 import { useApp } from "../AppProvider";
 
 const DAY_NAMES = ["Zondag", "Maandag", "Dinsdag", "Woensdag", "Donderdag", "Vrijdag", "Zaterdag"];
-const PLAN_KEY = "aura.weekplan.v1"; // per-dag stijl-override (datum → stijl)
 
 /** Dagen sinds epoch — continue index voor doorlopende A/B-afwisseling. */
 function dayNumber(d: Date): number {
   return Math.floor(d.getTime() / 86_400_000);
-}
-
-function ymd(d: Date): string {
-  return d.toISOString().slice(0, 10);
 }
 
 export default function WeekPage() {
@@ -36,6 +32,9 @@ export default function WeekPage() {
       const next = { ...prev, [date]: style };
       try {
         localStorage.setItem(PLAN_KEY, JSON.stringify(next));
+        // AppProvider laten weten dat de weekplanning wijzigde, zodat de
+        // effectieve stijl van vandaag opnieuw naar de server gaat.
+        window.dispatchEvent(new Event(WEEKPLAN_EVENT));
       } catch {
         /* negeer */
       }
