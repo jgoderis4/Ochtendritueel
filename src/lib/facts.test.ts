@@ -4,8 +4,13 @@ import { factsForDay, FACTS } from "./facts";
 const DAY = 86_400_000;
 
 describe("factsForDay", () => {
-  it("geeft 3 verschillende weetjes", () => {
+  it("geeft standaard 2 verschillende weetjes", () => {
     const f = factsForDay(10 * DAY);
+    expect(f).toHaveLength(2);
+    expect(new Set(f).size).toBe(2);
+  });
+  it("kan een ander aantal teruggeven, allemaal verschillend", () => {
+    const f = factsForDay(10 * DAY, 3);
     expect(f).toHaveLength(3);
     expect(new Set(f).size).toBe(3);
   });

@@ -128,14 +128,15 @@ function mod(n: number, m: number): number {
 }
 
 /**
- * De 3 weetjes van vandaag (deterministisch, rouleren dagelijks door de hele pool).
- * Multiplier 7 en stap 11 zijn coprime met de poolgrootte → maximale spreiding en
- * drie verschillende weetjes per dag.
+ * De gecureerde weetjes van vandaag (deterministisch, rouleren dagelijks door de
+ * hele pool). Standaard 2 — het 3e weetje in de tegel komt live uit Wikipedia
+ * (altijd nieuw). Multiplier 7 en stap 11 zijn coprime met de poolgrootte →
+ * maximale spreiding en verschillende weetjes per dag.
  */
-export function factsForDay(now: number = Date.now()): string[] {
+export function factsForDay(now: number = Date.now(), count = 2): string[] {
   const day = Math.floor(now / 86_400_000);
   const len = FACTS.length;
   const start = mod(day * 7, len);
   const step = 11;
-  return [0, 1, 2].map((i) => FACTS[mod(start + i * step, len)]);
+  return Array.from({ length: count }, (_, i) => FACTS[mod(start + i * step, len)]);
 }
