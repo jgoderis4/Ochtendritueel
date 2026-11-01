@@ -5,7 +5,7 @@
  */
 
 import { getAdapters } from "./index";
-import { DREAM_LOCATIONS } from "@/lib/weather/config";
+import { dreamsForDay } from "@/lib/weather/config";
 import type { TvData } from "@/components/tv/screens/types";
 
 export async function getTvData(): Promise<TvData> {
@@ -19,7 +19,7 @@ export async function getTvData(): Promise<TvData> {
     a.waste.getCollection(),
     a.music.getState(),
   ]);
-  const dreamsP = Promise.all(DREAM_LOCATIONS.map((loc) => a.weather.getWeather(loc)));
+  const dreamsP = Promise.all(dreamsForDay().map((loc) => a.weather.getWeather(loc)));
   const [[kust, bestemming, traffic, news, waste, music], dreams] = await Promise.all([core, dreamsP]);
   return { kust, bestemming, traffic, news, waste, music, dreams };
 }
