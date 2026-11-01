@@ -2,6 +2,7 @@ import { TvHeader } from "@/components/tv/TvHeader";
 import { Chip, Panel, Tile } from "@/components/tv/Tile";
 import { DailyBackground } from "@/components/tv/DailyBackground";
 import { WorldWeather } from "@/components/tv/WorldWeather";
+import { BelgiumTraffic } from "@/components/tv/BelgiumTraffic";
 import { backgroundForDay } from "@/lib/backgrounds";
 import { factsForDay } from "@/lib/facts";
 import { formatCountdown } from "@/lib/routine/timeline";
@@ -14,7 +15,7 @@ import type { ScreenProps } from "./types";
  */
 export function DashboardScreen({ data, routine }: ScreenProps) {
   const { now, mounted, remaining } = routine;
-  const { kust, bestemming, traffic, news, waste } = data;
+  const { kust, bestemming, news, waste } = data;
   const bg = backgroundForDay();
   const facts = factsForDay();
 
@@ -90,51 +91,9 @@ export function DashboardScreen({ data, routine }: ScreenProps) {
 
         {/* === Rechterkolom: verkeer · nieuws · afval · weetjes === */}
         <div className="flex min-h-0 flex-1 flex-col gap-4">
-        {/* --- Verkeer --- */}
-        <Tile
-          compact
-          label="Verkeer · Traject"
-          chip={
-            !traffic.data ? (
-              <Chip tone="muted">Niet beschikbaar</Chip>
-            ) : !traffic.data.trafficAware ? (
-              <Chip tone="coastal">Zonder live verkeer</Chip>
-            ) : traffic.data.flow === "vlot" ? (
-              <Chip tone="emerald">Vlot verkeer</Chip>
-            ) : (
-              <Chip tone="amber">Vertraging</Chip>
-            )
-          }
-        >
-          {!traffic.data && (
-            <p className="text-body-md text-text-mid">Reisinfo tijdelijk niet beschikbaar.</p>
-          )}
-          {traffic.data && (
-            <div className="flex flex-col gap-2">
-              <div className="flex items-end justify-between">
-                <div>
-                  <p className="text-headline-md font-semibold text-text-high">{traffic.data.fromTo}</p>
-                  <p className="text-label-md text-text-mid">Via {traffic.data.via}</p>
-                </div>
-                <div className="text-right">
-                  <p className="tabular font-display text-4xl font-semibold text-emerald">
-                    {traffic.data.durationMin}<span className="text-body-md"> min</span>
-                  </p>
-                  <p className="tabular text-label-md text-text-mid">{traffic.data.distanceKm} km</p>
-                </div>
-              </div>
-              {traffic.data.trafficAware ? (
-                <p className="text-label-md text-text-mid">
-                  {traffic.data.delayMin && traffic.data.delayMin > 0
-                    ? `≈ ${traffic.data.delayMin} min vertraging`
-                    : "✓ Vlot verkeer"}
-                  {traffic.data.incidents.length > 0 && ` · ${traffic.data.incidents.join(" · ")}`}
-                </p>
-              ) : (
-                <p className="text-label-md text-text-muted">Basisreistijd — zonder live verkeer.</p>
-              )}
-            </div>
-          )}
+        {/* --- Verkeer (algemeen filebeeld België) --- */}
+        <Tile compact label="Verkeer · België" chip={<Chip tone="coastal">Live · TomTom</Chip>}>
+          <BelgiumTraffic />
         </Tile>
 
         {/* --- Nieuws --- */}
