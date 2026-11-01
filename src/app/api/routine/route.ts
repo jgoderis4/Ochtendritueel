@@ -17,6 +17,7 @@ const VALID = new Set([
   "skipWorkout",
   "startWorkoutEarly",
   "skipExercise",
+  "snooze",
 ]);
 
 export async function POST(request: Request) {

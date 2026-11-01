@@ -4,7 +4,7 @@
  * Tijd wordt expliciet als `now` (epoch ms) doorgegeven → testbaar en SSR-veilig.
  */
 
-import { INITIAL_STATE, workoutElapsedMs, type RoutineState } from "./timeline";
+import { INITIAL_STATE, SNOOZE_DURATION, workoutElapsedMs, type RoutineState } from "./timeline";
 import { workoutForDayIndex } from "./workouts";
 import { workoutProgress } from "./workout-engine";
 
@@ -14,7 +14,8 @@ export type RoutineAction =
   | { type: "togglePause" }
   | { type: "skipWorkout" }
   | { type: "startWorkoutEarly" }
-  | { type: "skipExercise" };
+  | { type: "skipExercise" }
+  | { type: "snooze" };
 
 /** Dagindex voor de A/B-afwisseling (zelfde regel als het workoutscherm). */
 function dayIndexFor(now: number): number {
@@ -28,6 +29,10 @@ export function applyAction(state: RoutineState, action: RoutineAction, now: num
 
     case "stop":
       return INITIAL_STATE;
+
+    case "snooze":
+      // Routine stopt en herstart automatisch over SNOOZE_DURATION.
+      return { ...INITIAL_STATE, snoozeUntil: now + SNOOZE_DURATION };
 
     case "togglePause": {
       if (state.startedAt === null) return state;

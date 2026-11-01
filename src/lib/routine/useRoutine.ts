@@ -29,6 +29,7 @@ export interface RoutineActions {
   skipWorkout: () => void;
   startWorkoutEarly: () => void;
   skipExercise: () => void;
+  snooze: () => void;
 }
 
 export interface UseRoutine {
@@ -51,6 +52,7 @@ const actions: RoutineActions = {
   skipWorkout: () => routineStore.skipWorkout(),
   startWorkoutEarly: () => routineStore.startWorkoutEarly(),
   skipExercise: () => routineStore.skipExercise(),
+  snooze: () => routineStore.snooze(),
 };
 
 export function useRoutine(): UseRoutine {

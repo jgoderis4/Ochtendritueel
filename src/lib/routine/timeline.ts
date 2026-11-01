@@ -19,6 +19,9 @@ export const MINUTE = 60_000;
 /** Doelduur van de workout (D-006: 5–10 min; we kiezen 7 min). */
 export const WORKOUT_DURATION = 7 * MINUTE;
 
+/** Snooze-duur: zoveel later herstart de routine automatisch. */
+export const SNOOZE_DURATION = 10 * MINUTE;
+
 /** Vaste ankerpunten in de tijdlijn. */
 export const TIMELINE = {
   welcomeEnd: 1 * MINUTE,
@@ -44,6 +47,8 @@ export interface RoutineState {
   /** Opgetelde "oefening overslaan"-tijd (ms): schuift de workout-voortgang
    *  vooruit zonder het einde van de workout te verzetten. */
   workoutSkipMs: number;
+  /** Epoch ms waarop de routine na een snooze automatisch herstart, of null. */
+  snoozeUntil: number | null;
 }
 
 export const INITIAL_STATE: RoutineState = {
@@ -54,6 +59,7 @@ export const INITIAL_STATE: RoutineState = {
   workoutSkipped: false,
   workoutStartOffsetMs: null,
   workoutSkipMs: 0,
+  snoozeUntil: null,
 };
 
 /** Verstreken routinetijd in ms (pauze niet meegerekend, ook de lopende pauze). */

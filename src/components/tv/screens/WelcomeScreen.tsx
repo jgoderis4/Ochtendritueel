@@ -2,6 +2,7 @@ import { TvHeader } from "@/components/tv/TvHeader";
 import { Chip, Tile } from "@/components/tv/Tile";
 import { DailyBackground } from "@/components/tv/DailyBackground";
 import { formatClock, formatDate, greeting } from "@/lib/routine/clock";
+import { TIMELINE } from "@/lib/routine/timeline";
 import type { ScreenProps } from "./types";
 
 /** Een gedachte van de dag; vast in Fase 1 (geen extra bron). */
@@ -16,9 +17,33 @@ export function WelcomeScreen({ data, routine }: ScreenProps) {
   const kust = data.kust;
   const music = data.music;
 
+  // Zonsopgang-simulatie: het scherm start donker en licht in de welkomstminuut
+  // geleidelijk op met een warme dageraad-gloed (voelt als een wake-up light).
+  // p = 0 (net gestart, donker) → 1 (einde welkomstminuut, vol licht).
+  const p = routine.mounted
+    ? Math.min(1, Math.max(0, routine.elapsed / TIMELINE.welcomeEnd))
+    : 1;
+
   return (
     <div className="relative isolate flex min-h-screen flex-col gap-8 px-14 py-8">
       <DailyBackground />
+
+      {/* Zonsopgang-overlay (dekt het scherm, dimt af en warmt op) */}
+      <div className="pointer-events-none absolute inset-0 z-20" aria-hidden>
+        <div
+          className="absolute inset-0 bg-canvas transition-opacity duration-1000 ease-linear"
+          style={{ opacity: (1 - p) * 0.82 }}
+        />
+        <div
+          className="absolute inset-0 transition-opacity duration-1000 ease-linear"
+          style={{
+            opacity: p * 0.22,
+            background:
+              "radial-gradient(130% 80% at 50% 100%, rgba(245,158,11,0.65), rgba(251,113,133,0.28) 42%, transparent 72%)",
+          }}
+        />
+      </div>
+
       <TvHeader now={now} phaseLabel="Welkom" />
 
       <main className="grid flex-1 grid-cols-1 gap-7 lg:grid-cols-2">

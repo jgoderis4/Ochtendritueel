@@ -1,5 +1,6 @@
 "use client";
 
+import { formatClock } from "@/lib/routine/clock";
 import { formatCountdown, TIMELINE } from "@/lib/routine/timeline";
 import { useApp } from "./AppProvider";
 
@@ -11,8 +12,9 @@ const PHASE_LABEL: Record<string, string> = {
 };
 
 export default function ControlPage() {
-  const { phase, state, elapsed, remaining, actions, settings } = useApp();
+  const { now, phase, state, elapsed, remaining, actions, settings } = useApp();
   const running = state.startedAt !== null && phase !== "ended";
+  const snoozed = !running && state.snoozeUntil != null && state.snoozeUntil > now;
   // Muziek wordt server-side aangestuurd bij elke actie (zie /api/routine),
   // zodat ze precies één keer speelt — ongeacht hoeveel toestellen meekijken.
 
@@ -62,6 +64,10 @@ export default function ControlPage() {
               />
             </div>
           </div>
+        ) : snoozed ? (
+          <p className="mt-2 text-body-lg font-semibold text-amber">
+            😴 Gesnoozed · herstart automatisch om {formatClock(state.snoozeUntil)}
+          </p>
         ) : (
           <p className="mt-2 text-body-md text-text-mid">
             Standaard start: werkdag {settings.startWeekday}, weekend {settings.startWeekend}.
@@ -72,13 +78,23 @@ export default function ControlPage() {
       {/* Knoppen */}
       <section className="flex flex-col gap-3">
         {!running ? (
-          <Button tone="primary" onClick={actions.start}>
-            Start mijn ochtendroutine nu
-          </Button>
+          <>
+            <Button tone="primary" onClick={actions.start}>
+              Start mijn ochtendroutine nu
+            </Button>
+            {snoozed && (
+              <Button tone="ghost" onClick={actions.stop}>
+                Annuleer snooze
+              </Button>
+            )}
+          </>
         ) : (
           <>
             <Button tone="default" onClick={actions.togglePause}>
               {state.paused ? "Hervatten" : "Pauzeer alles"}
+            </Button>
+            <Button tone="default" onClick={actions.snooze}>
+              Snooze 10 min 😴
             </Button>
             <Button tone="default" onClick={actions.stop}>
               Stop alles

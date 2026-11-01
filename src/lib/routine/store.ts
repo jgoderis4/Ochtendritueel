@@ -125,4 +125,7 @@ export const routineStore = {
   skipExercise() {
     void dispatch({ type: "skipExercise" });
   },
+  snooze() {
+    void dispatch({ type: "snooze" });
+  },
 };

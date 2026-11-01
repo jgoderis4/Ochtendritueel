@@ -16,6 +16,7 @@ import { applyAction, type RoutineAction } from "./transitions";
 let state: RoutineState = INITIAL_STATE;
 let rev = 0;
 let autoStopTimer: ReturnType<typeof setTimeout> | null = null;
+let snoozeTimer: ReturnType<typeof setTimeout> | null = null;
 
 function isRunning(s: RoutineState, now: number): boolean {
   return s.startedAt !== null && currentPhase(s, now) !== "ended";
@@ -36,6 +37,20 @@ function scheduleAutoStop(now: number) {
   }, left);
 }
 
+/** (Her)plan de automatische herstart na een snooze. */
+function scheduleSnooze(now: number) {
+  if (snoozeTimer) {
+    clearTimeout(snoozeTimer);
+    snoozeTimer = null;
+  }
+  if (state.startedAt === null && state.snoozeUntil && state.snoozeUntil > now) {
+    snoozeTimer = setTimeout(() => {
+      snoozeTimer = null;
+      serverRoutine.dispatch({ type: "start" }, Date.now());
+    }, state.snoozeUntil - now);
+  }
+}
+
 /** Voert de muziekbesturing uit die bij een overgang hoort. */
 function reconcileMusic(action: RoutineAction, next: RoutineState) {
   switch (action.type) {
@@ -43,6 +58,7 @@ function reconcileMusic(action: RoutineAction, next: RoutineState) {
       void sonosPlay().catch(() => {});
       break;
     case "stop":
+    case "snooze":
       void sonosPause().catch(() => {});
       break;
     case "togglePause":
@@ -68,6 +84,7 @@ export const serverRoutine = {
       rev += 1;
       reconcileMusic(action, next);
       scheduleAutoStop(now);
+      scheduleSnooze(now);
     }
     return { state, rev };
   },
