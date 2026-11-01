@@ -16,7 +16,7 @@ export function DashboardScreen({ data, routine }: ScreenProps) {
   const bg = backgroundForDay();
 
   return (
-    <div className="relative flex min-h-screen flex-col gap-8 px-14 py-8">
+    <div className="relative isolate flex min-h-screen flex-col gap-8 px-14 py-8">
       <DashboardBackground />
       <TvHeader now={now} phaseLabel="Dashboard" />
 
