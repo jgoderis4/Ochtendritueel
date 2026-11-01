@@ -12,8 +12,9 @@ export interface FeedConfig {
   max: number;
 }
 
+// Alleen titels op het dashboard → er passen meer artikels per feed.
 export const NEWS_FEEDS: FeedConfig[] = [
-  { source: "VRT NWS", url: "https://www.vrt.be/vrtnws/nl.rss.articles.xml", format: "atom", topic: "België", max: 2 },
-  { source: "De Tijd", url: "https://www.tijd.be/rss/nieuws.xml", format: "rss", topic: "Economie", max: 2 },
-  { source: "Sporza", url: "https://sporza.be/nl.rss.xml", format: "atom", topic: "Sport", max: 1 },
+  { source: "VRT NWS", url: "https://www.vrt.be/vrtnws/nl.rss.articles.xml", format: "atom", topic: "België", max: 4 },
+  { source: "De Tijd", url: "https://www.tijd.be/rss/nieuws.xml", format: "rss", topic: "Economie", max: 3 },
+  { source: "Sporza", url: "https://sporza.be/nl.rss.xml", format: "atom", topic: "Sport", max: 2 },
 ];

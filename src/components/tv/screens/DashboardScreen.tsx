@@ -1,5 +1,7 @@
 import { TvHeader } from "@/components/tv/TvHeader";
 import { Chip, Panel, Tile } from "@/components/tv/Tile";
+import { DashboardBackground } from "@/components/tv/DashboardBackground";
+import { backgroundForDay } from "@/lib/backgrounds";
 import { formatCountdown } from "@/lib/routine/timeline";
 import type { ScreenProps } from "./types";
 
@@ -11,9 +13,11 @@ import type { ScreenProps } from "./types";
 export function DashboardScreen({ data, routine }: ScreenProps) {
   const { now, mounted, remaining } = routine;
   const { kust, bestemming, traffic, news, waste } = data;
+  const bg = backgroundForDay();
 
   return (
-    <div className="flex min-h-screen flex-col gap-8 px-14 py-8">
+    <div className="relative flex min-h-screen flex-col gap-8 px-14 py-8">
+      <DashboardBackground />
       <TvHeader now={now} phaseLabel="Dashboard" />
 
       <main className="grid flex-1 grid-cols-1 gap-7 lg:grid-cols-2">
@@ -142,15 +146,12 @@ export function DashboardScreen({ data, routine }: ScreenProps) {
           {!news.data?.length && (
             <p className="text-body-md text-text-mid">Nieuws tijdelijk niet beschikbaar.</p>
           )}
-          <ul className="flex flex-col gap-4">
+          {/* Alleen titels (de samenvatting werd toch afgebroken) → meer artikels. */}
+          <ul className="flex flex-col gap-2.5">
             {news.data?.map((n, i) => (
-              <li key={i} className="border-b border-border pb-4 last:border-0 last:pb-0">
-                <div className="mb-1 flex items-center gap-2">
-                  <span className="rounded-sm bg-surface-2 px-2 py-0.5 text-label-md font-semibold text-text-mid">{n.source}</span>
-                  <span className="text-label-md text-text-muted">{n.topic}</span>
-                </div>
+              <li key={i} className="flex items-baseline gap-2 border-b border-border pb-2.5 last:border-0 last:pb-0">
+                <span className="shrink-0 rounded-sm bg-surface-2 px-2 py-0.5 text-label-md font-semibold text-text-mid">{n.source}</span>
                 <p className="text-body-md font-semibold text-text-high">{n.headline}</p>
-                <p className="text-label-lg text-text-mid">{n.summary}</p>
               </li>
             ))}
           </ul>
@@ -212,7 +213,7 @@ export function DashboardScreen({ data, routine }: ScreenProps) {
       </main>
 
       <footer className="flex items-center justify-between text-label-md text-text-muted">
-        <span>● Dashboard · vaste rasterweergave</span>
+        <span>📍 {bg.name}</span>
         <span className="tabular">
           {mounted ? `Nog ${formatCountdown(remaining)} tot einde routine` : "Routine loopt"}
         </span>
