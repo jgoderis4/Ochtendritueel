@@ -262,13 +262,27 @@ export function setMusicPrefs(partial: { style?: string; volume?: number }) {
   if (typeof partial.volume === "number") musicPrefs.volume = partial.volume;
 }
 
-/** Zoekterm per muziekstijl (instellingen) → waarmee we Spotify doorzoeken. */
+/** Zoekterm per muziekstijl (terugval als de vaste lijsten falen). */
 const STYLE_QUERY: Record<string, string> = {
   mix: "ochtend chill",
   jazz: "jazz chill",
   lounge: "lounge chill",
   "rustige-pop": "rustige pop",
   instrumentaal: "instrumental rustig",
+};
+
+/**
+ * Vaste, geverifieerde GEBRUIKERS-playlists per stijl (geen Spotify-editorial,
+ * want die kan de Sonos niet laden — foutcode 800). Primaire bron; Spotify-zoeken
+ * is onbetrouwbaar/leeg geworden en dient enkel als terugval. Meerdere per stijl
+ * voor afwisseling en robuustheid.
+ */
+const STYLE_PLAYLISTS: Record<string, string[]> = {
+  mix: ["0BowkHRthvLStdF5yxrPQ9", "0Vfh7Hiif45z9LdmyX1gVF"],
+  jazz: ["53EkqPvkRRESegNS1fmaKi", "0Vfh7Hiif45z9LdmyX1gVF"],
+  lounge: ["0erLbMzXD0U9xJUPlOeKrX", "32HiyEXKoCYkxazhRNs1Mn"],
+  "rustige-pop": ["7oY1SGh06NiidddC9fjrLb"],
+  instrumentaal: ["79SoVXe6nheiF41UDAiW6U"],
 };
 
 /** UUID van de speaker (voor de wachtrij-URI). Gebruikt het actuele IP. */
@@ -294,7 +308,7 @@ async function getDeviceUuid(): Promise<string> {
  * wachtrij: leegmaken → playlist toevoegen (SMAPI-container) → wachtrij afspelen.
  * Formaat afgeleid uit live Sonos-metadata: sid=9, sn=2, servicetype 2311.
  */
-export async function playSpotifyPlaylist(playlistId: string): Promise<void> {
+export async function playSpotifyPlaylist(playlistId: string): Promise<boolean> {
   const enc = `spotify%3aplaylist%3a${playlistId}`;
   const container = `x-rincon-cpcontainer:1006206c${enc}?sid=9&flags=8300&sn=${sonosConfig.spotifySn}`;
   const st = sonosConfig.spotifyServiceType;
@@ -310,28 +324,47 @@ export async function playSpotifyPlaylist(playlistId: string): Promise<void> {
 
   const uuid = await getDeviceUuid();
   await soap("AVTransport", "RemoveAllTracksFromQueue", "<InstanceID>0</InstanceID>");
-  await soap(
+  const added = await soap(
     "AVTransport",
     "AddURIToQueue",
     `<InstanceID>0</InstanceID><EnqueuedURI>${xmlEscape(container)}</EnqueuedURI>` +
       `<EnqueuedURIMetaData>${xmlEscape(meta)}</EnqueuedURIMetaData>` +
       `<DesiredFirstTrackNumberEnqueued>0</DesiredFirstTrackNumberEnqueued><EnqueueAsNext>1</EnqueueAsNext>`,
   );
+  // Niets toegevoegd? Dan niet "spelen" op een lege wachtrij (geen geluid).
+  const num = Number(pick(added, "NumTracksAdded") ?? "0");
+  if (num < 1) return false;
+
   await soap(
     "AVTransport",
     "SetAVTransportURI",
     `<InstanceID>0</InstanceID><CurrentURI>x-rincon-queue:${uuid}#0</CurrentURI><CurrentURIMetaData></CurrentURIMetaData>`,
   );
   await soap("AVTransport", "Play", "<InstanceID>0</InstanceID><Speed>1</Speed>");
+  return true;
 }
 
-/** Zoekt op Spotify een playlist voor de gekozen stijl en speelt die af. */
+/**
+ * Speelt muziek voor de gekozen stijl: eerst de vaste, geverifieerde playlists,
+ * en als die (onverwacht) falen, een Spotify-zoekresultaat als terugval.
+ */
 export async function playGenre(style: string): Promise<boolean> {
-  const query = STYLE_QUERY[style] ?? STYLE_QUERY.mix;
-  const found = await searchPlaylist(query);
-  if (!found) return false;
-  await playSpotifyPlaylist(found.id);
-  return true;
+  const ids = STYLE_PLAYLISTS[style] ?? STYLE_PLAYLISTS.mix;
+  for (const id of ids) {
+    try {
+      if (await playSpotifyPlaylist(id)) return true;
+    } catch {
+      /* probeer de volgende */
+    }
+  }
+  // Terugval: live zoeken (kan leeg zijn door Spotify-beperkingen).
+  try {
+    const found = await searchPlaylist(STYLE_QUERY[style] ?? STYLE_QUERY.mix);
+    if (found && (await playSpotifyPlaylist(found.id))) return true;
+  } catch {
+    /* geen terugval beschikbaar */
+  }
+  return false;
 }
 
 /**
