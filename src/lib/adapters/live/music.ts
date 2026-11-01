@@ -6,11 +6,15 @@
  * /api/music-route (geen CORS). Bij falen: discrete niet-beschikbaar-status.
  */
 import type { MusicAdapter, MusicState, Sourced } from "../types";
-import { getState, pause, play, setVolume } from "@/lib/music/sonos";
+
+// De Sonos-client gebruikt Node-API's (net/os) en mag NIET in de client-bundel
+// belanden → dynamisch importeren, uitsluitend in de server-tak.
+const isServer = typeof window === "undefined";
 
 export const liveMusicAdapter: MusicAdapter = {
   async getState(): Promise<Sourced<MusicState>> {
-    if (typeof window === "undefined") {
+    if (isServer) {
+      const { getState } = await import("@/lib/music/sonos");
       return getState();
     }
     try {
@@ -22,7 +26,8 @@ export const liveMusicAdapter: MusicAdapter = {
     }
   },
   async play(): Promise<void> {
-    if (typeof window === "undefined") {
+    if (isServer) {
+      const { play } = await import("@/lib/music/sonos");
       await play();
       return;
     }
@@ -33,7 +38,8 @@ export const liveMusicAdapter: MusicAdapter = {
     });
   },
   async stop(): Promise<void> {
-    if (typeof window === "undefined") {
+    if (isServer) {
+      const { pause } = await import("@/lib/music/sonos");
       await pause();
       return;
     }
@@ -44,7 +50,8 @@ export const liveMusicAdapter: MusicAdapter = {
     });
   },
   async setVolume(pct: number): Promise<void> {
-    if (typeof window === "undefined") {
+    if (isServer) {
+      const { setVolume } = await import("@/lib/music/sonos");
       await setVolume(pct);
       return;
     }

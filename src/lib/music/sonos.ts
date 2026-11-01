@@ -9,6 +9,8 @@
  * Sonos). Geen cloud, geen sleutel. Bij falen: discrete niet-beschikbaar-status.
  */
 
+import net from "node:net";
+import os from "node:os";
 import type { MusicState, Sourced } from "@/lib/adapters/types";
 import { searchPlaylist } from "./spotify";
 
@@ -53,13 +55,87 @@ function servicePath(service: SonosService): string {
   return `/MediaRenderer/${service}/Control`;
 }
 
-async function soap(service: SonosService, action: string, inner: string): Promise<string> {
+/* --- Speaker vinden op naam (robuust tegen gewijzigd DHCP-IP) --- */
+
+/** Laatst bekende IP van de doel-speaker (begint bij de geconfigureerde waarde). */
+let resolvedIp: string = sonosConfig.speakerIp;
+let discovering: Promise<string> | null = null;
+
+/** Eigen /24-subnet(ten) afleiden uit de netwerkinterfaces van de server. */
+function localSubnets(): string[] {
+  const out: string[] = [];
+  for (const addrs of Object.values(os.networkInterfaces())) {
+    for (const a of addrs ?? []) {
+      if (a.family === "IPv4" && !a.internal) {
+        out.push(a.address.split(".").slice(0, 3).join(".") + ".");
+      }
+    }
+  }
+  return out.length ? out : ["192.168.0."];
+}
+
+/** Snelle TCP-check of poort 1400 open staat (Sonos). */
+function portOpen(ip: string, timeout = 400): Promise<boolean> {
+  return new Promise((resolve) => {
+    const sock = new net.Socket();
+    const done = (ok: boolean) => {
+      sock.destroy();
+      resolve(ok);
+    };
+    sock.setTimeout(timeout);
+    sock.once("connect", () => done(true));
+    sock.once("timeout", () => done(false));
+    sock.once("error", () => done(false));
+    sock.connect(1400, ip);
+  });
+}
+
+/** Leest de kamernaam van een Sonos op `ip`, of null. */
+async function roomNameAt(ip: string): Promise<string | null> {
+  try {
+    const res = await fetch(`http://${ip}:1400/xml/device_description.xml`, {
+      signal: AbortSignal.timeout(1500),
+    });
+    if (!res.ok) return null;
+    return pick(await res.text(), "roomName");
+  } catch {
+    return null;
+  }
+}
+
+/** Scant het netwerk en geeft het IP van de doel-speaker (op naam) terug. */
+async function discover(): Promise<string> {
+  const want = sonosConfig.room.trim().toLowerCase();
+  for (const base of localSubnets()) {
+    const checks = await Promise.all(
+      Array.from({ length: 254 }, (_, i) => portOpen(`${base}${i + 1}`).then((ok) => (ok ? `${base}${i + 1}` : null))),
+    );
+    const hits = checks.filter((x): x is string => x !== null);
+    for (const ip of hits) {
+      const room = await roomNameAt(ip);
+      // Alleen de doel-speaker op exacte naam — nooit zomaar een andere speaker.
+      if (room && room.trim().toLowerCase() === want) {
+        resolvedIp = ip;
+        return ip;
+      }
+    }
+  }
+  throw new Error(`Sonos "${sonosConfig.room}" niet gevonden op het netwerk`);
+}
+
+/** Dedupe: meerdere gelijktijdige calls delen één netwerkscan. */
+function discoverOnce(): Promise<string> {
+  if (!discovering) discovering = discover().finally(() => (discovering = null));
+  return discovering;
+}
+
+async function doSoap(ip: string, service: SonosService, action: string, inner: string): Promise<string> {
   const stype = `urn:schemas-upnp-org:service:${service}:1`;
   const body =
     `<?xml version="1.0"?>` +
     `<s:Envelope xmlns:s="http://schemas.xmlsoap.org/soap/envelope/" s:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/">` +
     `<s:Body><u:${action} xmlns:u="${stype}">${inner}</u:${action}></s:Body></s:Envelope>`;
-  const res = await fetch(`http://${sonosConfig.speakerIp}:1400${servicePath(service)}`, {
+  const res = await fetch(`http://${ip}:1400${servicePath(service)}`, {
     method: "POST",
     headers: {
       "Content-Type": 'text/xml; charset="utf-8"',
@@ -67,11 +143,20 @@ async function soap(service: SonosService, action: string, inner: string): Promi
     },
     body,
     cache: "no-store",
-    // Snel falen als de speaker niet bereikbaar is.
     signal: AbortSignal.timeout(5000),
   });
   if (!res.ok) throw new Error(`Sonos ${action} HTTP ${res.status}`);
   return res.text();
+}
+
+async function soap(service: SonosService, action: string, inner: string): Promise<string> {
+  try {
+    return await doSoap(resolvedIp, service, action, inner);
+  } catch {
+    // Mogelijk gewijzigd IP → zoek de speaker opnieuw en probeer één keer.
+    const ip = await discoverOnce();
+    return doSoap(ip, service, action, inner);
+  }
 }
 
 /* --- Status --- */
@@ -186,18 +271,22 @@ const STYLE_QUERY: Record<string, string> = {
   instrumentaal: "instrumental rustig",
 };
 
-/** UUID van de speaker (voor de wachtrij-URI), eenmalig opgehaald en gecachet. */
-let cachedUuid: string | null = null;
-async function getDeviceUuid(): Promise<string> {
-  if (cachedUuid) return cachedUuid;
-  const res = await fetch(`http://${sonosConfig.speakerIp}:1400/xml/device_description.xml`, {
+/** UUID van de speaker (voor de wachtrij-URI). Gebruikt het actuele IP. */
+async function fetchUuid(ip: string): Promise<string> {
+  const res = await fetch(`http://${ip}:1400/xml/device_description.xml`, {
     signal: AbortSignal.timeout(5000),
   });
-  const xml = await res.text();
-  const udn = pick(xml, "UDN") ?? "";
-  cachedUuid = udn.replace(/^uuid:/, "");
-  if (!cachedUuid) throw new Error("Sonos UUID niet gevonden");
-  return cachedUuid;
+  const udn = pick(await res.text(), "UDN") ?? "";
+  const uuid = udn.replace(/^uuid:/, "");
+  if (!uuid) throw new Error("Sonos UUID niet gevonden");
+  return uuid;
+}
+async function getDeviceUuid(): Promise<string> {
+  try {
+    return await fetchUuid(resolvedIp);
+  } catch {
+    return fetchUuid(await discoverOnce());
+  }
 }
 
 /**
