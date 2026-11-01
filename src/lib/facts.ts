@@ -1,7 +1,8 @@
 /**
  * "Weetje van de dag" — een gecureerde pool korte, waargebeurde weetjes (NL).
  * Elke dag worden er deterministisch 3 gekozen (zelfde op tv/app/alle toestellen),
- * die dagelijks rouleren zodat je telkens iets nieuws leest.
+ * die dagelijks rouleren zodat je telkens iets nieuws leest. De pool is ruim
+ * (meer dan 100) en wordt uitgebreid om herhaling te vermijden.
  */
 
 export const FACTS: string[] = [
@@ -17,39 +18,124 @@ export const FACTS: string[] = [
   "Kolibries zijn de enige vogels die echt achteruit kunnen vliegen.",
   "Het menselijk lichaam telt meer dan 600 spieren.",
   "De kortste oorlog ooit duurde ongeveer 38 minuten (1896, Zanzibar).",
-  "Een slak kan er maanden over doen om één enkele nacht van ons te 'slapen' — sommige soorten slapen jaren bij droogte.",
   "Wombats produceren kubusvormige keutels.",
   "De Noordzee is gemiddeld maar zo'n 95 meter diep.",
-  "Je hartspier pompt per dag genoeg bloed om een klein zwembad te vullen.",
   "Mieren hebben geen longen; ze ademen via kleine openingen in hun lichaam.",
   "Er zijn meer sterren in het heelal dan zandkorrels op alle stranden van de aarde.",
-  "Een bijenkolonie kan in de winter de temperatuur in de korf rond de 35 °C houden.",
-  "De punt van de Mount Everest bestaat uit kalksteen van een oude zeebodem.",
+  "De top van de Mount Everest bestaat uit kalksteen van een oude zeebodem.",
   "Water bereikt zijn grootste dichtheid bij 4 °C, daarom drijft ijs.",
   "Een kat kan geen zoet proeven.",
   "De tong van een blauwe vinvis weegt ongeveer evenveel als een olifant.",
-  "Pluto is kleiner dan de Verenigde Staten in breedte.",
   "Een gewone potlood kan een lijn van zo'n 56 km trekken.",
-  "Gouden vissen kunnen kleuren onderscheiden, inclusief ultraviolet.",
   "De Sahara was duizenden jaren geleden een groen landschap met meren.",
-  "Een dag op aarde wordt heel langzaam langer: de maan duwt ons tempo af.",
   "Spinrag is, gewicht voor gewicht, sterker dan staal.",
   "Het menselijk oog kan ongeveer 10 miljoen kleuren onderscheiden.",
-  "Komodovaranen kunnen zich voortplanten zonder mannetje (maagdelijke voortplanting).",
-  "De meeste kaarten tonen het noorden boven — puur afspraak, niet natuurwet.",
+  "Komodovaranen kunnen zich voortplanten zonder mannetje.",
   "Een wolk kan makkelijk honderden tonnen water wegen.",
   "IJsberen hebben zwarte huid onder hun doorschijnende vacht.",
+  "De maan verwijdert zich elk jaar ongeveer 3,8 cm van de aarde.",
+  "Een jaar op Jupiter duurt bijna 12 aardse jaren.",
+  "Slakken hebben duizenden piepkleine tandjes op hun tong (radula).",
+  "De kortste rivier ter wereld, de Roe, is nog geen 70 meter lang.",
+  "Een kwal bestaat voor ongeveer 95% uit water.",
+  "Vlinders proeven met hun pootjes.",
+  "De grootste levende structuur op aarde is het Great Barrier Reef.",
+  "Een aardbei heeft gemiddeld zo'n 200 zaadjes aan de buitenkant.",
+  "Giraffen hebben evenveel nekwervels als mensen: zeven.",
+  "De diepste plek in de oceaan (Marianentrog) is dieper dan de Everest hoog is.",
+  "Een pasgeboren baby ziet in het begin vooral zwart-wit en onscherp.",
+  "De snelste spier van je lichaam zit in je oog (de oogknippering).",
+  "Katten brengen ongeveer twee derde van hun leven slapend door.",
+  "De Stille Oceaan is groter dan alle landmassa's op aarde samen.",
+  "Een bliksemschicht duurt vaak minder dan een milliseconde.",
+  "Pinguïns kunnen niet vliegen, maar 'vliegen' wel onder water.",
+  "De zon is zo groot dat er ongeveer een miljoen aardes in passen.",
+  "Appels drijven omdat ze voor een kwart uit lucht bestaan.",
+  "Een olifant is het enige dier dat niet kan springen.",
+  "De naam 'augurk' en 'komkommer' slaan op dezelfde plant in verschillende stadia.",
+  "Je linker- en rechterlong zijn niet even groot: de linker maakt plaats voor het hart.",
+  "Een kolibrie klapt tot wel 80 keer per seconde met zijn vleugels.",
+  "Het DNA in één menselijke cel, uitgerold, is ongeveer twee meter lang.",
+  "De lucht die je inademt is voor ongeveer 78% stikstof, niet zuurstof.",
+  "Bijen communiceren de richting van voedsel via een 'bijendans'.",
+  "Een zeester kan een verloren arm opnieuw laten groeien.",
+  "Het menselijk hart klopt ongeveer 100.000 keer per dag.",
+  "De Dode Zee ligt zo laag dat je er bijna niet in kunt zinken door het zoutgehalte.",
+  "Sommige schildpadden kunnen via hun achterste zuurstof opnemen.",
+  "De grootste woestijn ter wereld is Antarctica (een koude woestijn).",
+  "Een slak kan in droge tijden maandenlang in rust (estivatie) blijven.",
+  "Chocolade was bij de Maya's en Azteken ooit een drank, geen reep.",
+  "De meeste zuurstof op aarde komt van algen in de oceaan, niet van bomen.",
+  "Een menselijke niesbui kan sneller dan 50 km/u gaan.",
+  "Zeepaardjes zijn de enige dieren waarbij het mannetje zwanger wordt.",
+  "De grootste bekende ster is miljarden keren groter in volume dan de zon.",
+  "Een vlinder leeft gemiddeld maar enkele weken.",
+  "IJs is gladder bij lichte druk doordat er een dun laagje water op ontstaat.",
+  "De kortste dag van het jaar valt rond 21 december op het noordelijk halfrond.",
+  "Een regenboog is eigenlijk een volledige cirkel; vanaf de grond zie je maar de helft.",
+  "De meeste mensen knipperen zo'n 15 tot 20 keer per minuut.",
+  "Een eekhoorn vergeet veel van zijn verstopte noten — en plant zo bomen.",
+  "Het woord 'robot' komt uit een Tsjechisch toneelstuk uit 1920.",
+  "De grootste vulkaan in ons zonnestelsel, Olympus Mons, staat op Mars.",
+  "Een kameel slaat vet op in zijn bult, geen water.",
+  "De kleur van een flamingo komt van wat hij eet (garnaaltjes en algen).",
+  "Geluid reist ongeveer 4 keer sneller door water dan door lucht.",
+  "Een jaar heeft niet precies 365 dagen; daarom bestaan schrikkeljaren.",
+  "De langste berekende waarde van pi telt al biljoenen cijfers.",
+  "Een mensenhaar kan een gewicht van zo'n 100 gram dragen.",
+  "De snelheid van het licht is bijna 300.000 km per seconde.",
+  "Bamboe is een van de snelst groeiende planten: soms bijna een meter per dag.",
+  "Het eerste computerprogramma werd geschreven door Ada Lovelace, in de 19e eeuw.",
+  "Een krokodil kan zijn tong niet uitsteken.",
+  "De gemiddelde wolk zweeft op een paar kilometer hoogte.",
+  "Mensen delen ongeveer 60% van hun DNA met een banaan.",
+  "De zwaartekracht op de maan is ongeveer een zesde van die op aarde.",
+  "Een uil kan zijn kop bijna 270 graden draaien.",
+  "De eerste foto ooit genomen dateert uit de jaren 1820.",
+  "Vers gevallen sneeuw bestaat voor ongeveer 90% uit lucht.",
+  "De grootste bloem ter wereld (Rafflesia) ruikt naar rottend vlees.",
+  "Een dolfijn slaapt met de helft van zijn hersenen tegelijk.",
+  "Honingbijen moeten samen zo'n twee miljoen bloemen bezoeken voor één pot honing.",
+  "De aarde draait aan de evenaar met meer dan 1600 km/u om haar as.",
+  "Een gloeilamp zet maar een klein deel van zijn energie om in licht; de rest is warmte.",
+  "De meeste goudvissen kunnen zich tientallen seconden tot minuten dingen herinneren — meer dan de mythe beweert.",
+  "Een typische bliksem bevat genoeg energie om een gloeilamp maanden te laten branden.",
+  "De koudste natuurlijke plek op aarde (Antarctica) zakte ooit onder -89 °C.",
+  "Een struisvogelei is het grootste ei van alle huidige vogels.",
+  "Het menselijk brein verbruikt ongeveer 20% van je energie, terwijl het maar 2% weegt.",
+  "Mieren tillen samen gewichten die vele malen hun eigen lichaamsgewicht zijn.",
+  "De planeet Saturnus zou blijven drijven in een (reusachtige) bak water.",
+  "Een jaar op Mercurius duurt maar 88 aardse dagen.",
+  "De tanden van een bever blijven hun hele leven doorgroeien.",
+  "Een regenworm heeft geen ogen, maar voelt wel licht via zijn huid.",
+  "De oudste bomen ter wereld zijn meer dan 4000 jaar oud.",
+  "Lavastroom kan trager zijn dan wandeltempo, maar ook razendsnel.",
+  "Je maag maakt elke paar dagen een nieuw laagje slijmvlies aan, anders zou het zichzelf verteren.",
+  "De kleur blauw komt in de natuur bij dieren zelden voor als pigment; vaak is het structuurkleur.",
+  "Een zonnebloem draait jong mee met de zon (heliotropisme).",
+  "Het grootste deel van een boom bestaat uit dood hout dat de stam stevig houdt.",
+  "De melkweg en het Andromedastelsel bewegen langzaam naar elkaar toe.",
+  "Een menselijke vingerafdruk is uniek, zelfs bij een eeneiige tweeling.",
+  "De grootste landdieren ooit, sommige dinosauriërs, waren tientallen meters lang.",
+  "Water kan onder de juiste omstandigheden tegelijk vast, vloeibaar en gas zijn (tripelpunt).",
+  "Een octopus kan door de kleinste opening kruipen zolang zijn snavel erdoor past.",
+  "De zon is eigenlijk wit; ze lijkt geel door onze atmosfeer.",
+  "Een kikker neemt water op via zijn huid in plaats van te drinken.",
 ];
 
 function mod(n: number, m: number): number {
   return ((n % m) + m) % m;
 }
 
-/** De 3 weetjes van vandaag (deterministisch, rouleren dagelijks). */
+/**
+ * De 3 weetjes van vandaag (deterministisch, rouleren dagelijks door de hele pool).
+ * Multiplier 7 en stap 11 zijn coprime met de poolgrootte → maximale spreiding en
+ * drie verschillende weetjes per dag.
+ */
 export function factsForDay(now: number = Date.now()): string[] {
   const day = Math.floor(now / 86_400_000);
   const len = FACTS.length;
-  const start = mod(day * 3, len);
-  const step = 7; // coprime met de poolgrootte → drie verschillende weetjes
+  const start = mod(day * 7, len);
+  const step = 11;
   return [0, 1, 2].map((i) => FACTS[mod(start + i * step, len)]);
 }
