@@ -28,8 +28,9 @@ export function DashboardBackground() {
           }}
         />
       )}
-      {/* Leesbaarheids-overlay: donker genoeg voor witte tekst, foto blijft zichtbaar. */}
-      <div className="absolute inset-0 bg-gradient-to-b from-canvas/80 via-canvas/70 to-canvas/90" />
+      {/* Leesbaarheids-overlay: licht genoeg zodat de foto duidelijk zichtbaar
+          blijft, onderaan iets donkerder voor de footer-tekst. */}
+      <div className="absolute inset-0 bg-gradient-to-b from-canvas/50 via-canvas/35 to-canvas/75" />
     </div>
   );
 }

@@ -16,7 +16,7 @@ export function Tile({
   children: ReactNode;
 }) {
   return (
-    <section className="flex flex-col gap-5 rounded-lg border border-border bg-surface/90 p-8">
+    <section className="flex flex-col gap-5 rounded-lg border border-border bg-surface/75 p-8 backdrop-blur-md">
       <header className="flex items-center justify-between">
         <div className="flex items-center gap-3 text-text-mid">
           {icon}
