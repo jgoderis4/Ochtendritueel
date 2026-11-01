@@ -9,14 +9,21 @@ export function Tile({
   icon,
   chip,
   children,
+  compact = false,
 }: {
   label: string;
   icon?: ReactNode;
   chip?: ReactNode;
   children: ReactNode;
+  /** Minder padding/ruimte — handig als alles op één tv-scherm moet passen. */
+  compact?: boolean;
 }) {
   return (
-    <section className="flex flex-col gap-5 rounded-lg border border-border bg-surface/75 p-8 backdrop-blur-md">
+    <section
+      className={`flex flex-col rounded-lg border border-border bg-surface/75 backdrop-blur-md ${
+        compact ? "gap-3 p-5" : "gap-5 p-8"
+      }`}
+    >
       <header className="flex items-center justify-between">
         <div className="flex items-center gap-3 text-text-mid">
           {icon}

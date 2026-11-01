@@ -19,13 +19,15 @@ export function DashboardScreen({ data, routine }: ScreenProps) {
   const facts = factsForDay();
 
   return (
-    <div className="relative isolate flex min-h-screen flex-col gap-8 px-14 py-8">
+    <div className="relative isolate flex h-screen flex-col gap-4 overflow-hidden px-14 py-5">
       <DailyBackground />
       <TvHeader now={now} phaseLabel="Dashboard" />
 
-      <main className="grid flex-1 grid-cols-1 items-start gap-7 lg:grid-cols-2">
-        {/* --- Weer --- */}
+      <main className="flex min-h-0 flex-1 gap-5">
+        {/* === Linkerkolom: weer === */}
+        <div className="flex w-[44%] min-h-0 flex-col">
         <Tile
+          compact
           label="Weer · Kust & Bestemming"
           chip={
             kust.source === "live"
@@ -37,7 +39,7 @@ export function DashboardScreen({ data, routine }: ScreenProps) {
             <p className="text-body-md text-text-mid">Weergegevens tijdelijk niet beschikbaar.</p>
           )}
           {kust.data && (
-            <div className="flex flex-col gap-5">
+            <div className="flex flex-col gap-4">
               <div className="flex items-start justify-between">
                 <div>
                   <p className="text-headline-lg font-semibold text-text-high">
@@ -84,9 +86,13 @@ export function DashboardScreen({ data, routine }: ScreenProps) {
             </div>
           )}
         </Tile>
+        </div>
 
+        {/* === Rechterkolom: verkeer · nieuws · afval · weetjes === */}
+        <div className="flex min-h-0 flex-1 flex-col gap-4">
         {/* --- Verkeer --- */}
         <Tile
+          compact
           label="Verkeer · Traject"
           chip={
             !traffic.data ? (
@@ -133,6 +139,7 @@ export function DashboardScreen({ data, routine }: ScreenProps) {
 
         {/* --- Nieuws --- */}
         <Tile
+          compact
           label="Nieuwsoverzicht · België & Regio"
           chip={
             news.source === "live"
@@ -144,9 +151,9 @@ export function DashboardScreen({ data, routine }: ScreenProps) {
             <p className="text-body-md text-text-mid">Nieuws tijdelijk niet beschikbaar.</p>
           )}
           {/* Alleen titels (de samenvatting werd toch afgebroken) → meer artikels. */}
-          <ul className="flex flex-col gap-2.5">
-            {news.data?.map((n, i) => (
-              <li key={i} className="flex items-baseline gap-2 border-b border-border pb-2.5 last:border-0 last:pb-0">
+          <ul className="flex flex-col gap-2">
+            {news.data?.slice(0, 3).map((n, i) => (
+              <li key={i} className="flex items-baseline gap-2 border-b border-border pb-2 last:border-0 last:pb-0">
                 <span className="shrink-0 rounded-sm bg-surface-2 px-2 py-0.5 text-label-md font-semibold text-text-mid">{n.source}</span>
                 <p className="text-body-md font-semibold text-text-high">{n.headline}</p>
               </li>
@@ -156,6 +163,7 @@ export function DashboardScreen({ data, routine }: ScreenProps) {
 
         {/* --- Afval --- */}
         <Tile
+          compact
           label="Afvalophaling · Kalender"
           chip={
             waste.source === "live"
@@ -169,11 +177,7 @@ export function DashboardScreen({ data, routine }: ScreenProps) {
             </p>
           )}
           {waste.data && (
-            <div className="flex flex-col gap-5">
-              <div>
-                <p className="text-label-md uppercase tracking-[0.04em] text-text-mid">Aangewezen adres</p>
-                <p className="text-headline-md font-semibold text-text-high">{waste.data.address}</p>
-              </div>
+            <div className="flex flex-col gap-3">
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-label-md uppercase tracking-[0.04em] text-text-mid">Status vandaag</p>
@@ -186,34 +190,30 @@ export function DashboardScreen({ data, routine }: ScreenProps) {
                 )}
               </div>
               {waste.data.next && (
-                <div className="rounded-md border border-border bg-surface-2/70 p-5">
+                <div className="rounded-md border border-border bg-surface-2/70 p-4">
                   <p className="text-label-md uppercase tracking-[0.04em] text-amber">Eerstvolgende ophaling</p>
                   <p className="text-headline-md font-semibold text-text-high">{waste.data.next.date}</p>
-                  <div className="mt-3 flex flex-wrap gap-2">
+                  <div className="mt-2 flex flex-wrap gap-2">
                     {waste.data.next.fractions.map((f) => (
                       <span key={f} className="rounded-full bg-surface px-3 py-1 text-label-md text-text-mid">{f}</span>
                     ))}
                   </div>
                   {waste.data.next.putOutFrom && (
-                    <p className="mt-3 text-label-md text-text-mid">{waste.data.next.putOutFrom}</p>
+                    <p className="mt-2 text-label-md text-text-mid">{waste.data.next.putOutFrom}</p>
                   )}
                 </div>
               )}
-              <p className="text-label-md text-text-muted">
-                {waste.source === "live"
-                  ? "Bron: Recycle! (Fost Plus) · Koksijde · live"
-                  : "Bron: officiële afvalkalender (voorbeelddata)"}
-              </p>
             </div>
           )}
         </Tile>
 
         {/* --- Weetjes van de dag (3, rouleren dagelijks) --- */}
         <Tile
+          compact
           label="Weetjes van de dag · leer elke ochtend iets bij"
           chip={<Chip tone="amber">Nieuw</Chip>}
         >
-          <ul className="flex flex-col gap-3">
+          <ul className="flex flex-col gap-2">
             {facts.map((f, i) => (
               <li key={i} className="flex items-baseline gap-3">
                 <span className="grid size-6 shrink-0 place-items-center rounded-full bg-amber/20 text-label-md font-semibold text-amber">
@@ -224,6 +224,7 @@ export function DashboardScreen({ data, routine }: ScreenProps) {
             ))}
           </ul>
         </Tile>
+        </div>
       </main>
 
       <footer className="flex items-center justify-between text-label-md text-text-muted">
