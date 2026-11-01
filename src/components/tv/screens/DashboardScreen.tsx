@@ -3,6 +3,7 @@ import { Chip, Panel, Tile } from "@/components/tv/Tile";
 import { DailyBackground } from "@/components/tv/DailyBackground";
 import { WorldWeather } from "@/components/tv/WorldWeather";
 import { backgroundForDay } from "@/lib/backgrounds";
+import { factsForDay } from "@/lib/facts";
 import { formatCountdown } from "@/lib/routine/timeline";
 import type { ScreenProps } from "./types";
 
@@ -15,6 +16,7 @@ export function DashboardScreen({ data, routine }: ScreenProps) {
   const { now, mounted, remaining } = routine;
   const { kust, bestemming, traffic, news, waste } = data;
   const bg = backgroundForDay();
+  const facts = factsForDay();
 
   return (
     <div className="relative isolate flex min-h-screen flex-col gap-8 px-14 py-8">
@@ -214,10 +216,27 @@ export function DashboardScreen({ data, routine }: ScreenProps) {
             </div>
           )}
         </Tile>
+
+        {/* --- Weetjes van de dag (3, rouleren dagelijks) --- */}
+        <Tile
+          label="Weetjes van de dag · leer elke ochtend iets bij"
+          chip={<Chip tone="amber">Nieuw</Chip>}
+        >
+          <ul className="flex flex-col gap-3">
+            {facts.map((f, i) => (
+              <li key={i} className="flex items-baseline gap-3">
+                <span className="grid size-6 shrink-0 place-items-center rounded-full bg-amber/20 text-label-md font-semibold text-amber">
+                  {i + 1}
+                </span>
+                <p className="text-body-md text-text-high">{f}</p>
+              </li>
+            ))}
+          </ul>
+        </Tile>
       </main>
 
       <footer className="flex items-center justify-between text-label-md text-text-muted">
-        <span>📍 {bg.name}</span>
+        <span>📍 Achtergrond: {bg.name}</span>
         <span className="tabular">
           {mounted ? `Nog ${formatCountdown(remaining)} tot einde routine` : "Routine loopt"}
         </span>

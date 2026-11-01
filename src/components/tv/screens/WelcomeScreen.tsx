@@ -1,6 +1,7 @@
 import { TvHeader } from "@/components/tv/TvHeader";
 import { Chip, Tile } from "@/components/tv/Tile";
 import { DailyBackground } from "@/components/tv/DailyBackground";
+import { backgroundForDay } from "@/lib/backgrounds";
 import { formatClock, formatDate, greeting } from "@/lib/routine/clock";
 import { TIMELINE } from "@/lib/routine/timeline";
 import type { ScreenProps } from "./types";
@@ -16,6 +17,7 @@ export function WelcomeScreen({ data, routine }: ScreenProps) {
   const { now } = routine;
   const kust = data.kust;
   const music = data.music;
+  const bg = backgroundForDay();
 
   // Zonsopgang-simulatie: het scherm start donker en licht in de welkomstminuut
   // geleidelijk op met een warme dageraad-gloed (voelt als een wake-up light).
@@ -124,7 +126,7 @@ export function WelcomeScreen({ data, routine }: ScreenProps) {
           <p className="text-body-lg font-semibold text-text-high">
             Routine gestart · volledig dashboard verschijnt zo
           </p>
-          <p className="text-label-md text-text-mid">Dashboard opent automatisch na de welkomstminuut</p>
+          <p className="text-label-md text-text-mid">📍 Achtergrond vandaag: {bg.name}</p>
         </div>
         <span className="rounded-md bg-amber px-5 py-3 text-body-md font-semibold text-canvas">
           Automatisch
