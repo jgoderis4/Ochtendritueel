@@ -23,7 +23,7 @@ export function DashboardScreen({ data, routine }: ScreenProps) {
       <DailyBackground />
       <TvHeader now={now} phaseLabel="Dashboard" />
 
-      <main className="grid flex-1 grid-cols-1 gap-7 lg:grid-cols-2">
+      <main className="grid flex-1 grid-cols-1 items-start gap-7 lg:grid-cols-2">
         {/* --- Weer --- */}
         <Tile
           label="Weer · Kust & Bestemming"
@@ -104,37 +104,28 @@ export function DashboardScreen({ data, routine }: ScreenProps) {
             <p className="text-body-md text-text-mid">Reisinfo tijdelijk niet beschikbaar.</p>
           )}
           {traffic.data && (
-            <div className="flex flex-col gap-5">
+            <div className="flex flex-col gap-2">
               <div className="flex items-end justify-between">
                 <div>
-                  <p className="text-label-md uppercase tracking-[0.04em] text-text-mid">Snelste traject</p>
-                  <p className="text-headline-lg font-semibold text-text-high">{traffic.data.fromTo}</p>
-                  <p className="text-body-md text-text-mid">Via {traffic.data.via}</p>
+                  <p className="text-headline-md font-semibold text-text-high">{traffic.data.fromTo}</p>
+                  <p className="text-label-md text-text-mid">Via {traffic.data.via}</p>
                 </div>
                 <div className="text-right">
-                  <p className="tabular font-display text-5xl font-semibold text-emerald">{traffic.data.durationMin}<span className="text-headline-md"> min</span></p>
+                  <p className="tabular font-display text-4xl font-semibold text-emerald">
+                    {traffic.data.durationMin}<span className="text-body-md"> min</span>
+                  </p>
                   <p className="tabular text-label-md text-text-mid">{traffic.data.distanceKm} km</p>
                 </div>
               </div>
               {traffic.data.trafficAware ? (
-                <>
-                  <p className="text-body-md text-text-mid">
-                    {traffic.data.delayMin && traffic.data.delayMin > 0
-                      ? `≈ ${traffic.data.delayMin} min vertraging door verkeer`
-                      : "✓ Geen noemenswaardige vertraging op de route."}
-                  </p>
-                  {traffic.data.incidents.length > 0 && (
-                    <p className="text-body-md text-amber">{traffic.data.incidents.join(" · ")}</p>
-                  )}
-                </>
+                <p className="text-label-md text-text-mid">
+                  {traffic.data.delayMin && traffic.data.delayMin > 0
+                    ? `≈ ${traffic.data.delayMin} min vertraging`
+                    : "✓ Vlot verkeer"}
+                  {traffic.data.incidents.length > 0 && ` · ${traffic.data.incidents.join(" · ")}`}
+                </p>
               ) : (
-                <div className="rounded-md border border-border bg-surface-2/60 p-5">
-                  <p className="text-label-md uppercase tracking-[0.04em] text-text-mid">Reistijd zonder live verkeer</p>
-                  <p className="text-body-md text-text-high">
-                    Basisreistijd volgens de snelste route. Voeg later een TomTom-sleutel toe
-                    voor live files en vertraging.
-                  </p>
-                </div>
+                <p className="text-label-md text-text-muted">Basisreistijd — zonder live verkeer.</p>
               )}
             </div>
           )}
