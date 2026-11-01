@@ -7,6 +7,8 @@
  * of data echt is (briefing: "doe niet alsof voorbeelddata actueel zijn").
  */
 
+import type { WeatherLocation } from "@/lib/weather/config";
+
 export type DataSource = "mock" | "live";
 
 export interface Sourced<T> {
@@ -30,7 +32,7 @@ export interface WeatherNow {
 }
 
 export interface WeatherAdapter {
-  getWeather(location: "Oostduinkerke" | "Gistel"): Promise<Sourced<WeatherNow>>;
+  getWeather(location: WeatherLocation): Promise<Sourced<WeatherNow>>;
 }
 
 /* --- Verkeer --- */

@@ -1,5 +1,6 @@
 import { TvHeader } from "@/components/tv/TvHeader";
 import { Chip, Tile } from "@/components/tv/Tile";
+import { DailyBackground } from "@/components/tv/DailyBackground";
 import { formatClock, formatDate, greeting } from "@/lib/routine/clock";
 import type { ScreenProps } from "./types";
 
@@ -16,7 +17,8 @@ export function WelcomeScreen({ data, routine }: ScreenProps) {
   const music = data.music;
 
   return (
-    <div className="flex min-h-screen flex-col gap-8 px-14 py-8">
+    <div className="relative isolate flex min-h-screen flex-col gap-8 px-14 py-8">
+      <DailyBackground />
       <TvHeader now={now} phaseLabel="Welkom" />
 
       <main className="grid flex-1 grid-cols-1 gap-7 lg:grid-cols-2">

@@ -5,11 +5,13 @@
  */
 
 import { getAdapters } from "./index";
+import { DREAM_LOCATIONS } from "@/lib/weather/config";
 import type { TvData } from "@/components/tv/screens/types";
 
 export async function getTvData(): Promise<TvData> {
   const a = getAdapters();
-  const [kust, bestemming, traffic, news, waste, music] = await Promise.all([
+  // Kern (vaste tuple) en droombestemmingen parallel ophalen.
+  const core = Promise.all([
     a.weather.getWeather("Oostduinkerke"),
     a.weather.getWeather("Gistel"),
     a.traffic.getTraffic(),
@@ -17,5 +19,7 @@ export async function getTvData(): Promise<TvData> {
     a.waste.getCollection(),
     a.music.getState(),
   ]);
-  return { kust, bestemming, traffic, news, waste, music };
+  const dreamsP = Promise.all(DREAM_LOCATIONS.map((loc) => a.weather.getWeather(loc)));
+  const [[kust, bestemming, traffic, news, waste, music], dreams] = await Promise.all([core, dreamsP]);
+  return { kust, bestemming, traffic, news, waste, music, dreams };
 }

@@ -70,7 +70,7 @@ export async function fetchWeather(location: WeatherLocation): Promise<Sourced<W
   url.searchParams.set("longitude", String(loc.longitude));
   url.searchParams.set("current", "temperature_2m,weather_code,wind_speed_10m,wind_direction_10m");
   url.searchParams.set("daily", "sunrise,sunset,temperature_2m_max,precipitation_probability_max");
-  url.searchParams.set("timezone", "Europe/Brussels");
+  url.searchParams.set("timezone", ("timezone" in loc && loc.timezone) || "Europe/Brussels");
   url.searchParams.set("forecast_days", "1");
 
   try {

@@ -15,6 +15,8 @@ import type { UseRoutine } from "@/lib/routine/useRoutine";
 export interface TvData {
   kust: Sourced<WeatherNow>;
   bestemming: Sourced<WeatherNow>;
+  /** Sfeervolle droombestemmingen (Côte d'Azur, New York, …). */
+  dreams: Sourced<WeatherNow>[];
   traffic: Sourced<TrafficInfo>;
   news: Sourced<NewsItem[]>;
   waste: Sourced<WasteInfo>;

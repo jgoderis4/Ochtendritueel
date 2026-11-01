@@ -4,11 +4,12 @@ import { useState } from "react";
 import { backgroundForDay, fallbackUrl } from "@/lib/backgrounds";
 
 /**
- * Full-bleed dagelijkse achtergrondfoto achter het dashboard, met een donkere
+ * Full-bleed dagelijkse achtergrondfoto (dashboard én welkomstscherm), met een
  * gradient-overlay voor leesbaarheid. Bij een laadfout: eerst de Picsum-terugval,
  * daarna gewoon de effen canvas (overlay blijft, tegels blijven leesbaar).
+ * Plaats hem in een ouder met `relative isolate` zodat hij echt áchter de inhoud ligt.
  */
-export function DashboardBackground() {
+export function DailyBackground() {
   const bg = backgroundForDay();
   const [src, setSrc] = useState(bg.url);
   const [hidden, setHidden] = useState(false);
