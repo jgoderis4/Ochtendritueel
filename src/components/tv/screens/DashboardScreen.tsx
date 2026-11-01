@@ -15,7 +15,7 @@ import type { ScreenProps } from "./types";
  */
 export function DashboardScreen({ data, routine }: ScreenProps) {
   const { now, mounted, remaining } = routine;
-  const { kust, bestemming, news, waste } = data;
+  const { kust, news, waste } = data;
   const bg = backgroundForDay();
   const facts = factsForDay();
 
@@ -25,11 +25,11 @@ export function DashboardScreen({ data, routine }: ScreenProps) {
       <TvHeader now={now} phaseLabel="Dashboard" />
 
       <main className="flex min-h-0 flex-1 gap-5">
-        {/* === Linkerkolom: weer === */}
-        <div className="flex w-[44%] min-h-0 flex-col">
+        {/* === Linkerkolom: weer + weetjes === */}
+        <div className="flex w-[44%] min-h-0 flex-col gap-4">
         <Tile
           compact
-          label="Weer · Kust & Bestemming"
+          label="Weer · Kust"
           chip={
             kust.source === "live"
               ? <Chip tone="emerald">Live · Open-Meteo</Chip>
@@ -70,22 +70,28 @@ export function DashboardScreen({ data, routine }: ScreenProps) {
                 <span>☀ Zonsopgang {kust.data.sunrise}</span>
                 <span>☾ Zonsondergang {kust.data.sunset}</span>
               </div>
-              {bestemming.data && (
-                <div className="mt-1 flex items-center justify-between border-t border-border pt-4">
-                  <div>
-                    <p className="text-body-lg font-semibold text-text-high">⌖ {bestemming.data.location}</p>
-                    <p className="text-label-md text-text-mid">
-                      Regen {bestemming.data.rainChancePct}% · {bestemming.data.windText} · {bestemming.data.forecastText}
-                    </p>
-                  </div>
-                  <p className="tabular text-headline-lg font-semibold text-text-high">{bestemming.data.tempC}°</p>
-                </div>
-              )}
-
               {/* Roterende weertegel: wisselt om de 30 s van wereldstad. */}
               <WorldWeather />
             </div>
           )}
+        </Tile>
+
+        {/* --- Weetjes van de dag (3, rouleren dagelijks) --- */}
+        <Tile
+          compact
+          label="Weetjes van de dag · leer elke ochtend iets bij"
+          chip={<Chip tone="amber">Nieuw</Chip>}
+        >
+          <ul className="flex flex-col gap-2">
+            {facts.map((f, i) => (
+              <li key={i} className="flex items-baseline gap-3">
+                <span className="grid size-6 shrink-0 place-items-center rounded-full bg-amber/20 text-label-md font-semibold text-amber">
+                  {i + 1}
+                </span>
+                <p className="text-body-md text-text-high">{f}</p>
+              </li>
+            ))}
+          </ul>
         </Tile>
         </div>
 
@@ -111,7 +117,7 @@ export function DashboardScreen({ data, routine }: ScreenProps) {
           )}
           {/* Alleen titels (de samenvatting werd toch afgebroken) → meer artikels. */}
           <ul className="flex flex-col gap-2">
-            {news.data?.slice(0, 3).map((n, i) => (
+            {news.data?.slice(0, 5).map((n, i) => (
               <li key={i} className="flex items-baseline gap-2 border-b border-border pb-2 last:border-0 last:pb-0">
                 <span className="shrink-0 rounded-sm bg-surface-2 px-2 py-0.5 text-label-md font-semibold text-text-mid">{n.source}</span>
                 <p className="text-body-md font-semibold text-text-high">{n.headline}</p>
@@ -164,24 +170,6 @@ export function DashboardScreen({ data, routine }: ScreenProps) {
               )}
             </div>
           )}
-        </Tile>
-
-        {/* --- Weetjes van de dag (3, rouleren dagelijks) --- */}
-        <Tile
-          compact
-          label="Weetjes van de dag · leer elke ochtend iets bij"
-          chip={<Chip tone="amber">Nieuw</Chip>}
-        >
-          <ul className="flex flex-col gap-2">
-            {facts.map((f, i) => (
-              <li key={i} className="flex items-baseline gap-3">
-                <span className="grid size-6 shrink-0 place-items-center rounded-full bg-amber/20 text-label-md font-semibold text-amber">
-                  {i + 1}
-                </span>
-                <p className="text-body-md text-text-high">{f}</p>
-              </li>
-            ))}
-          </ul>
         </Tile>
         </div>
       </main>
