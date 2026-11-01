@@ -1,6 +1,7 @@
 import { TvHeader } from "@/components/tv/TvHeader";
 import { Chip, Panel, Tile } from "@/components/tv/Tile";
 import { DailyBackground } from "@/components/tv/DailyBackground";
+import { WorldWeather } from "@/components/tv/WorldWeather";
 import { backgroundForDay } from "@/lib/backgrounds";
 import { formatCountdown } from "@/lib/routine/timeline";
 import type { ScreenProps } from "./types";
@@ -12,7 +13,7 @@ import type { ScreenProps } from "./types";
  */
 export function DashboardScreen({ data, routine }: ScreenProps) {
   const { now, mounted, remaining } = routine;
-  const { kust, bestemming, dreams, traffic, news, waste } = data;
+  const { kust, bestemming, traffic, news, waste } = data;
   const bg = backgroundForDay();
 
   return (
@@ -76,25 +77,8 @@ export function DashboardScreen({ data, routine }: ScreenProps) {
                 </div>
               )}
 
-              {/* Droombestemmingen: sfeervolle aanvulling naast het echte weer. */}
-              {dreams.some((d) => d.data) && (
-                <div className="mt-1 border-t border-border pt-4">
-                  <p className="mb-2 text-label-md uppercase tracking-[0.04em] text-text-mid">✈ Elders in de wereld</p>
-                  <div className="flex gap-3">
-                    {dreams.map((w, i) =>
-                      w.data ? (
-                        <div key={i} className="flex-1 rounded-md border border-border bg-surface-2/60 px-4 py-3">
-                          <p className="text-label-md text-text-mid">{w.data.location}</p>
-                          <p className="text-headline-md font-semibold text-text-high">
-                            {w.data.tempC}°{" "}
-                            <span className="text-label-md font-normal text-text-mid">{w.data.condition}</span>
-                          </p>
-                        </div>
-                      ) : null,
-                    )}
-                  </div>
-                </div>
-              )}
+              {/* Roterende weertegel: wisselt om de 30 s van wereldstad. */}
+              <WorldWeather />
             </div>
           )}
         </Tile>
