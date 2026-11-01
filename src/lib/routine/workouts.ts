@@ -14,7 +14,16 @@ export interface Exercise {
   instructions: string;
   seconds: number;
   cues: string[];
+  /** Korte, loopende demo-animatie (GIF). Leeg = toon placeholder-icoon. */
+  video?: string;
 }
+
+/**
+ * Demo-animaties: anatomische oefen-GIF's uit de open exercise-library (MIT,
+ * ExerciseDB), geserveerd via het jsDelivr-CDN. Loopt automatisch.
+ */
+const GIF = (id: string) =>
+  `https://cdn.jsdelivr.net/gh/mohamedatef90/exercise-library@main/gifs/${id}.gif`;
 
 export interface Workout {
   type: WorkoutType;
@@ -34,6 +43,7 @@ export const WORKOUT_A: Workout = {
       instructions: "Lig op je rug met gestrekte benen. Pomp je voeten rustig op en neer en krul daarna je tenen in en uit.",
       seconds: 40,
       cues: ["Rustig tempo", "Voel je kuiten"],
+      video: GIF("uL9CsKm"), // ankle circles
     },
     {
       name: "Knie-naar-borst",
@@ -41,6 +51,7 @@ export const WORKOUT_A: Workout = {
       instructions: "Trek om beurten één knie zacht richting je borst, houd even vast en wissel van been.",
       seconds: 45,
       cues: ["Onderrug ontspannen", "Adem mee"],
+      // geen nette solo-demo beschikbaar → placeholder-icoon
     },
     {
       name: "Liggende wervelrotatie",
@@ -48,6 +59,7 @@ export const WORKOUT_A: Workout = {
       instructions: "Knieën gebogen, voeten op het matras. Laat je knieën samen traag naar links en rechts zakken; schouders blijven liggen.",
       seconds: 45,
       cues: ["Schouders op bed", "Klein beginnen"],
+      video: GIF("6sYyrRX"), // bent knee lying twist
     },
     {
       name: "Bruggetje",
@@ -55,6 +67,7 @@ export const WORKOUT_A: Workout = {
       instructions: "Voeten plat op het matras, hef je heupen rustig op tot een lichte brug en laat weer zakken.",
       seconds: 40,
       cues: ["Billen aanspannen", "Niet overstrekken"],
+      video: GIF("u0cNiij"), // low glute bridge on floor
     },
   ],
 };
@@ -70,6 +83,7 @@ export const WORKOUT_B: Workout = {
       instructions: "Zit of lig comfortabel. Rol je schouders traag achterwaarts en draai je nek zacht van links naar rechts.",
       seconds: 40,
       cues: ["Geen pijn", "Heel traag"],
+      video: GIF("x2chWLO"), // neck side stretch
     },
     {
       name: "Bekkenkanteling",
@@ -77,6 +91,7 @@ export const WORKOUT_B: Workout = {
       instructions: "Lig op je rug, knieën gebogen. Kantel je bekken zodat je onderrug het matras raakt, en los weer.",
       seconds: 45,
       cues: ["Buik licht aanspannen", "Kleine beweging"],
+      video: GIF("NKJ8o6x"), // pelvic tilt
     },
     {
       name: "Hamstringstretch",
@@ -84,6 +99,7 @@ export const WORKOUT_B: Workout = {
       instructions: "Trek om beurten één been omhoog, handen achter de dij, en houd de stretch zacht vast.",
       seconds: 45,
       cues: ["Knie mag licht gebogen", "Niet forceren"],
+      video: GIF("xTjr103"), // hamstring & calf stretch
     },
     {
       name: "Zijligging beenheffen",
@@ -91,6 +107,7 @@ export const WORKOUT_B: Workout = {
       instructions: "Lig op je zij. Til je bovenste been rustig op en neer; wissel halverwege van kant.",
       seconds: 45,
       cues: ["Rustig", "Romp stabiel"],
+      video: GIF("7WaDzyL"), // side hip abduction
     },
   ],
 };

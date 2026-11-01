@@ -65,15 +65,27 @@ export function WorkoutScreen({ data, routine }: ScreenProps) {
               )}
             </h1>
 
-            {/* Placeholder-oefenbeeld (geen animatie/video — briefing §6) */}
-            <div className="grid h-56 place-items-center rounded-md border border-border bg-surface-2/70">
-              <div className="text-center">
-                <span className="text-5xl" aria-hidden>🧘</span>
-                <p className="mt-2 text-label-md uppercase tracking-[0.04em] text-text-muted">
-                  Stilstaand oefenbeeld · placeholder
-                </p>
+            {/* Oefen-demo: loopende animatie indien beschikbaar, anders icoon */}
+            {current.video ? (
+              <div className="h-56 overflow-hidden rounded-md border border-border bg-white">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  key={current.video}
+                  src={current.video}
+                  alt={`Demo: ${current.name}`}
+                  className="h-full w-full object-contain"
+                />
               </div>
-            </div>
+            ) : (
+              <div className="grid h-56 place-items-center rounded-md border border-border bg-surface-2/70">
+                <div className="text-center">
+                  <span className="text-5xl" aria-hidden>🧘</span>
+                  <p className="mt-2 text-label-md uppercase tracking-[0.04em] text-text-muted">
+                    Oefenbeeld volgt
+                  </p>
+                </div>
+              </div>
+            )}
 
             <div className="flex flex-wrap gap-2">
               {current.cues.map((c) => (
