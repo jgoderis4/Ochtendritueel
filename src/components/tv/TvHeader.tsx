@@ -1,9 +1,9 @@
-import Link from "next/link";
 import { formatClock, formatDate } from "@/lib/routine/clock";
 
 /**
  * Vaste TV-kopbalk: grote klok + datum blijven tijdens het hele dashboard
- * zichtbaar (briefing §4), met een subtiele navigatie en routinestatus.
+ * zichtbaar (briefing §4), met de routinestatus. Geen navigatiemenu: de tv is
+ * een passief kioskscherm dat zichzelf doorschakelt (geen losse subpagina's).
  *
  * Live: geef `now` (epoch ms) door — klok/datum worden dan live afgeleid.
  * Vóór client-mount is `now` null → neutrale placeholder (geen hydration-ruis).
@@ -33,17 +33,6 @@ export function TvHeader({
           {showDate}
         </span>
       </div>
-
-      <nav className="hidden items-center gap-7 text-label-lg font-semibold uppercase tracking-[0.04em] text-text-mid lg:flex">
-        <span className="rounded-full bg-amber px-4 py-1.5 text-canvas">
-          Overzicht
-        </span>
-        <Link href="/tv" className="hover:text-text-high">
-          Routine
-        </Link>
-        <span className="hover:text-text-high">Kust &amp; Weer</span>
-        <span className="hover:text-text-high">Audio</span>
-      </nav>
 
       {phaseLabel && (
         <div className="flex items-center gap-5">
