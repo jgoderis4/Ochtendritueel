@@ -76,14 +76,26 @@ export async function searchPlaylist(
   market = "BE",
 ): Promise<{ id: string; name: string } | null> {
   const res = await api(
-    `/search?type=playlist&limit=5&market=${market}&q=${encodeURIComponent(query)}`,
+    `/search?type=playlist&limit=20&market=${market}&q=${encodeURIComponent(query)}`,
   );
   if (!res.ok) throw new Error(`Spotify search HTTP ${res.status}`);
   const json = (await res.json()) as {
-    playlists?: { items?: ({ id: string; name: string } | null)[] };
+    playlists?: {
+      items?: ({ id: string; name: string; owner?: { id?: string } } | null)[];
+    };
   };
-  const items = (json.playlists?.items ?? []).filter(Boolean) as { id: string; name: string }[];
-  const first = items[0];
+  const items = (json.playlists?.items ?? []).filter(Boolean) as {
+    id: string;
+    name: string;
+    owner?: { id?: string };
+  }[];
+  // Sla Spotify's EIGEN editorial playlists over (owner "spotify" / id 37i9...):
+  // die zijn afgeschermd voor externe apps en kunnen niet op de Sonos geladen
+  // worden (foutcode 800). Kies de eerste échte gebruikerslijst.
+  const playable = items.filter(
+    (p) => p.owner?.id !== "spotify" && !p.id.startsWith("37i9"),
+  );
+  const first = playable[0] ?? null;
   return first ? { id: first.id, name: first.name } : null;
 }
 
