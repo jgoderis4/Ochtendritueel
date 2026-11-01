@@ -19,6 +19,7 @@ interface Data {
   significant: number;
   level: "vlot" | "beperkt" | "druk" | "zwaar";
   top: JamSpot[];
+  e40: JamSpot | null;
 }
 
 const LEVEL: Record<Data["level"], { label: string; color: string }> = {
@@ -76,19 +77,29 @@ export function BelgiumTraffic() {
         </span>
       </div>
 
-      {data.top.length > 0 && (
-        <ul className="flex flex-col gap-1.5 border-t border-border pt-3">
-          {data.top.map((s, i) => (
-            <li key={i} className="flex items-baseline justify-between gap-3">
-              <span className="min-w-0 truncate text-body-md text-text-high">
-                <span className="font-semibold text-coastal">{s.road}</span>
-                {s.where ? ` · ${s.where}` : ""}
-              </span>
-              <span className="shrink-0 tabular text-label-md font-semibold text-amber">+{s.delayMin} min</span>
-            </li>
-          ))}
-        </ul>
-      )}
+      <ul className="flex flex-col gap-1.5 border-t border-border pt-3">
+        {/* E40 staat er altijd bij (vaste pendel-as). */}
+        <li className="flex items-baseline justify-between gap-3">
+          <span className="min-w-0 truncate text-body-md text-text-high">
+            <span className="font-semibold text-coastal">E40</span>
+            {data.e40?.where ? ` · ${data.e40.where}` : ""}
+          </span>
+          {data.e40 ? (
+            <span className="shrink-0 tabular text-label-md font-semibold text-amber">+{data.e40.delayMin} min</span>
+          ) : (
+            <span className="shrink-0 text-label-md font-semibold text-emerald">vlot</span>
+          )}
+        </li>
+        {data.top.map((s, i) => (
+          <li key={i} className="flex items-baseline justify-between gap-3">
+            <span className="min-w-0 truncate text-body-md text-text-high">
+              <span className="font-semibold text-coastal">{s.road}</span>
+              {s.where ? ` · ${s.where}` : ""}
+            </span>
+            <span className="shrink-0 tabular text-label-md font-semibold text-amber">+{s.delayMin} min</span>
+          </li>
+        ))}
+      </ul>
     </div>
   );
 }

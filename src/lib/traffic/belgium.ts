@@ -65,7 +65,13 @@ export interface BelgiumTraffic {
   jams: number; // totaal aantal gemelde files
   significant: number; // files met noemenswaardige vertraging (≥ 5 min)
   level: "vlot" | "beperkt" | "druk" | "zwaar";
-  top: JamSpot[]; // drukste plekken (meeste vertraging)
+  top: JamSpot[]; // drukste plekken (meeste vertraging), exclusief E40
+  e40: JamSpot | null; // vaste E40-vermelding; null = vlot op de E40
+}
+
+/** Wordt deze file op de E40 gemeld? */
+function onE40(inc: Incident): boolean {
+  return (inc.properties?.roadNumbers ?? []).includes("E40");
 }
 
 /** Drempel voor een "echte" file: minstens zoveel seconden vertraging. */
@@ -79,7 +85,7 @@ function shortWhere(from?: string): string {
 }
 
 export async function getBelgiumTraffic(): Promise<BelgiumTraffic> {
-  if (!KEY) return { available: false, jams: 0, significant: 0, level: "vlot", top: [] };
+  if (!KEY) return { available: false, jams: 0, significant: 0, level: "vlot", top: [], e40: null };
   try {
     const results = await Promise.all(belgiumTiles().map((t) => jamsInTile(t)));
     // Ontdubbelen op incident-id (tegels overlappen aan de randen).
@@ -96,17 +102,27 @@ export async function getBelgiumTraffic(): Promise<BelgiumTraffic> {
     const level: BelgiumTraffic["level"] =
       significant === 0 ? "vlot" : significant <= 8 ? "beperkt" : significant <= 20 ? "druk" : "zwaar";
 
-    const top: JamSpot[] = withDelay
-      .sort((a, b) => (b.properties?.delay ?? 0) - (a.properties?.delay ?? 0))
-      .slice(0, 4)
-      .map((i) => ({
-        road: i.properties?.roadNumbers?.[0] ?? "—",
-        where: shortWhere(i.properties?.from),
-        delayMin: Math.round((i.properties?.delay ?? 0) / 60),
-      }));
+    const toSpot = (i: Incident, road?: string): JamSpot => ({
+      road: road ?? i.properties?.roadNumbers?.[0] ?? "—",
+      where: shortWhere(i.properties?.from),
+      delayMin: Math.round((i.properties?.delay ?? 0) / 60),
+    });
 
-    return { available: true, jams, significant, level, top };
+    // E40 krijgt altijd een vaste vermelding (de zwaarste E40-file, of "vlot").
+    const e40Jam = all
+      .filter((i) => onE40(i) && (i.properties?.delay ?? 0) > 0)
+      .sort((a, b) => (b.properties?.delay ?? 0) - (a.properties?.delay ?? 0))[0];
+    const e40 = e40Jam ? toSpot(e40Jam, "E40") : null;
+
+    // Overige drukste plekken (zonder de E40, die staat al apart).
+    const top: JamSpot[] = withDelay
+      .filter((i) => !onE40(i))
+      .sort((a, b) => (b.properties?.delay ?? 0) - (a.properties?.delay ?? 0))
+      .slice(0, 3)
+      .map((i) => toSpot(i));
+
+    return { available: true, jams, significant, level, top, e40 };
   } catch {
-    return { available: false, jams: 0, significant: 0, level: "vlot", top: [] };
+    return { available: false, jams: 0, significant: 0, level: "vlot", top: [], e40: null };
   }
 }
