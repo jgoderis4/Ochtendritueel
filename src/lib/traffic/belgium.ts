@@ -27,6 +27,7 @@ function belgiumTiles(): [number, number, number, number][] {
 }
 
 interface Incident {
+  geometry?: { coordinates?: unknown };
   properties?: {
     id?: string;
     iconCategory?: number;
@@ -40,7 +41,7 @@ async function jamsInTile(bbox: [number, number, number, number]): Promise<Incid
   const params = new URLSearchParams({
     key: KEY,
     bbox: bbox.join(","),
-    fields: "{incidents{properties{id,iconCategory,delay,roadNumbers,from}}}",
+    fields: "{incidents{geometry{coordinates},properties{id,iconCategory,delay,roadNumbers,from}}}",
     language: "nl-NL",
     timeValidityFilter: "present",
     categoryFilter: "6", // alleen files
@@ -73,6 +74,22 @@ export interface BelgiumTraffic {
 function onE40(inc: Incident): boolean {
   return (inc.properties?.roadNumbers ?? []).includes("E40");
 }
+
+/** Meest westelijke lengtegraad van een incident (kleinste lon = dichtst bij de kust). */
+function westLon(inc: Incident): number {
+  const lons: number[] = [];
+  const walk = (v: unknown) => {
+    if (Array.isArray(v)) {
+      if (typeof v[0] === "number") lons.push(v[0] as number);
+      else v.forEach(walk);
+    }
+  };
+  walk(inc.geometry?.coordinates);
+  return lons.length ? Math.min(...lons) : 99;
+}
+
+/** Oostgrens van het "vanaf de kust"-stuk van de E40 (~tot Gent). */
+const COAST_LON_LIMIT = 3.8;
 
 /** Drempel voor een "echte" file: minstens zoveel seconden vertraging. */
 const DELAY_THRESHOLD = 300; // 5 min
@@ -108,9 +125,10 @@ export async function getBelgiumTraffic(): Promise<BelgiumTraffic> {
       delayMin: Math.round((i.properties?.delay ?? 0) / 60),
     });
 
-    // E40 krijgt altijd een vaste vermelding (de zwaarste E40-file, of "vlot").
+    // E40 krijgt altijd een vaste vermelding, maar enkel het stuk VANAF DE KUST
+    // (westelijk, richting Gent) — niet de files bij Brussel. Zwaarste of "vlot".
     const e40Jam = all
-      .filter((i) => onE40(i) && (i.properties?.delay ?? 0) > 0)
+      .filter((i) => onE40(i) && (i.properties?.delay ?? 0) > 0 && westLon(i) <= COAST_LON_LIMIT)
       .sort((a, b) => (b.properties?.delay ?? 0) - (a.properties?.delay ?? 0))[0];
     const e40 = e40Jam ? toSpot(e40Jam, "E40") : null;
 
