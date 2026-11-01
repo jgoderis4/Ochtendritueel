@@ -16,7 +16,6 @@ export const FACTS: string[] = [
   "De Eiffeltoren wordt in de zomer zo'n 15 cm hoger doordat het metaal uitzet.",
   "Een groep flamingo's heet een 'flamboyance'.",
   "Kolibries zijn de enige vogels die echt achteruit kunnen vliegen.",
-  "Het menselijk lichaam telt meer dan 600 spieren.",
   "De kortste oorlog ooit duurde ongeveer 38 minuten (1896, Zanzibar).",
   "Wombats produceren kubusvormige keutels.",
   "De Noordzee is gemiddeld maar zo'n 95 meter diep.",
@@ -73,21 +72,17 @@ export const FACTS: string[] = [
   "IJs is gladder bij lichte druk doordat er een dun laagje water op ontstaat.",
   "De kortste dag van het jaar valt rond 21 december op het noordelijk halfrond.",
   "Een regenboog is eigenlijk een volledige cirkel; vanaf de grond zie je maar de helft.",
-  "De meeste mensen knipperen zo'n 15 tot 20 keer per minuut.",
   "Een eekhoorn vergeet veel van zijn verstopte noten — en plant zo bomen.",
   "Het woord 'robot' komt uit een Tsjechisch toneelstuk uit 1920.",
   "De grootste vulkaan in ons zonnestelsel, Olympus Mons, staat op Mars.",
   "Een kameel slaat vet op in zijn bult, geen water.",
   "De kleur van een flamingo komt van wat hij eet (garnaaltjes en algen).",
   "Geluid reist ongeveer 4 keer sneller door water dan door lucht.",
-  "Een jaar heeft niet precies 365 dagen; daarom bestaan schrikkeljaren.",
   "De langste berekende waarde van pi telt al biljoenen cijfers.",
   "Een mensenhaar kan een gewicht van zo'n 100 gram dragen.",
-  "De snelheid van het licht is bijna 300.000 km per seconde.",
   "Bamboe is een van de snelst groeiende planten: soms bijna een meter per dag.",
   "Het eerste computerprogramma werd geschreven door Ada Lovelace, in de 19e eeuw.",
   "Een krokodil kan zijn tong niet uitsteken.",
-  "De gemiddelde wolk zweeft op een paar kilometer hoogte.",
   "Mensen delen ongeveer 60% van hun DNA met een banaan.",
   "De zwaartekracht op de maan is ongeveer een zesde van die op aarde.",
   "Een uil kan zijn kop bijna 270 graden draaien.",
@@ -97,7 +92,6 @@ export const FACTS: string[] = [
   "Een dolfijn slaapt met de helft van zijn hersenen tegelijk.",
   "Honingbijen moeten samen zo'n twee miljoen bloemen bezoeken voor één pot honing.",
   "De aarde draait aan de evenaar met meer dan 1600 km/u om haar as.",
-  "Een gloeilamp zet maar een klein deel van zijn energie om in licht; de rest is warmte.",
   "De meeste goudvissen kunnen zich tientallen seconden tot minuten dingen herinneren — meer dan de mythe beweert.",
   "Een typische bliksem bevat genoeg energie om een gloeilamp maanden te laten branden.",
   "De koudste natuurlijke plek op aarde (Antarctica) zakte ooit onder -89 °C.",
@@ -121,6 +115,24 @@ export const FACTS: string[] = [
   "Een octopus kan door de kleinste opening kruipen zolang zijn snavel erdoor past.",
   "De zon is eigenlijk wit; ze lijkt geel door onze atmosfeer.",
   "Een kikker neemt water op via zijn huid in plaats van te drinken.",
+  "Cleopatra leefde dichter bij de maanlanding dan bij de bouw van de piramides van Gizeh.",
+  "Op het eiland Wrangel liepen er nog mammoeten rond toen de piramides van Gizeh al stonden.",
+  "Oxford University gaf al les voordat het Azteekse Rijk bestond.",
+  "Er zijn meer mogelijke schaakpartijen dan atomen in het waarneembare heelal.",
+  "Eén theelepel materiaal van een neutronenster zou miljarden tonnen wegen.",
+  "Napoleon was met zo'n 1,69 m niet klein voor zijn tijd; de 'kleine Napoleon' is een mythe.",
+  "Bananen zijn licht radioactief door het kalium dat ze bevatten.",
+  "Zand uit de Sahara waait de oceaan over en bemest het Amazoneregenwoud.",
+  "De Eiffeltoren mocht oorspronkelijk maar 20 jaar blijven staan.",
+  "Er bestaat een kwal (Turritopsis dohrnii) die in theorie biologisch onsterfelijk is.",
+  "Het grootste levende organisme is een schimmel in Oregon die zich over kilometers uitstrekt.",
+  "Venetië staat op miljoenen houten palen die onder water nauwelijks vergaan.",
+  "Bliksem kan zand in een fractie van een seconde omsmelten tot glazen buizen (fulgurieten).",
+  "Shakespeare en Cervantes stierven allebei in april 1616.",
+  "Ten tijde van de dinosauriërs duurde een dag maar zo'n 23 uur; de aarde draaide sneller.",
+  "Honingbijen kunnen menselijke gezichten herkennen en onthouden.",
+  "Wolkenkrabbers zijn ontworpen om in sterke wind een beetje te wiegen in plaats van te breken.",
+  "Groenland is grotendeels bedekt met ijs, terwijl IJsland juist behoorlijk groen is.",
 ];
 
 function mod(n: number, m: number): number {
@@ -133,7 +145,7 @@ function mod(n: number, m: number): number {
  * (altijd nieuw). Multiplier 7 en stap 11 zijn coprime met de poolgrootte →
  * maximale spreiding en verschillende weetjes per dag.
  */
-export function factsForDay(now: number = Date.now(), count = 2): string[] {
+export function factsForDay(now: number = Date.now(), count = 3): string[] {
   const day = Math.floor(now / 86_400_000);
   const len = FACTS.length;
   const start = mod(day * 7, len);

@@ -2,7 +2,6 @@ import { TvHeader } from "@/components/tv/TvHeader";
 import { Chip, Panel, Tile } from "@/components/tv/Tile";
 import { DailyBackground } from "@/components/tv/DailyBackground";
 import { WorldWeather } from "@/components/tv/WorldWeather";
-import { DiscoverFact } from "@/components/tv/DiscoverFact";
 import { backgroundForDay } from "@/lib/backgrounds";
 import { factsForDay } from "@/lib/facts";
 import { formatCountdown } from "@/lib/routine/timeline";
@@ -232,8 +231,6 @@ export function DashboardScreen({ data, routine }: ScreenProps) {
                 <p className="text-body-md text-text-high">{f}</p>
               </li>
             ))}
-            {/* 3e weetje: live & altijd nieuw uit de Nederlandse Wikipedia */}
-            <DiscoverFact index={facts.length + 1} />
           </ul>
         </Tile>
       </main>
