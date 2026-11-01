@@ -51,7 +51,7 @@ export const WORKOUT_A: Workout = {
       instructions: "Trek om beurten één knie zacht richting je borst, houd even vast en wissel van been.",
       seconds: 45,
       cues: ["Onderrug ontspannen", "Adem mee"],
-      // geen nette solo-demo beschikbaar → placeholder-icoon
+      video: GIF("yn0LjwL"), // lying knee-to-chest (glutes stretch)
     },
     {
       name: "Liggende wervelrotatie",
