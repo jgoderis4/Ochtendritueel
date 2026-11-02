@@ -33,8 +33,20 @@ export async function GET() {
       };
     }).filter((c) => c.tempC != null);
 
+    // Open-Meteo gaf (bijna) niets terug → terugval op MET Norway.
+    if (cities.length === 0) {
+      const { fetchWorldMetNo } = await import("@/lib/weather/metno");
+      return Response.json({ cities: await fetchWorldMetNo(WORLD_CITIES) });
+    }
+
     return Response.json({ cities });
   } catch {
-    return Response.json({ cities: [] });
+    // Open-Meteo faalde volledig → terugval op MET Norway.
+    try {
+      const { fetchWorldMetNo } = await import("@/lib/weather/metno");
+      return Response.json({ cities: await fetchWorldMetNo(WORLD_CITIES) });
+    } catch {
+      return Response.json({ cities: [] });
+    }
   }
 }

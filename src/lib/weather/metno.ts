@@ -16,6 +16,22 @@ const BASE = "https://api.met.no/weatherapi/locationforecast/2.0/compact";
 // MET.no vereist een identificeerbare User-Agent (anders 403).
 const UA = "AuraMorningRoutine/1.0 github.com/jgoderis4/Ochtendritueel";
 
+/** MET.no symbol_code → korte NL-omschrijving + passend symbool (wereldtegel). */
+export function symbolNlEmoji(code: string | undefined): { text: string; emoji: string } {
+  if (!code) return { text: "Wisselend", emoji: "🌡️" };
+  const c = code.replace(/_(day|night|polartwilight)$/, "");
+  if (c === "clearsky") return { text: "Helder", emoji: "☀️" };
+  if (c === "fair") return { text: "Licht bewolkt", emoji: "🌤️" };
+  if (c === "partlycloudy") return { text: "Half bewolkt", emoji: "⛅" };
+  if (c === "cloudy") return { text: "Bewolkt", emoji: "☁️" };
+  if (c === "fog") return { text: "Mist", emoji: "🌫️" };
+  if (c.includes("thunder")) return { text: "Onweer", emoji: "⛈️" };
+  if (c.includes("sleet")) return { text: "Natte sneeuw", emoji: "🌨️" };
+  if (c.includes("snow")) return { text: "Sneeuw", emoji: "❄️" };
+  if (c.includes("rain")) return { text: "Regen", emoji: "🌧️" };
+  return { text: "Wisselend", emoji: "🌡️" };
+}
+
 /** MET.no symbol_code → korte NL-omschrijving. */
 function symbolNl(code: string | undefined): string {
   if (!code) return "Wisselend";
@@ -131,4 +147,42 @@ export async function fetchWeatherMetNo(location: WeatherLocation): Promise<Weat
   } catch {
     return null;
   }
+}
+
+export interface WorldCityWeather {
+  name: string;
+  country: string;
+  tempC: number | null;
+  condition: string;
+  emoji: string;
+}
+
+/**
+ * Terugval voor de "Elders in de wereld"-tegel: huidig weer per stad bij MET
+ * Norway (parallel). Steden zonder data vallen weg. Geeft dezelfde vorm als de
+ * Open-Meteo-wereldroute.
+ */
+export async function fetchWorldMetNo(
+  cities: { name: string; country: string; lat: number; lon: number }[],
+): Promise<WorldCityWeather[]> {
+  const results = await Promise.all(
+    cities.map(async (c): Promise<WorldCityWeather | null> => {
+      try {
+        const res = await fetch(`${BASE}?lat=${c.lat}&lon=${c.lon}`, {
+          headers: { "User-Agent": UA },
+          next: { revalidate: 900 },
+        });
+        if (!res.ok) return null;
+        const json = (await res.json()) as { properties?: { timeseries?: MetEntry[] } };
+        const first = json.properties?.timeseries?.[0];
+        const temp = first?.data.instant?.details?.air_temperature;
+        if (!first || temp == null) return null;
+        const { text, emoji } = symbolNlEmoji(first.data.next_1_hours?.summary?.symbol_code);
+        return { name: c.name, country: c.country, tempC: Math.round(temp), condition: text, emoji };
+      } catch {
+        return null;
+      }
+    }),
+  );
+  return results.filter((c): c is WorldCityWeather => c !== null);
 }
