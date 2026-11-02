@@ -28,6 +28,7 @@ export interface PorscheCar {
   plaats: string;
   land: string;
   url: string;
+  foto: string | null;
 }
 
 export interface PorscheTop {
@@ -49,6 +50,7 @@ interface RawCar {
   plaats?: string;
   land?: string;
   url?: string;
+  foto?: string;
 }
 
 /** Haalt het ingespoten JSON-object uit de dashboard-HTML (string-bewust, gebalanceerd). */
@@ -102,6 +104,7 @@ export async function getPorscheTop(n = 3): Promise<PorscheTop> {
         plaats: a.plaats ?? "",
         land: a.land ?? "",
         url: a.url ?? "",
+        foto: typeof a.foto === "string" && a.foto.startsWith("http") ? a.foto : null,
       }));
 
     return { available: true, updated: data?.bijgewerkt ?? null, cars };

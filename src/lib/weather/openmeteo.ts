@@ -62,6 +62,15 @@ interface OpenMeteoResponse {
   };
 }
 
+/**
+ * Laatst succesvol opgehaalde weerwaarde per locatie. Open-Meteo is af en toe kort
+ * "overloaded"; dan tonen we de laatst bekende ECHTE waarde i.p.v. de tegel leeg te
+ * maken (geen verzonnen data — enkel een iets oudere, reële meting).
+ */
+const lastGood = new Map<WeatherLocation, WeatherNow>();
+
+const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
+
 export async function fetchWeather(location: WeatherLocation): Promise<Sourced<WeatherNow>> {
   const loc = WEATHER_LOCATIONS[location];
   const now = Date.now();
@@ -73,34 +82,42 @@ export async function fetchWeather(location: WeatherLocation): Promise<Sourced<W
   url.searchParams.set("timezone", ("timezone" in loc && loc.timezone) || "Europe/Brussels");
   url.searchParams.set("forecast_days", "1");
 
-  try {
-    const res = await fetch(url, { next: { revalidate: 900 } });
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    const json = (await res.json()) as OpenMeteoResponse;
-    const c = json.current;
-    const d = json.daily;
-    if (!c || c.temperature_2m == null) throw new Error("onvolledige data");
+  // Tot 3 pogingen met korte backoff — vangt de tijdelijke "service overloaded" op.
+  for (let attempt = 0; attempt < 3; attempt++) {
+    try {
+      const res = await fetch(url, { next: { revalidate: 900 } });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const json = (await res.json()) as OpenMeteoResponse & { error?: boolean };
+      if (json.error) throw new Error("open-meteo error");
+      const c = json.current;
+      const d = json.daily;
+      if (!c || c.temperature_2m == null) throw new Error("onvolledige data");
 
-    const windKmh = c.wind_speed_10m ?? 0;
-    const rainPct = d?.precipitation_probability_max?.[0] ?? 0;
-    const tMax = d?.temperature_2m_max?.[0];
+      const windKmh = c.wind_speed_10m ?? 0;
+      const rainPct = d?.precipitation_probability_max?.[0] ?? 0;
+      const tMax = d?.temperature_2m_max?.[0];
 
-    const data: WeatherNow = {
-      location: loc.label,
-      tempC: Math.round(c.temperature_2m),
-      condition: conditionNl(c.weather_code ?? -1),
-      rainChancePct: rainPct,
-      windText: `${windDirNl(c.wind_direction_10m ?? 0)} ${beaufort(windKmh)} Bft · ${Math.round(windKmh)} km/u`,
-      sunrise: d?.sunrise?.[0] ? hhmm(d.sunrise[0]) : undefined,
-      sunset: d?.sunset?.[0] ? hhmm(d.sunset[0]) : undefined,
-      forecastText:
-        tMax != null
-          ? `Max ${Math.round(tMax)}°C · ${rainPct <= 20 ? "Droog" : "Kans op regen"}`
-          : undefined,
-    };
+      const data: WeatherNow = {
+        location: loc.label,
+        tempC: Math.round(c.temperature_2m),
+        condition: conditionNl(c.weather_code ?? -1),
+        rainChancePct: rainPct,
+        windText: `${windDirNl(c.wind_direction_10m ?? 0)} ${beaufort(windKmh)} Bft · ${Math.round(windKmh)} km/u`,
+        sunrise: d?.sunrise?.[0] ? hhmm(d.sunrise[0]) : undefined,
+        sunset: d?.sunset?.[0] ? hhmm(d.sunset[0]) : undefined,
+        forecastText:
+          tMax != null
+            ? `Max ${Math.round(tMax)}°C · ${rainPct <= 20 ? "Droog" : "Kans op regen"}`
+            : undefined,
+      };
 
-    return { source: "live", fetchedAt: now, data };
-  } catch {
-    return { source: "live", fetchedAt: now, data: null };
+      lastGood.set(location, data);
+      return { source: "live", fetchedAt: now, data };
+    } catch {
+      if (attempt < 2) await sleep(400 * (attempt + 1));
+    }
   }
+
+  // Alle pogingen mislukt → laatst bekende echte waarde (indien aanwezig), anders leeg.
+  return { source: "live", fetchedAt: now, data: lastGood.get(location) ?? null };
 }

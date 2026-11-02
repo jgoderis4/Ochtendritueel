@@ -16,6 +16,7 @@ interface Car {
   prijs: number | null;
   dealPct: number | null;
   score: number;
+  foto: string | null;
 }
 
 interface Data {
@@ -55,8 +56,22 @@ export function PorscheTop() {
   return (
     <ul className="flex flex-col gap-2">
       {data.cars.map((c, i) => (
-        <li key={i} className="flex items-baseline justify-between gap-3">
-          <span className="min-w-0 truncate text-body-md text-text-high">
+        <li key={i} className="flex items-center gap-3">
+          {/* Foto-thumbnail van de wagen (autoscout-listing). */}
+          {c.foto ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src={c.foto}
+              alt={`${c.model} ${c.generatie}`}
+              className="h-10 w-16 shrink-0 rounded-md object-cover"
+              loading="lazy"
+            />
+          ) : (
+            <div className="grid h-10 w-16 shrink-0 place-items-center rounded-md bg-surface-2 text-label-md text-text-muted">
+              🚗
+            </div>
+          )}
+          <span className="min-w-0 flex-1 truncate text-body-md text-text-high">
             <span className="mr-2 font-semibold text-purple">{i + 1}</span>
             {c.model} {c.generatie}
             {c.jaar ? ` · ${c.jaar}` : ""}
