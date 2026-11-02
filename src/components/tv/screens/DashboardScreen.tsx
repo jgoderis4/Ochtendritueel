@@ -3,6 +3,7 @@ import { Chip, Panel, Tile } from "@/components/tv/Tile";
 import { DailyBackground } from "@/components/tv/DailyBackground";
 import { WorldWeather } from "@/components/tv/WorldWeather";
 import { BelgiumTraffic } from "@/components/tv/BelgiumTraffic";
+import { PorscheTop } from "@/components/tv/PorscheTop";
 import { backgroundForDay } from "@/lib/backgrounds";
 import { factsForDay } from "@/lib/facts";
 import { formatCountdown } from "@/lib/routine/timeline";
@@ -92,6 +93,11 @@ export function DashboardScreen({ data, routine }: ScreenProps) {
               </li>
             ))}
           </ul>
+        </Tile>
+
+        {/* --- Porsche · top 3 wagens van de dag (porsche-tracker) --- */}
+        <Tile compact label="Porsche · Top 3 van de dag" chip={<Chip tone="muted">Tracker</Chip>}>
+          <PorscheTop />
         </Tile>
         </div>
 
