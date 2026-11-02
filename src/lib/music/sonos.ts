@@ -269,6 +269,9 @@ const STYLE_QUERY: Record<string, string> = {
   lounge: "lounge chill",
   "rustige-pop": "rustige pop",
   instrumentaal: "instrumental rustig",
+  "jaren-70": "jaren 70 hits",
+  "jaren-80": "jaren 80 hits",
+  "franse-chansons": "franse chansons",
 };
 
 /**
@@ -283,6 +286,10 @@ const STYLE_PLAYLISTS: Record<string, string[]> = {
   lounge: ["0erLbMzXD0U9xJUPlOeKrX", "32HiyEXKoCYkxazhRNs1Mn"],
   "rustige-pop": ["7oY1SGh06NiidddC9fjrLb"],
   instrumentaal: ["79SoVXe6nheiF41UDAiW6U"],
+  // Geverifieerde publieke gebruikerslijsten (geen Spotify-editorial → laden op Sonos).
+  "jaren-70": ["6kvrWkDlcqsTtACFXt8tF0", "5AM2XcKizz2Sn1fRZDr9Pp"],
+  "jaren-80": ["1y2WMKnxWDualAaqRgHOXf", "6hcp5O7CD7vThKh0ufd9rE", "70N5mgNl3QBQB09zXoa72h"],
+  "franse-chansons": ["2YZqxTb785xMqAJTkiz9oA", "0Gxir6hi6MrXcmOlSe1Crt", "4lqzpjx7tGLHPf8UHenfpG"],
 };
 
 /** UUID van de speaker (voor de wachtrij-URI). Gebruikt het actuele IP. */

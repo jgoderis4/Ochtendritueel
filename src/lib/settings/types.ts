@@ -3,7 +3,15 @@
  * in Fase 1; later server-side. Bewust eenvoudig gehouden.
  */
 
-export type MusicStyle = "mix" | "jazz" | "lounge" | "rustige-pop" | "instrumentaal";
+export type MusicStyle =
+  | "mix"
+  | "jazz"
+  | "lounge"
+  | "rustige-pop"
+  | "instrumentaal"
+  | "jaren-70"
+  | "jaren-80"
+  | "franse-chansons";
 
 export const MUSIC_STYLES: { value: MusicStyle; label: string }[] = [
   { value: "mix", label: "Gevarieerde mix (automatisch)" },
@@ -11,6 +19,9 @@ export const MUSIC_STYLES: { value: MusicStyle; label: string }[] = [
   { value: "lounge", label: "Lounge" },
   { value: "rustige-pop", label: "Rustige pop" },
   { value: "instrumentaal", label: "Instrumentaal" },
+  { value: "jaren-70", label: "Jaren 70" },
+  { value: "jaren-80", label: "Jaren 80" },
+  { value: "franse-chansons", label: "Franse chansons" },
 ];
 
 export type NewsSourceKey = "HLN" | "DeTijd" | "Regionaal" | "Sporza";
