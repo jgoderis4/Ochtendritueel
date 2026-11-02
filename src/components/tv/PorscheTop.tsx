@@ -36,7 +36,7 @@ export function PorscheTop() {
     let active = true;
     async function load() {
       try {
-        const res = await fetch("/api/porsche");
+        const res = await fetch(`/api/porsche?t=${Date.now()}`, { cache: "no-store" });
         const json = (await res.json()) as Data;
         if (active) setData(json);
       } catch {
@@ -65,6 +65,7 @@ export function PorscheTop() {
               alt={`${c.model} ${c.generatie}`}
               className="h-10 w-16 shrink-0 rounded-md object-cover"
               loading="lazy"
+              referrerPolicy="no-referrer"
             />
           ) : (
             <div className="grid h-10 w-16 shrink-0 place-items-center rounded-md bg-surface-2 text-label-md text-text-muted">

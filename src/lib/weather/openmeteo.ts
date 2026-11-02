@@ -30,13 +30,13 @@ function conditionNl(code: number): string {
 }
 
 /** Windrichting in graden → NL 8-punts kompas. */
-function windDirNl(deg: number): string {
+export function windDirNl(deg: number): string {
   const dirs = ["N", "NO", "O", "ZO", "Z", "ZW", "W", "NW"];
   return dirs[Math.round(deg / 45) % 8];
 }
 
 /** Windsnelheid (km/u) → Beaufort. */
-function beaufort(kmh: number): number {
+export function beaufort(kmh: number): number {
   const limits = [1, 5, 11, 19, 28, 38, 49, 61, 74, 88, 102, 117];
   for (let i = 0; i < limits.length; i++) if (kmh <= limits[i]) return i;
   return 12;
@@ -118,6 +118,18 @@ export async function fetchWeather(location: WeatherLocation): Promise<Sourced<W
     }
   }
 
-  // Alle pogingen mislukt → laatst bekende echte waarde (indien aanwezig), anders leeg.
+  // Open-Meteo faalt → terugval op MET Norway (andere gratis bron, geen sleutel).
+  try {
+    const { fetchWeatherMetNo } = await import("./metno");
+    const alt = await fetchWeatherMetNo(location);
+    if (alt) {
+      lastGood.set(location, alt);
+      return { source: "live", fetchedAt: now, data: alt };
+    }
+  } catch {
+    /* ook de terugval faalde */
+  }
+
+  // Alles mislukt → laatst bekende echte waarde (indien aanwezig), anders leeg.
   return { source: "live", fetchedAt: now, data: lastGood.get(location) ?? null };
 }

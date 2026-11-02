@@ -10,6 +10,23 @@ import { formatCountdown } from "@/lib/routine/timeline";
 import type { ScreenProps } from "./types";
 
 /**
+ * Verdeelt nieuws evenwichtig over de bronnen: max `perSource` per bron, in de
+ * volgorde waarin de bronnen voorkomen (bv. 2 VRT, 2 De Tijd, 2 Sporza). Zo
+ * overheerst één drukke bron het overzicht niet.
+ */
+function balanceBySource<T extends { source: string }>(items: T[], perSource: number): T[] {
+  const counts = new Map<string, number>();
+  const out: T[] = [];
+  for (const item of items) {
+    const n = counts.get(item.source) ?? 0;
+    if (n >= perSource) continue;
+    counts.set(item.source, n + 1);
+    out.push(item);
+  }
+  return out;
+}
+
+/**
  * Vast dashboard (01:00–10:00 en na de workout). Vaste 4-tegelindeling:
  * weer · verkeer · nieuws · afval (gemockte adapters, D-003/D-004). Header-klok
  * en de resttijd tot het einde lopen live uit de routine.
@@ -19,6 +36,8 @@ export function DashboardScreen({ data, routine }: ScreenProps) {
   const { kust, news, waste } = data;
   const bg = backgroundForDay();
   const facts = factsForDay();
+  // Nieuws gelijk verdelen: max 2 per bron (VRT, De Tijd, Sporza) → evenwichtig beeld.
+  const balancedNews = balanceBySource(news.data ?? [], 2);
 
   return (
     <div className="relative isolate flex h-screen flex-col gap-4 overflow-hidden px-14 py-5">
@@ -33,7 +52,7 @@ export function DashboardScreen({ data, routine }: ScreenProps) {
           label="Weer · Kust"
           chip={
             kust.source === "live"
-              ? <Chip tone="emerald">Live · Open-Meteo</Chip>
+              ? <Chip tone="emerald">Live · weer</Chip>
               : <Chip tone="coastal">Voorbeelddata</Chip>
           }
         >
@@ -123,7 +142,7 @@ export function DashboardScreen({ data, routine }: ScreenProps) {
           )}
           {/* Alleen titels (de samenvatting werd toch afgebroken) → meer artikels. */}
           <ul className="flex flex-col gap-2">
-            {news.data?.slice(0, 5).map((n, i) => (
+            {balancedNews.map((n, i) => (
               <li key={i} className="flex items-baseline gap-2 border-b border-border pb-2 last:border-0 last:pb-0">
                 <span className="shrink-0 rounded-sm bg-surface-2 px-2 py-0.5 text-label-md font-semibold text-text-mid">{n.source}</span>
                 <p className="text-body-md font-semibold text-text-high">{n.headline}</p>
