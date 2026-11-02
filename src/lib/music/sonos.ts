@@ -344,13 +344,30 @@ export async function playSpotifyPlaylist(playlistId: string): Promise<boolean> 
   return true;
 }
 
+/** Echte genres waaruit "mix" per dag zelf kiest (mix zelf uitgesloten). */
+const MIX_GENRES = ["jazz", "lounge", "rustige-pop", "instrumentaal"];
+
+/** Dagindex (zelfde regel als de workout-afwisseling): UTC-dag sinds epoch. */
+function dayIndex(): number {
+  return Math.floor(Date.now() / 86_400_000);
+}
+
 /**
- * Speelt muziek voor de gekozen stijl: eerst de vaste, geverifieerde playlists,
- * en als die (onverwacht) falen, een Spotify-zoekresultaat als terugval.
+ * Speelt muziek voor de gekozen stijl en laat de APP per dag zelf een keuze maken:
+ * - "mix" → per dag een ander echt genre (jazz/lounge/rustige-pop/instrumentaal);
+ * - binnen een genre → per dag een andere playlist uit de lijst (afwisseling).
+ * Eerst de vaste, geverifieerde playlists; faalt dat, dan een Spotify-zoekresultaat.
  */
-export async function playGenre(style: string): Promise<boolean> {
-  const ids = STYLE_PLAYLISTS[style] ?? STYLE_PLAYLISTS.mix;
-  for (const id of ids) {
+export async function playGenre(style: string, day = dayIndex()): Promise<boolean> {
+  // Bij "mix" kiest de app zelf per dag een genre; anders blijft het gekozen genre.
+  const effective = style === "mix" ? MIX_GENRES[day % MIX_GENRES.length] : style;
+
+  const ids = STYLE_PLAYLISTS[effective] ?? STYLE_PLAYLISTS.mix;
+  // Per dag op een andere playlist beginnen → elke ochtend iets anders.
+  const shift = ids.length > 0 ? day % ids.length : 0;
+  const rotated = [...ids.slice(shift), ...ids.slice(0, shift)];
+
+  for (const id of rotated) {
     try {
       if (await playSpotifyPlaylist(id)) return true;
     } catch {
@@ -359,7 +376,7 @@ export async function playGenre(style: string): Promise<boolean> {
   }
   // Terugval: live zoeken (kan leeg zijn door Spotify-beperkingen).
   try {
-    const found = await searchPlaylist(STYLE_QUERY[style] ?? STYLE_QUERY.mix);
+    const found = await searchPlaylist(STYLE_QUERY[effective] ?? STYLE_QUERY.mix);
     if (found && (await playSpotifyPlaylist(found.id))) return true;
   } catch {
     /* geen terugval beschikbaar */

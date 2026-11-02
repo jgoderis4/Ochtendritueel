@@ -100,9 +100,15 @@ export default function ControlPage() {
               Stop alles
             </Button>
             {phase === "workout" && (
-              <Button tone="default" onClick={actions.skipExercise}>
-                Volgende oefening ⏭
-              </Button>
+              <>
+                <Button tone="default" onClick={actions.skipExercise}>
+                  Volgende oefening ⏭
+                </Button>
+                {/* Alleen de workout beëindigen → terug naar dashboard, routine loopt door. */}
+                <Button tone="ghost" onClick={actions.skipWorkout}>
+                  Workout beëindigen (terug naar dashboard)
+                </Button>
+              </>
             )}
             {phase !== "workout" && !state.workoutSkipped && (
               <Button tone="default" onClick={actions.startWorkoutEarly}>
