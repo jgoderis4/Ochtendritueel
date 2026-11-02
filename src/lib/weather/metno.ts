@@ -9,7 +9,7 @@
 
 import type { WeatherNow } from "@/lib/adapters/types";
 import type { WeatherLocation } from "./config";
-import { WEATHER_LOCATIONS } from "./config";
+import { WEATHER_LOCATIONS, timezoneFor } from "./config";
 import { beaufort, windDirNl } from "./openmeteo";
 
 const BASE = "https://api.met.no/weatherapi/locationforecast/2.0/compact";
@@ -101,7 +101,7 @@ interface MetEntry {
 
 export async function fetchWeatherMetNo(location: WeatherLocation): Promise<WeatherNow | null> {
   const loc = WEATHER_LOCATIONS[location];
-  const tz = ("timezone" in loc && loc.timezone) || "Europe/Brussels";
+  const tz = timezoneFor(location);
   const url = `${BASE}?lat=${loc.latitude}&lon=${loc.longitude}`;
 
   try {

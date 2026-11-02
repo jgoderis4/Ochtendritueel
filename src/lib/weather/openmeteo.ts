@@ -5,7 +5,7 @@
  */
 
 import type { Sourced, WeatherNow } from "@/lib/adapters/types";
-import { WEATHER_LOCATIONS, type WeatherLocation } from "./config";
+import { WEATHER_LOCATIONS, timezoneFor, type WeatherLocation } from "./config";
 
 const BASE = "https://api.open-meteo.com/v1/forecast";
 
@@ -79,7 +79,7 @@ export async function fetchWeather(location: WeatherLocation): Promise<Sourced<W
   url.searchParams.set("longitude", String(loc.longitude));
   url.searchParams.set("current", "temperature_2m,weather_code,wind_speed_10m,wind_direction_10m");
   url.searchParams.set("daily", "sunrise,sunset,temperature_2m_max,precipitation_probability_max");
-  url.searchParams.set("timezone", ("timezone" in loc && loc.timezone) || "Europe/Brussels");
+  url.searchParams.set("timezone", timezoneFor(location));
   url.searchParams.set("forecast_days", "1");
 
   // Tot 3 pogingen met korte backoff — vangt de tijdelijke "service overloaded" op.

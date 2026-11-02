@@ -1,7 +1,7 @@
 import { TvHeader } from "@/components/tv/TvHeader";
 import { Chip, Panel, Tile } from "@/components/tv/Tile";
 import { DailyBackground } from "@/components/tv/DailyBackground";
-import { WorldWeather } from "@/components/tv/WorldWeather";
+import { WeekForecast } from "@/components/tv/WeekForecast";
 import { BelgiumTraffic } from "@/components/tv/BelgiumTraffic";
 import { PorscheTop } from "@/components/tv/PorscheTop";
 import { backgroundForDay } from "@/lib/backgrounds";
@@ -90,8 +90,8 @@ export function DashboardScreen({ data, routine }: ScreenProps) {
                 <span>☀ Zonsopgang {kust.data.sunrise}</span>
                 <span>☾ Zonsondergang {kust.data.sunset}</span>
               </div>
-              {/* Roterende weertegel: wisselt om de 30 s van wereldstad. */}
-              <WorldWeather />
+              {/* Weekverwachting voor Oostduinkerke (vaste 7-daagse strip). */}
+              <WeekForecast />
             </div>
           )}
         </Tile>
