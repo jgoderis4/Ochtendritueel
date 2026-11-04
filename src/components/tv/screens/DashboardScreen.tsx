@@ -3,9 +3,9 @@ import { Chip, Panel, Tile } from "@/components/tv/Tile";
 import { DailyBackground } from "@/components/tv/DailyBackground";
 import { WeekForecast } from "@/components/tv/WeekForecast";
 import { BelgiumTraffic } from "@/components/tv/BelgiumTraffic";
-import { PorscheTop } from "@/components/tv/PorscheTop";
 import { backgroundForDay } from "@/lib/backgrounds";
 import { factsForDay } from "@/lib/facts";
+import { quoteForDay } from "@/lib/quotes";
 import { formatCountdown } from "@/lib/routine/timeline";
 import type { ScreenProps } from "./types";
 
@@ -36,6 +36,7 @@ export function DashboardScreen({ data, routine }: ScreenProps) {
   const { kust, news, waste } = data;
   const bg = backgroundForDay();
   const facts = factsForDay();
+  const quote = quoteForDay();
   // Nieuws gelijk verdelen: max 2 per bron (VRT, De Tijd, Sporza) → evenwichtig beeld.
   const balancedNews = balanceBySource(news.data ?? [], 2);
 
@@ -114,9 +115,15 @@ export function DashboardScreen({ data, routine }: ScreenProps) {
           </ul>
         </Tile>
 
-        {/* --- Porsche · top 3 wagens van de dag (porsche-tracker) --- */}
-        <Tile compact label="Porsche · Top 3 van de dag" chip={<Chip tone="muted">Tracker</Chip>}>
-          <PorscheTop />
+        {/* --- Citaat van de dag (roteert dagelijks) --- */}
+        <Tile compact label="Citaat van de dag" chip={<Chip tone="amber">Dagelijks</Chip>}>
+          <figure className="flex flex-col gap-3">
+            <blockquote className="text-headline-md font-medium leading-snug text-text-high">
+              <span className="mr-1 font-display text-3xl text-amber">“</span>
+              {quote.text}
+            </blockquote>
+            <figcaption className="text-body-md text-text-mid">— {quote.author}</figcaption>
+          </figure>
         </Tile>
         </div>
 
