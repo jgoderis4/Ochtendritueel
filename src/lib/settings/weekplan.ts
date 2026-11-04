@@ -29,9 +29,16 @@ export interface DayPlan {
 
 export type Weekplan = Record<string, DayPlan>;
 
-/** Datumsleutel zoals de weekpagina die opslaat (identiek houden!). */
+/**
+ * Datumsleutel in LOKALE tijd (YYYY-MM-DD). Bewust niet toISOString (= UTC):
+ * lokaal-middernacht schuift in UTC een dag terug, waardoor de sleutels niet
+ * meer overeenkwamen met de ochtend-planner op de Pi (die lokale tijd gebruikt).
+ */
 export function ymd(d: Date): string {
-  return d.toISOString().slice(0, 10);
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, "0");
+  const day = String(d.getDate()).padStart(2, "0");
+  return `${y}-${m}-${day}`;
 }
 
 /** Sleutel voor vandaag (lokale middernacht → zelfde vorm als de weekpagina). */
