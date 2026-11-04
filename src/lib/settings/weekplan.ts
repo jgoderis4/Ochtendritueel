@@ -14,7 +14,10 @@
 
 import type { MusicStyle } from "./types";
 
-export const WEEKPLAN_KEY = "aura.weekplan.v1";
+// v2: oude v1-sleutels stonden in UTC (tijdzone-bug) → één dag verschoven. Door de
+// versie te bumpen negeren alle toestellen die foute lokale data en hydrateren ze
+// vers van de server (die lokale datumsleutels gebruikt).
+export const WEEKPLAN_KEY = "aura.weekplan.v2";
 /** Same-tab signaal dat de weekplanning gewijzigd is (storage-event vuurt niet in dezelfde tab). */
 export const WEEKPLAN_EVENT = "aura:weekplan-changed";
 
