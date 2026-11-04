@@ -63,6 +63,19 @@ function runCmd(cmd, label) {
   });
 }
 
+async function setMusic(style, volume) {
+  try {
+    const res = await fetch(`${AURA_URL}/api/music`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ action: "setPrefs", style, volume }),
+    });
+    log(`muziekstijl gezet → ${style} (vol ${volume}) [${res.status}]`);
+  } catch (e) {
+    log("setPrefs FOUT:", e.message);
+  }
+}
+
 async function startRoutine() {
   try {
     const res = await fetch(`${AURA_URL}/api/routine`, {
@@ -118,8 +131,12 @@ async function tick() {
     // Binnen een venster van 2 min na de starttijd afvuren (robuust tegen tick-gaten).
     const diff = now - startAt;
     if (diff >= 0 && diff < 120_000) {
-      log(`Start! (${key} ${startHHMM}${day.start ? " [per-dag]" : ""})`);
+      // Muziekstijl van de dag heeft prioriteit: per-dag override → anders standaard.
+      const style = day.style || settings.musicStyle || "mix";
+      const volume = typeof settings.volume === "number" ? settings.volume : 50;
+      log(`Start! (${key} ${startHHMM}${day.start ? " [per-dag uur]" : ""}, muziek ${style}${day.style ? " [per-dag]" : ""})`);
       runCmd(TV_ON_CMD, "tv-aan");
+      await setMusic(style, volume);
       await startRoutine();
       state.started = true;
       state.startEpoch = startAt.getTime();
