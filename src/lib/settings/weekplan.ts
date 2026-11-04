@@ -60,13 +60,37 @@ export function readWeekplan(): Weekplan {
   }
 }
 
-/** Schrijft de weekplanning en seint AppProvider/andere tabs in. */
+/** Schrijft de weekplanning (lokaal + server) en seint AppProvider/andere tabs in. */
 export function writeWeekplan(plan: Weekplan): void {
   try {
     localStorage.setItem(WEEKPLAN_KEY, JSON.stringify(plan));
     window.dispatchEvent(new Event(WEEKPLAN_EVENT));
   } catch {
     /* opslag niet beschikbaar */
+  }
+  // Naar de server zodat alle toestellen én de ochtend-planner op de Pi
+  // dezelfde weekplanning gebruiken. Fire-and-forget (lokaal blijft leidend bij offline).
+  void fetch("/api/settings", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ weekplan: plan }),
+  }).catch(() => {});
+}
+
+/**
+ * Haalt de weekplanning van de server op en zet 'm in de lokale cache zodat
+ * readWeekplan() meteen de gedeelde planning teruggeeft. Seint luisteraars in.
+ */
+export async function hydrateWeekplanFromServer(): Promise<void> {
+  try {
+    const res = await fetch("/api/settings", { cache: "no-store" });
+    if (!res.ok) return;
+    const data = (await res.json()) as { weekplan?: Weekplan };
+    if (!data.weekplan) return;
+    localStorage.setItem(WEEKPLAN_KEY, JSON.stringify(data.weekplan));
+    window.dispatchEvent(new Event(WEEKPLAN_EVENT));
+  } catch {
+    /* server niet bereikbaar — lokale cache blijft gelden */
   }
 }
 

@@ -4,7 +4,13 @@ import { createContext, useCallback, useContext, useEffect, useState } from "rea
 import { TIMELINE, type RoutinePhase, type RoutineState } from "@/lib/routine/timeline";
 import { useRoutine, type RoutineActions } from "@/lib/routine/useRoutine";
 import { DEFAULT_SETTINGS, type Settings } from "@/lib/settings/types";
-import { WEEKPLAN_EVENT, effectiveStyleForToday } from "@/lib/settings/weekplan";
+import {
+  WEEKPLAN_EVENT,
+  WEEKPLAN_KEY,
+  effectiveStyleForToday,
+  readWeekplan,
+  type Weekplan,
+} from "@/lib/settings/weekplan";
 
 interface AppContextValue {
   now: number;
@@ -25,17 +31,58 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   // --- Routine-staat: komt nu uit de gedeelde store (sync met /tv) ---
   const routine = useRoutine();
 
-  // --- Instellingen (persistent in localStorage) ---
+  // --- Instellingen (server = bron van waarheid, localStorage = offline cache) ---
   const [settings, setSettingsState] = useState<Settings>(DEFAULT_SETTINGS);
   useEffect(() => {
+    // 1) Snel: lokale cache tonen zodat de UI niet leeg flikkert.
     try {
       const raw = localStorage.getItem(SETTINGS_KEY);
-      // Eenmalig instellingen uit opslag laden bij mount (bewust patroon).
       // eslint-disable-next-line react-hooks/set-state-in-effect
       if (raw) setSettingsState({ ...DEFAULT_SETTINGS, ...JSON.parse(raw) });
     } catch {
       /* negeer corrupte opslag */
     }
+    // 2) Lokale instellingen onthouden voor eventuele migratie.
+    let localSettings: Settings | null = null;
+    try {
+      const raw = localStorage.getItem(SETTINGS_KEY);
+      if (raw) localSettings = { ...DEFAULT_SETTINGS, ...JSON.parse(raw) };
+    } catch {
+      /* negeer */
+    }
+
+    // 3) Server raadplegen.
+    void fetch("/api/settings", { cache: "no-store" })
+      .then((r) => (r.ok ? r.json() : null))
+      .then((data: { settings?: Partial<Settings>; weekplan?: Weekplan; initialized?: boolean } | null) => {
+        if (!data) return;
+        if (data.initialized) {
+          // Server is leidend: instellingen + weekplanning overnemen.
+          const merged = { ...DEFAULT_SETTINGS, ...data.settings };
+          setSettingsState(merged);
+          try {
+            localStorage.setItem(SETTINGS_KEY, JSON.stringify(merged));
+            if (data.weekplan) localStorage.setItem(WEEKPLAN_KEY, JSON.stringify(data.weekplan));
+            window.dispatchEvent(new Event(WEEKPLAN_EVENT));
+          } catch {
+            /* opslag niet beschikbaar */
+          }
+        } else {
+          // Server nog leeg: bestaande telefoon-instellingen éénmalig migreren.
+          const weekplan = readWeekplan();
+          const payload: { settings?: Settings; weekplan?: Weekplan } = {};
+          if (localSettings) payload.settings = localSettings;
+          if (Object.keys(weekplan).length) payload.weekplan = weekplan;
+          if (payload.settings || payload.weekplan) {
+            void fetch("/api/settings", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify(payload),
+            }).catch(() => {});
+          }
+        }
+      })
+      .catch(() => {});
   }, []);
 
   // Muziekstijl + volume naar de server sturen zodat de routine-start de juiste
@@ -78,6 +125,13 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       }
       return next;
     });
+    // Naar de server zodat alle toestellen én de ochtend-planner op de Pi
+    // de nieuwe instellingen gebruiken.
+    void fetch("/api/settings", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ settings: patch }),
+    }).catch(() => {});
   }, []);
 
   const value: AppContextValue = {

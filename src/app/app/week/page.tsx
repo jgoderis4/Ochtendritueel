@@ -23,9 +23,18 @@ export default function WeekPage() {
   const [plan, setPlan] = useState<Weekplan>({});
 
   useEffect(() => {
-    // Eenmalig de per-dag overrides uit opslag laden bij mount (bewust patroon).
+    // Per-dag overrides uit opslag laden bij mount (bewust patroon).
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setPlan(readWeekplan());
+    // Opnieuw lezen wanneer de server-planning binnenkomt (hydratie) of een
+    // ander toestel/tab wijzigt.
+    const onChange = () => setPlan(readWeekplan());
+    window.addEventListener(WEEKPLAN_EVENT, onChange);
+    window.addEventListener("storage", onChange);
+    return () => {
+      window.removeEventListener(WEEKPLAN_EVENT, onChange);
+      window.removeEventListener("storage", onChange);
+    };
   }, []);
 
   function update(date: string, patch: Parameters<typeof setDayPlan>[1]) {
