@@ -396,7 +396,49 @@ export async function playGenre(style: string, day = dayIndex()): Promise<boolea
  * en speelt die rechtstreeks op de Sonos. Lukt dat niet, dan hervatten we gewoon.
  * Daarna wordt het ingestelde achtergrondvolume toegepast (indien bekend).
  */
+const sleep = (ms: number) => new Promise<void>((r) => setTimeout(r, ms));
+
+/**
+ * Generatie-teller om een lopende fade te annuleren zodra er een nieuwere
+ * muziekactie komt (pauze/stop/nieuwe start). Elke fade onthoudt zijn generatie
+ * en stopt zodra die niet meer de actuele is.
+ */
+let fadeGen = 0;
+/** Fade-in-duur en aantal stappen (≈1 s per stap). */
+const FADE_MS = 25_000;
+const FADE_STEPS = 25;
+
+/** Bouwt het volume geleidelijk op van 0 naar `target` (achtergrond, annuleerbaar). */
+async function fadeInVolume(target: number): Promise<void> {
+  const myGen = ++fadeGen;
+  const safe = Math.max(0, Math.min(100, Math.round(target)));
+  if (safe <= 0) {
+    try {
+      await setVolume(0);
+    } catch {
+      /* niet kritisch */
+    }
+    return;
+  }
+  for (let i = 1; i <= FADE_STEPS; i++) {
+    await sleep(FADE_MS / FADE_STEPS);
+    if (myGen !== fadeGen) return; // nieuwere actie → fade afbreken
+    try {
+      await setVolume(Math.round((safe * i) / FADE_STEPS));
+    } catch {
+      /* volume instellen niet kritisch */
+    }
+  }
+}
+
 export async function play(): Promise<void> {
+  const target = musicPrefs.volume ?? 50;
+  // Begin op stil zodat de start niet hard binnenkomt.
+  try {
+    await setVolume(0);
+  } catch {
+    /* niet kritisch */
+  }
   let started = false;
   try {
     started = await playGenre(musicPrefs.style);
@@ -406,16 +448,12 @@ export async function play(): Promise<void> {
   if (!started) {
     await soap("AVTransport", "Play", "<InstanceID>0</InstanceID><Speed>1</Speed>");
   }
-  if (musicPrefs.volume != null) {
-    try {
-      await setVolume(musicPrefs.volume);
-    } catch {
-      /* volume instellen niet kritisch */
-    }
-  }
+  // Zacht opbouwen naar het ingestelde volume (op de achtergrond; blokkeert niet).
+  void fadeInVolume(target);
 }
 
 export async function pause(): Promise<void> {
+  fadeGen++; // lopende fade annuleren
   await soap("AVTransport", "Pause", "<InstanceID>0</InstanceID>");
 }
 
